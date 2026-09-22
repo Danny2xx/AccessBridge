@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+.DS_Store
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pip-cache/
+.pycache-check/
+.matplotlib-cache/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local data - scripts reproduce these files
+data/raw/*
+data/processed/*
+data/external/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+!data/README.md
+
+# Local environment
+.env
+.env.*
+
+# Frontend
+node_modules/
+dist/
+build/
+
+# Build and test output
+*.tsbuildinfo
+*.egg-info/
+frontend/test-results/
+frontend/playwright-report/
+
+# Large or third-party source documents, kept outside version control
+Presentation - The Innovation Spine (1).pptx
+WM UKREiiF - Next Gen Challenge Brief FINAL (1).pdf
