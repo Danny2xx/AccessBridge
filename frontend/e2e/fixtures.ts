@@ -26,11 +26,11 @@ export async function openStory(page: Page) {
 
 export async function openExplore(page: Page) {
   await page.goto("/#/explore");
-  await expect(page.locator(".stop-card")).toHaveCount(7);
+  await expect(page.getByTestId("stop-card")).toHaveCount(7);
 }
 
 /** Hash of what the map currently shows, used to prove views differ. */
-export async function mapFingerprint(page: Page, selector = ".explore-map"): Promise<string> {
-  const image = await page.locator(selector).screenshot();
+export async function mapFingerprint(page: Page, testId = "explore-map"): Promise<string> {
+  const image = await page.getByTestId(testId).screenshot();
   return createHash("sha1").update(image).digest("hex");
 }

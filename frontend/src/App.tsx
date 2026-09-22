@@ -1,14 +1,19 @@
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { fetchEvidence, fetchScenario } from "./api";
-import { SiteHeader } from "./components/SiteHeader";
-import { useExplore } from "./lib/useExplore";
-import { useHashRoute, type Route } from "./lib/useHashRoute";
-import { AskPage } from "./pages/AskPage";
-import { EvidencePage } from "./pages/EvidencePage";
-import { ExplorePage } from "./pages/ExplorePage";
-import { HowItWorksPage } from "./pages/HowItWorksPage";
-import { StoryPage } from "./pages/StoryPage";
-import type { EvidenceResponse, ScenarioResponse } from "./types";
+import { fetchEvidence, fetchScenario } from "@/api";
+import { SiteHeader } from "@/components/SiteHeader";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { useExplore } from "@/lib/useExplore";
+import { useHashRoute, type Route } from "@/lib/useHashRoute";
+import { cn } from "@/lib/utils";
+import { AskPage } from "@/pages/AskPage";
+import { EvidencePage } from "@/pages/EvidencePage";
+import { ExplorePage } from "@/pages/ExplorePage";
+import { HowItWorksPage } from "@/pages/HowItWorksPage";
+import { StoryPage } from "@/pages/StoryPage";
+import type { EvidenceResponse, ScenarioResponse } from "@/types";
 
 type Attribution = ScenarioResponse["attribution"];
 
@@ -22,40 +27,48 @@ const TITLES: Record<Route, string> = {
 
 function Loading() {
   return (
-    <div className="app-status" role="status">
-      <p className="app-status-title">Loading the Knowledge Quarter</p>
-      <p>Fetching neighbourhoods, stops and the default plan.</p>
-      <span className="loading-bar" aria-hidden="true" />
+    <div role="status" className="mx-auto grid max-w-[34rem] gap-4 px-[clamp(1rem,3vw,2rem)] py-[14vh]">
+      <p className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">
+        Loading the Knowledge Quarter
+      </p>
+      <p className="text-muted-foreground">Fetching neighbourhoods, stops and the default plan.</p>
+      <div className="grid gap-2.5 pt-2">
+        <Skeleton className="h-3 w-full" />
+        <Skeleton className="h-3 w-4/5" />
+        <Skeleton className="h-40 w-full rounded-2xl" />
+      </div>
     </div>
   );
 }
 
 function LoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
-    <div className="app-status" role="alert">
-      <p className="app-status-title">The data did not load</p>
-      <p>
+    <div role="alert" className="mx-auto grid max-w-[34rem] gap-4 px-[clamp(1rem,3vw,2rem)] py-[14vh]">
+      <p className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">The data did not load</p>
+      <p className="text-muted-foreground">
         The AccessBridge API did not respond. Start it with the command below, then try again.
       </p>
-      <pre>.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000</pre>
-      <p className="app-status-detail">{message}</p>
-      <button type="button" className="button button--primary" onClick={onRetry}>
+      <pre className="overflow-x-auto rounded-xl border border-border bg-card p-3.5 text-sm">
+        .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+      </pre>
+      <p className="text-sm break-words text-dim">{message}</p>
+      <Button className="justify-self-start rounded-full font-bold" onClick={onRetry}>
         Try again
-      </button>
+      </Button>
     </div>
   );
 }
 
 function SiteFooter({ attribution }: { attribution?: Attribution }) {
   return (
-    <footer className="site-footer">
-      <p>
+    <footer className="border-t border-border px-[clamp(1rem,3vw,2rem)] py-8 text-sm text-dim">
+      <p className="mx-auto max-w-[80ch] text-center">
         AccessBridge AI is a concept to start the conversation. It is not an official output of the Birmingham Knowledge
         Quarter or its partners. Figures are early estimates, and costs and details would be checked before anything is
         built.
       </p>
       {attribution ? (
-        <p className="site-footer-attribution">
+        <p data-testid="footer-attribution" className="mx-auto mt-2.5 max-w-[80ch] text-center">
           {attribution.public_sector} {attribution.imd_ons_naptan} {attribution.osm}
         </p>
       ) : null}
@@ -73,6 +86,7 @@ export function App() {
   const explore = useExplore(evidence);
   const mainRef = useRef<HTMLElement>(null);
   const previousRoute = useRef(route);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     let alive = true;
@@ -121,18 +135,38 @@ export function App() {
   }
 
   return (
-    <div className={`app app--${isMapRoute ? "map" : "document"}`}>
-      <SiteHeader route={route} progress={route === "story" && ready ? storyProgress : null} />
-      <main id="main" ref={mainRef} tabIndex={-1} className="main">
-        {loadError ? (
-          <LoadError message={loadError} onRetry={() => setAttempt((value) => value + 1)} />
-        ) : ready ? (
-          page
-        ) : (
-          <Loading />
-        )}
-      </main>
-      {!isMapRoute ? <SiteFooter attribution={scenario?.attribution} /> : null}
-    </div>
+    <TooltipProvider delayDuration={200}>
+      <div className={cn("grain", isMapRoute && "flex h-dvh flex-col overflow-hidden max-lg:h-auto max-lg:overflow-visible")}>
+        <SiteHeader route={route} progress={route === "story" && ready ? storyProgress : null} />
+
+        <main
+          id="main"
+          ref={mainRef}
+          tabIndex={-1}
+          className={cn("outline-none", isMapRoute && "min-h-0 flex-1")}
+        >
+          {loadError ? (
+            <LoadError message={loadError} onRetry={() => setAttempt((value) => value + 1)} />
+          ) : ready ? (
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={route}
+                className={cn(isMapRoute && "h-full")}
+                initial={reduced ? false : { opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduced ? undefined : { opacity: 0 }}
+                transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {page}
+              </motion.div>
+            </AnimatePresence>
+          ) : (
+            <Loading />
+          )}
+        </main>
+
+        {!isMapRoute ? <SiteFooter attribution={scenario?.attribution} /> : null}
+      </div>
+    </TooltipProvider>
   );
 }

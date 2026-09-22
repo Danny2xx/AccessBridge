@@ -92,7 +92,8 @@ sensitivity checks.
 
 All 13 screenshots are in [`docs/screenshots/`](docs/screenshots/). Regenerate
 them with `npm run screenshots` in `frontend/`. A timed two-minute pitch script
-is in [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md).
+is in [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md), and the visual system is
+described in [`DESIGN.md`](DESIGN.md).
 
 ## Running locally
 
@@ -206,6 +207,7 @@ accessbridge-ai/
 ├── tests/               # Backend tests
 ├── docs/                # Screenshots and the pitch walkthrough
 ├── PRODUCT.md           # Users, purpose and design principles
+├── DESIGN.md            # Colour, type, components and motion
 ├── PROJECT_STAGES.md
 ├── EVALUATION.md
 ├── METHODOLOGY.md
@@ -220,7 +222,7 @@ accessbridge-ai/
 | Accessibility | Stage 7 travel-time matrix contract, currently proxy-derived |
 | Optimisation | `PuLP` with CBC MILP solver |
 | API | `FastAPI`, `Pydantic` |
-| Frontend | `React`, `TypeScript`, `Vite`, `deck.gl`, `MapLibre GL JS`, `lucide-react` |
+| Frontend | `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`, `shadcn/ui` on Radix, `motion`, `deck.gl`, `MapLibre GL JS`, `lucide-react` |
 | Testing/tooling | `pytest`, `ruff`, `mypy`, TypeScript build, Playwright browser tests |
 
 Planned later:

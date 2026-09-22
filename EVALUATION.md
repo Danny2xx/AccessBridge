@@ -132,7 +132,7 @@ as implemented Phase 2 results:
 Implemented checks currently passing:
 
 - Backend tests: 51 passing
-- Browser tests: 21 passing (`npm run test:e2e` in `frontend/`)
+- Browser tests: 23 passing (`npm run test:e2e` in `frontend/`)
 - `ruff`: clean
 - `mypy`: clean
 - Python compile check: clean

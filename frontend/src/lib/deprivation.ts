@@ -19,11 +19,11 @@ export type Band = {
 };
 
 export const BANDS: Band[] = [
-  { id: "d1", label: "Most deprived 10% in England", short: "Most deprived 10%", deciles: [1], color: "#f78dbd" },
-  { id: "d2", label: "10–20% most deprived", short: "10–20%", deciles: [2], color: "#de6ba2" },
-  { id: "d3", label: "20–30% most deprived", short: "20–30%", deciles: [3], color: "#b85b86" },
-  { id: "d4-5", label: "30–50% most deprived", short: "30–50%", deciles: [4, 5], color: "#8d4f6b" },
-  { id: "d6-10", label: "Least deprived half", short: "Least deprived half", deciles: [6, 7, 8, 9, 10], color: "#644351" }
+  { id: "d1", label: "Most deprived 10% in England", short: "Most deprived 10%", deciles: [1], color: "#ec91d1" },
+  { id: "d2", label: "10–20% most deprived", short: "10–20%", deciles: [2], color: "#d270b7" },
+  { id: "d3", label: "20–30% most deprived", short: "20–30%", deciles: [3], color: "#ae5f98" },
+  { id: "d4-5", label: "30–50% most deprived", short: "30–50%", deciles: [4, 5], color: "#875178" },
+  { id: "d6-10", label: "Least deprived half", short: "Least deprived half", deciles: [6, 7, 8, 9, 10], color: "#614458" }
 ];
 
 export function bandForDecile(decile: number): Band {

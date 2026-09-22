@@ -1,7 +1,8 @@
-import { EvidenceTag, type EvidenceStatus } from "../components/EvidenceTag";
-import { formatNumber } from "../lib/format";
-import type { Route } from "../lib/useHashRoute";
-import type { EvidenceResponse, ScenarioResponse } from "../types";
+import { EvidenceTag, type EvidenceStatus } from "@/components/EvidenceTag";
+import { Button } from "@/components/ui/button";
+import { formatNumber } from "@/lib/format";
+import type { Route } from "@/lib/useHashRoute";
+import type { EvidenceResponse, ScenarioResponse } from "@/types";
 
 type HowItWorksPageProps = {
   scenario: ScenarioResponse;
@@ -36,7 +37,8 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
       title: "Choose the stops",
       status: "modelled",
       body: "An optimiser picks the set of stops that reaches the most people within the budget and the stop limit. A resident of the most deprived neighbourhoods counts ten times as much as one in the least deprived. By default the plan must include one rail or Metro link.",
-      caveat: "It is a mixed-integer linear programme solved to a proven best answer, so the same settings always give the same stops."
+      caveat:
+        "It is a mixed-integer linear programme solved to a proven best answer, so the same settings always give the same stops."
     },
     {
       title: "Check the result",
@@ -62,66 +64,80 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
   ];
 
   return (
-    <div className="page page--method">
-      <header className="page-header">
-        <h1>How it works</h1>
-        <p className="page-lede">Four steps turn open data into a stop plan. Each one is simple enough to check.</p>
+    <div className="mx-auto grid max-w-[75rem] gap-12 px-[clamp(1rem,3vw,2rem)] pt-14 pb-20">
+      <header className="grid gap-4">
+        <h1 className="text-[clamp(2.2rem,1.6rem+2.4vw,3.25rem)] font-extrabold tracking-tight">How it works</h1>
+        <p className="max-w-[62ch] text-xl leading-snug text-muted-foreground">
+          Four steps turn open data into a stop plan. Each one is simple enough to check.
+        </p>
       </header>
 
-      <ol className="method-steps">
+      <ol className="grid list-none gap-0 p-0">
         {steps.map((step, index) => (
-          <li key={step.title}>
-            <span className="method-number" aria-hidden="true">
+          <li
+            key={step.title}
+            className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-5 border-b border-border py-7 first:border-t"
+          >
+            <span
+              aria-hidden="true"
+              className="grid size-11 place-items-center rounded-full border-[1.5px] border-primary text-xl font-extrabold text-primary"
+            >
               {index + 1}
             </span>
             <div>
-              <div className="method-heading">
-                <h2>{step.title}</h2>
+              <div className="mb-2 flex flex-wrap items-center gap-x-3.5 gap-y-2">
+                <h2 className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">{step.title}</h2>
                 <EvidenceTag status={step.status} />
               </div>
-              <p>{step.body}</p>
-              {step.caveat ? <p className="method-caveat">{step.caveat}</p> : null}
+              <p className="max-w-[68ch] text-[1.0625rem] text-muted-foreground">{step.body}</p>
+              {step.caveat ? <p className="mt-2.5 max-w-[68ch] text-dim">{step.caveat}</p> : null}
             </div>
           </li>
         ))}
       </ol>
 
-      <div className="method-columns">
-        <section aria-labelledby="limits-heading">
-          <h2 id="limits-heading">What it does not do yet</h2>
-          <ul className="plain-list">
+      <div className="grid gap-10 lg:grid-cols-2">
+        <section aria-labelledby="limits-heading" className="grid content-start gap-4">
+          <h2 id="limits-heading" className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">
+            What it does not do yet
+          </h2>
+          <ul className="grid list-disc gap-2.5 pl-5 text-muted-foreground marker:text-dim">
             {limits.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
         </section>
 
-        <section aria-labelledby="sources-heading">
-          <h2 id="sources-heading">Data and licences</h2>
-          <ul className="source-list">
+        <section aria-labelledby="sources-heading" className="grid content-start gap-4">
+          <h2 id="sources-heading" className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">
+            Data and licences
+          </h2>
+          <ul className="grid list-none gap-3.5 p-0">
             {sources.map((source) => (
-              <li key={source.name}>
+              <li key={source.name} className="grid gap-0.5 leading-snug">
                 <strong>{source.name}</strong>
-                <span>{source.use}</span>
-                <small>{source.licence}</small>
+                <span className="text-muted-foreground">{source.use}</span>
+                <small className="text-dim">{source.licence}</small>
               </li>
             ))}
           </ul>
-          <p className="attribution">
+          <p className="text-sm text-dim">
             {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan} {scenario.attribution.osm}
           </p>
         </section>
       </div>
 
-      <section className="page-cta" aria-label="Next">
-        <p>Every chart on the evidence page can be shown as a table, and the Explore map lets you test your own budget.</p>
-        <div className="button-row">
-          <button type="button" className="button button--primary" onClick={() => navigate("explore")}>
+      <section aria-label="Next" className="grid gap-4 border-t border-border pt-8">
+        <p className="max-w-[62ch] text-muted-foreground">
+          Every chart on the evidence page can be shown as a table, and the Explore map lets you test your own budget.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Button className="rounded-full font-bold" onClick={() => navigate("explore")}>
             Explore it yourself
-          </button>
-          <button type="button" className="button" onClick={() => navigate("evidence")}>
+          </Button>
+          <Button variant="outline" className="rounded-full" onClick={() => navigate("evidence")}>
             See the evidence
-          </button>
+          </Button>
         </div>
       </section>
     </div>

@@ -1,18 +1,20 @@
 /**
- * Colour roles. Data colours were validated with the dataviz palette checks on
- * the dark surface: blue and amber as a two-series pair, and blue, amber and
- * magenta-rose all-pairs for the map.
+ * Colour roles for the map and charts, mirroring the tokens in index.css.
+ *
+ * Validated with the dataviz palette checks on the dark map surface: coral,
+ * periwinkle and fuchsia clear the all-pairs colour-blind floor (worst 12.4),
+ * and the deprivation ramp passes the ordinal checks.
  */
 
 export const COLOR = {
-  amberUi: "#f0a53a",
-  amberData: "#cc7f1f",
-  today: "#4f8fd6",
-  need: "#c9508c",
-  mapNeutral: "#3b4456",
-  mapLine: "#0b1019",
-  ink: "#eef2f8",
-  surface: "#121a27"
+  proposal: "#e0703f",
+  proposalUi: "#ff8a5c",
+  today: "#6478e8",
+  todayUi: "#93a4ff",
+  need: "#b94f9e",
+  mapNeutral: "#3a3a46",
+  mapLine: "#0a0a0b",
+  ink: "#fafafa"
 } as const;
 
 export type RGBA = [number, number, number, number];

@@ -1,24 +1,33 @@
-import { Box, Map as MapIcon, RotateCcw } from "lucide-react";
+import { Box, Map as MapIcon, RotateCcw, TrainFront } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMemo } from "react";
-import { EvidenceTag } from "../components/EvidenceTag";
-import { Figure } from "../components/Figure";
-import { MapLegend } from "../components/MapLegend";
-import { ModeSwitch } from "../components/ModeSwitch";
-import { ReachBar } from "../components/ReachBar";
-import { BandComparisonChart } from "../components/charts/BandComparisonChart";
-import { StopCard } from "../components/StopCard";
-import type { Bounds, CameraTarget } from "../lib/camera";
-import { totalsByBand } from "../lib/deprivation";
-import { formatGBP, formatNumber, formatPence, formatSigned } from "../lib/format";
-import type { ExploreState } from "../lib/useExplore";
-import { MapCanvas } from "../map/MapCanvas";
-import type { EvidenceResponse, OptimisationResult, ScenarioResponse } from "../types";
+import { EvidenceTag } from "@/components/EvidenceTag";
+import { Figure } from "@/components/Figure";
+import { MapLegend } from "@/components/MapLegend";
+import { ModeSwitch } from "@/components/ModeSwitch";
+import { ReachBar } from "@/components/ReachBar";
+import { StopCard } from "@/components/StopCard";
+import { BandComparisonChart } from "@/components/charts/BandComparisonChart";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Toggle } from "@/components/ui/toggle";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import type { Bounds, CameraTarget } from "@/lib/camera";
+import { totalsByBand } from "@/lib/deprivation";
+import { formatGBP, formatNumber, formatPence, formatSigned } from "@/lib/format";
+import type { ExploreState } from "@/lib/useExplore";
+import { cn } from "@/lib/utils";
+import { MapCanvas } from "@/map/MapCanvas";
+import type { EvidenceResponse, OptimisationResult, ScenarioResponse } from "@/types";
 
 const BUDGET_MIN = 75_000;
 const BUDGET_MAX = 1_500_000;
 const BUDGET_STEP = 75_000;
 const WALK_TIMES = [5, 10, 15, 20];
 const RAIL_METRO_COST = 150_000;
+const TOGGLE_CHIP =
+  "rounded-full bg-popover/85 px-4 font-semibold backdrop-blur-md data-[state=on]:border-primary/70 data-[state=on]:bg-primary/15 data-[state=on]:text-primary";
 
 type ExplorePageProps = {
   scenario: ScenarioResponse;
@@ -52,6 +61,7 @@ function headline(result: OptimisationResult): { lead: string; detail: string } 
 
 export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
   const { request, result } = explore;
+  const reduced = useReducedMotion();
   const facts = evidence.study_area;
   const studyBounds = scenario.study_area_bounds as Bounds;
   const stops = result?.feasible ? result.stop_details : [];
@@ -59,16 +69,17 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
   const comparison = result?.accessibility ?? null;
   const gain = comparison?.delta_most_deprived_decile_population ?? 0;
   const text = result ? headline(result) : null;
+  const updating = explore.status === "loading";
+  // A focused stop is shown at street level with real buildings; extruded
+  // neighbourhoods would fill the whole view at that zoom.
+  const extrude = explore.is3d && !focus;
+
   const bands = comparison && result?.feasible ? totalsByBand(comparison.decile_breakdown) : [];
   const otherToday = bands.slice(1).reduce((sum, row) => sum + row.today, 0);
   const otherNew = bands.slice(1).reduce((sum, row) => sum + row.newStops, 0);
   const bandSentence = bands[0]
     ? `In the most deprived band, reach goes from ${formatNumber(bands[0].today)} by rail or Metro today to ${formatNumber(bands[0].newStops)} with these stops. In the other bands it is ${formatNumber(otherNew)} against ${formatNumber(otherToday)}.`
     : "";
-  const updating = explore.status === "loading";
-  // A focused stop is shown at street level with real buildings; extruded
-  // neighbourhoods would fill the whole view at that zoom.
-  const extrude = explore.is3d && !focus;
 
   const camera = useMemo<CameraTarget>(
     () =>
@@ -91,104 +102,142 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
       ? "Neighbourhoods coloured by deprivation, with the chosen stops numbered along a schematic route."
       : explore.mode === "gap"
         ? "Pink areas are among the most deprived 10% and cannot walk to rail or Metro. Blue areas can."
-        : "Amber areas are within walking reach of a new stop. Blue areas can walk to rail or Metro today.";
+        : "Coral areas are within walking reach of a new stop. Blue areas can walk to rail or Metro today.";
 
   return (
-    <div className="explore">
-      <aside className="explore-panel" aria-label="Scenario and results">
-        <header className="explore-intro">
-          <h1>Find the best places for new stops</h1>
-          <p>
-            Set a budget, a stop limit and a walking time. The optimiser picks the stops that reach the most
-            people, counting the most deprived neighbourhoods ten times as much as the least deprived.
+    <div className="grid h-full lg:grid-cols-[minmax(21rem,27.5rem)_minmax(0,1fr)] max-lg:flex max-lg:flex-col-reverse">
+      <aside
+        aria-label="Scenario and results"
+        className="flex min-h-0 flex-col gap-7 overflow-y-auto border-border bg-card/40 p-6 pb-10 lg:border-r max-lg:border-t"
+      >
+        <header className="grid gap-2.5">
+          <h1 className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">
+            Find the best places for new stops
+          </h1>
+          <p className="text-muted-foreground">
+            Set a budget, a stop limit and a walking time. The optimiser picks the stops that reach the most people,
+            counting the most deprived neighbourhoods ten times as much as the least deprived.
           </p>
         </header>
 
-        <section className="controls" aria-label="Scenario settings">
-          <label className="slider-field">
-            <span className="field-label">
-              Budget <output>{formatGBP(request.budget_gbp)}</output>
-            </span>
-            <input
-              type="range"
+        <section aria-label="Scenario settings" className="grid gap-6">
+          <div className="grid gap-2">
+            <div className="flex items-baseline justify-between gap-3">
+              <label htmlFor="budget" className="font-bold">
+                Budget
+              </label>
+              <output htmlFor="budget" className="font-extrabold text-primary tabular">
+                {formatGBP(request.budget_gbp)}
+              </output>
+            </div>
+            <Slider
+              id="budget"
+              data-testid="budget-slider"
+              aria-label="Budget"
               min={BUDGET_MIN}
               max={BUDGET_MAX}
               step={BUDGET_STEP}
-              value={request.budget_gbp}
-              onChange={(event) => explore.updateRequest({ budget_gbp: Number(event.target.value) })}
+              value={[request.budget_gbp]}
+              onValueChange={([value]) => explore.updateRequest({ budget_gbp: value })}
             />
-            <span className="field-hint">
+            <p className="text-[0.8125rem] text-dim">
               Placeholder costs: {formatGBP(75_000)} per bus stop, {formatGBP(RAIL_METRO_COST)} per rail or Metro stop
-            </span>
-          </label>
+            </p>
+          </div>
 
-          <label className="slider-field">
-            <span className="field-label">
-              Most stops <output>{request.max_stops}</output>
-            </span>
-            <input
-              type="range"
+          <div className="grid gap-2">
+            <div className="flex items-baseline justify-between gap-3">
+              <label htmlFor="stops" className="font-bold">
+                Most stops
+              </label>
+              <output htmlFor="stops" className="font-extrabold text-primary tabular">
+                {request.max_stops}
+              </output>
+            </div>
+            <Slider
+              id="stops"
+              data-testid="stops-slider"
+              aria-label="Most stops"
               min={1}
               max={12}
               step={1}
-              value={request.max_stops}
-              onChange={(event) => explore.updateRequest({ max_stops: Number(event.target.value) })}
+              value={[request.max_stops]}
+              onValueChange={([value]) => explore.updateRequest({ max_stops: value })}
             />
-          </label>
+          </div>
 
-          <fieldset className="choice-field">
-            <legend className="field-label">Walking time to a stop</legend>
-            <div className="segmented">
+          <div className="grid gap-2">
+            <span className="font-bold">Walking time to a stop</span>
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              value={String(request.threshold_min)}
+              onValueChange={(value) => value && explore.updateRequest({ threshold_min: Number(value) })}
+              className="w-full"
+              aria-label="Walking time to a stop"
+            >
               {WALK_TIMES.map((minutes) => (
-                <label key={minutes} className={request.threshold_min === minutes ? "is-active" : ""}>
-                  <input
-                    type="radio"
-                    name="walk-time"
-                    value={minutes}
-                    checked={request.threshold_min === minutes}
-                    onChange={() => explore.updateRequest({ threshold_min: minutes })}
-                  />
+                <ToggleGroupItem key={minutes} value={String(minutes)} className="flex-1 font-semibold">
                   {minutes} min
-                </label>
+                </ToggleGroupItem>
               ))}
-            </div>
-          </fieldset>
+            </ToggleGroup>
+          </div>
 
-          <label className="switch-field">
-            <input
-              type="checkbox"
-              role="switch"
+          <label className="flex cursor-pointer items-center gap-3">
+            <Switch
               checked={request.require_interchange}
-              onChange={(event) => explore.updateRequest({ require_interchange: event.target.checked })}
+              onCheckedChange={(checked) => explore.updateRequest({ require_interchange: checked })}
+              aria-label="Include a rail or Metro link"
             />
-            <span className="switch-track" aria-hidden="true" />
-            <span>
-              Include a rail or Metro link
-              <small>Connects the new stops to the existing network</small>
+            <span className="grid leading-tight">
+              <span className="flex items-center gap-1.5 font-bold">
+                <TrainFront className="size-4 text-today-ui" aria-hidden="true" />
+                Include a rail or Metro link
+              </span>
+              <small className="text-[0.8125rem] font-normal text-dim">
+                Connects the new stops to the existing network
+              </small>
             </span>
           </label>
 
           {!explore.isDefault ? (
-            <button type="button" className="text-button" onClick={explore.reset}>
-              <RotateCcw size={15} aria-hidden="true" />
+            <Button variant="ghost" size="sm" className="-ml-2 justify-self-start gap-1.5" onClick={explore.reset}>
+              <RotateCcw aria-hidden="true" />
               Back to the default plan
-            </button>
+            </Button>
           ) : null}
         </section>
 
-        <section className={`explore-result${updating ? " is-updating" : ""}`} aria-busy={updating}>
-          {updating ? <p className="updating-note">Updating…</p> : null}
+        <section
+          aria-busy={updating}
+          className={cn(
+            "relative grid gap-4 rounded-2xl border border-border/80 bg-card/80 p-5 transition-opacity",
+            updating && "[&>*:not([data-updating])]:opacity-55"
+          )}
+        >
+          {updating ? (
+            <p data-updating className="absolute top-3 right-4 text-[0.8125rem] font-bold text-primary">
+              Updating…
+            </p>
+          ) : null}
           {explore.status === "error" ? (
-            <p className="error-note" role="alert">
+            <p role="alert" className="font-bold text-destructive">
               The optimiser did not respond. Check the backend is running, then change a setting to try again.
             </p>
           ) : null}
+
           {text ? (
-            <div aria-live="polite" className="result-text">
-              <p className="result-lead">{text.lead}</p>
-              <p className="result-detail">{text.detail}</p>
+            <div aria-live="polite" className="grid gap-2">
+              <p data-testid="result-lead" className="text-xl leading-snug font-bold">
+                {text.lead}
+              </p>
+              <p data-testid="result-detail" className="text-muted-foreground">
+                {text.detail}
+              </p>
             </div>
           ) : null}
+
           {comparison ? (
             <>
               <ReachBar
@@ -197,16 +246,18 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
                 withStops={comparison.scenario.most_deprived_decile_population}
                 threshold={comparison.threshold_min}
               />
-              <div className="figure-row figure-row--compact">
-                <Figure value={formatGBP(result?.total_cost_gbp ?? 0)} label="total cost" status="placeholder" />
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-4 border-t border-border pt-4">
+                <Figure size="compact" value={formatGBP(result?.total_cost_gbp ?? 0)} label="total cost" status="placeholder" />
                 {gain > 0 && result ? (
                   <Figure
+                    size="compact"
                     value={formatPence(result.total_cost_gbp / gain)}
                     label="per extra resident reached"
                     status="placeholder"
                   />
                 ) : null}
                 <Figure
+                  size="compact"
                   value={formatNumber(comparison.scenario.total_population)}
                   label={`residents of every band reached (${formatSigned(comparison.delta_total_population)} vs today)`}
                   status="modelled"
@@ -217,41 +268,49 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         </section>
 
         {comparison && bands.length > 0 ? (
-          <section className="band-section" aria-labelledby="bands-heading">
-            <div className="section-heading">
-              <h2 id="bands-heading">Who gains, band by band</h2>
+          <section aria-labelledby="bands-heading" className="grid gap-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <h2 id="bands-heading" className="text-xl font-extrabold tracking-tight">
+                Who gains, band by band
+              </h2>
               <EvidenceTag status="modelled" />
             </div>
-            <p className="section-hint">{bandSentence}</p>
-            <BandComparisonChart rows={bands} threshold={comparison.threshold_min} compact />
+            <p data-testid="band-sentence" className="text-sm text-dim">{bandSentence}</p>
+            <div className="mt-2">
+              <BandComparisonChart rows={bands} threshold={comparison.threshold_min} compact />
+            </div>
           </section>
         ) : null}
 
         {stops.length > 0 ? (
-          <section className="stop-section" aria-labelledby="stops-heading">
-            <div className="section-heading">
-              <h2 id="stops-heading">The {stops.length} stops, in route order</h2>
+          <section aria-labelledby="stops-heading" className="grid gap-2">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <h2 id="stops-heading" className="text-xl font-extrabold tracking-tight">
+                The {stops.length} stops, in route order
+              </h2>
               <EvidenceTag status="modelled" />
             </div>
-            <p className="section-hint">Select a stop to zoom to it and outline the neighbourhoods it reaches.</p>
-            <ol className="stop-list">
-              {stops.map((stop, index) => (
-                <StopCard
-                  key={stop.candidate_id}
-                  stop={stop}
-                  number={index + 1}
-                  threshold={request.threshold_min}
-                  focused={stop.candidate_id === explore.focusStopId}
-                  expanded={explore.expanded.has(stop.candidate_id)}
-                  onFocus={() => explore.focusStop(stop.candidate_id)}
-                  onToggle={() => explore.toggleExpanded(stop.candidate_id)}
-                />
-              ))}
-            </ol>
+            <p className="text-sm text-dim">Select a stop to zoom to it and outline the neighbourhoods it reaches.</p>
+            <motion.ol layout={!reduced} className="mt-2 grid list-none gap-3 p-0">
+              <AnimatePresence initial={false}>
+                {stops.map((stop, index) => (
+                  <StopCard
+                    key={stop.candidate_id}
+                    stop={stop}
+                    number={index + 1}
+                    threshold={request.threshold_min}
+                    focused={stop.candidate_id === explore.focusStopId}
+                    expanded={explore.expanded.has(stop.candidate_id)}
+                    onFocus={() => explore.focusStop(stop.candidate_id)}
+                    onToggle={() => explore.toggleExpanded(stop.candidate_id)}
+                  />
+                ))}
+              </AnimatePresence>
+            </motion.ol>
           </section>
         ) : null}
 
-        <div className="data-note">
+        <div data-testid="data-note" className="grid gap-2 text-[0.8125rem] leading-relaxed text-dim">
           <p>{evidence.routing.method_caveat}</p>
           <p>
             {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan} {scenario.attribution.osm}
@@ -259,7 +318,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         </div>
       </aside>
 
-      <div className="explore-map">
+      <div data-testid="explore-map" className="relative min-h-0 min-w-0 max-lg:h-[62dvh]">
         <MapCanvas
           scenario={scenario}
           result={result}
@@ -274,33 +333,51 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
           showRailMetro={explore.showRailMetro}
           buildings3d={explore.is3d && !!focus}
         >
-          <div className="map-controls">
+          <div className="absolute inset-x-4 top-4 z-10 grid max-w-[34rem] gap-2">
             <ModeSwitch mode={explore.mode} onChange={explore.setMode} />
-            <div className="map-control-row">
-              <div className="segmented segmented--small" role="radiogroup" aria-label="Map view">
-                <button type="button" role="radio" aria-checked={!explore.is3d} className={!explore.is3d ? "is-active" : ""} onClick={() => explore.setIs3d(false)}>
-                  <MapIcon size={15} aria-hidden="true" /> 2D
-                </button>
-                <button type="button" role="radio" aria-checked={explore.is3d} className={explore.is3d ? "is-active" : ""} onClick={() => explore.setIs3d(true)}>
-                  <Box size={15} aria-hidden="true" /> 3D
-                </button>
-              </div>
-              <label className="check-chip">
-                <input type="checkbox" checked={explore.showRailMetro} onChange={(e) => explore.setShowRailMetro(e.target.checked)} />
+            <div className="flex flex-wrap items-center gap-2">
+              <ToggleGroup
+                type="single"
+                variant="outline"
+                value={explore.is3d ? "3d" : "2d"}
+                onValueChange={(value) => value && explore.setIs3d(value === "3d")}
+                aria-label="Map view"
+                className="bg-popover/85 backdrop-blur-md"
+              >
+                <ToggleGroupItem value="2d" className="gap-1.5 px-3 font-semibold">
+                  <MapIcon aria-hidden="true" /> 2D
+                </ToggleGroupItem>
+                <ToggleGroupItem value="3d" className="gap-1.5 px-3 font-semibold">
+                  <Box aria-hidden="true" /> 3D
+                </ToggleGroupItem>
+              </ToggleGroup>
+
+              <Toggle
+                variant="outline"
+                pressed={explore.showRailMetro}
+                onPressedChange={explore.setShowRailMetro}
+                className={TOGGLE_CHIP}
+              >
                 Rail and Metro
-              </label>
-              <label className="check-chip">
-                <input type="checkbox" checked={explore.showCandidates} onChange={(e) => explore.setShowCandidates(e.target.checked)} />
+              </Toggle>
+              <Toggle
+                variant="outline"
+                pressed={explore.showCandidates}
+                onPressedChange={explore.setShowCandidates}
+                className={TOGGLE_CHIP}
+              >
                 All {formatNumber(facts.candidate_stop_count)} possible locations
-              </label>
+              </Toggle>
             </div>
           </div>
+
           <MapLegend
             mode={explore.mode}
             threshold={request.threshold_min}
             showNetwork={stops.length > 0}
             showRailMetro={explore.showRailMetro}
             showCandidates={explore.showCandidates}
+            className="bottom-7 left-4 max-lg:hidden"
           />
         </MapCanvas>
       </div>

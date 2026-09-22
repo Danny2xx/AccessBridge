@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useReducedMotion } from "./useReducedMotion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 /**
  * Count from the previous value (or `startFrom` on first render) to `target`.

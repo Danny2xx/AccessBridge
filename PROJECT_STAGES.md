@@ -15,8 +15,10 @@ started, with a travel-time matrix contract and adapter ready for future R5/r5py
 output.
 
 The dashboard is now a five-section site framed as Phase 2 of the Innovation
-Spine: The Story, Explore, The Evidence, How it works and The Ask. It is
-checked by 51 backend tests and 21 Playwright browser tests.
+Spine: The Story, Explore, The Evidence, How it works and The Ask. It is built
+with React 19, Tailwind CSS v4, shadcn/ui on Radix primitives and motion, and
+is checked by 51 backend tests and 23 Playwright browser tests. The visual
+system is recorded in `DESIGN.md`.
 
 Already present:
 

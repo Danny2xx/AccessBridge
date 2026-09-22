@@ -9,11 +9,11 @@ import {
   type CameraTarget,
   type MapViewState,
   type Padding
-} from "../lib/camera";
-import { decileSentence } from "../lib/deprivation";
-import { formatNumber, modeLabel } from "../lib/format";
-import { useReducedMotion } from "../lib/useReducedMotion";
-import type { GeoJsonFeature, OptimisationResult, ScenarioResponse, StopDetail } from "../types";
+} from "@/lib/camera";
+import { decileSentence } from "@/lib/deprivation";
+import { formatNumber, modeLabel } from "@/lib/format";
+import { useReducedMotion } from "@/lib/useReducedMotion";
+import type { GeoJsonFeature, OptimisationResult, ScenarioResponse, StopDetail } from "@/types";
 import { buildLayers, deriveMapState, type MapDerived, type MapMarker, type MapMode } from "./layers";
 
 const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
@@ -287,7 +287,8 @@ export function MapCanvas({
 
   return (
     <div
-      className="map-canvas"
+      data-testid="map-canvas"
+      className="relative size-full min-h-80 overflow-hidden bg-[#0a0a0b]"
       ref={containerRef}
       role="region"
       aria-label="Map"
@@ -313,9 +314,14 @@ export function MapCanvas({
         </Map>
       </DeckGL>
       {tooltip ? (
-        <div className="map-tooltip" style={tooltipStyle} aria-hidden="true">
-          <strong>{tooltip.title}</strong>
-          {tooltip.subtitle ? <span className="map-tooltip-sub">{tooltip.subtitle}</span> : null}
+        <div
+          style={tooltipStyle}
+          aria-hidden="true"
+          data-testid="map-tooltip"
+          className="pointer-events-none absolute z-50 grid max-w-72 gap-0.5 rounded-xl border border-border bg-popover/97 px-3 py-2.5 text-sm leading-snug text-muted-foreground shadow-2xl backdrop-blur"
+        >
+          <strong className="text-base text-foreground">{tooltip.title}</strong>
+          {tooltip.subtitle ? <span className="mb-1 text-xs text-dim">{tooltip.subtitle}</span> : null}
           {tooltip.lines.map((line) => (
             <span key={line}>{line}</span>
           ))}

@@ -6,9 +6,9 @@ import {
   ScatterplotLayer,
   TextLayer
 } from "@deck.gl/layers";
-import { bandForDecile } from "../lib/deprivation";
-import { COLOR, rgba, type RGBA } from "../lib/palette";
-import type { GeoJsonFeature, OptimisationResult, ScenarioResponse, StopDetail } from "../types";
+import { bandForDecile } from "@/lib/deprivation";
+import { COLOR, rgba, type RGBA } from "@/lib/palette";
+import type { GeoJsonFeature, OptimisationResult, ScenarioResponse, StopDetail } from "@/types";
 
 export type MapMode = "plain" | "need" | "gap" | "gain";
 
@@ -49,11 +49,11 @@ const ON_TOP = { depthCompare: "always" as const, depthWriteEnabled: false };
 
 const NEED = rgba(COLOR.need);
 const TODAY = rgba(COLOR.today);
-const AMBER_DATA = rgba(COLOR.amberData);
-const AMBER_UI = rgba(COLOR.amberUi);
+const PROPOSAL = rgba(COLOR.proposal);
+const PROPOSAL_UI = rgba(COLOR.proposalUi);
 const NEUTRAL = rgba(COLOR.mapNeutral);
 const RING = rgba(COLOR.mapLine);
-const INK_ON_AMBER: RGBA = [26, 18, 6, 255];
+const INK_ON_PROPOSAL: RGBA = [42, 15, 6, 255];
 
 export function deriveMapState(
   scenario: ScenarioResponse,
@@ -108,7 +108,7 @@ function baseFill(feature: GeoJsonFeature, mode: MapMode, derived: MapDerived): 
 
   switch (mode) {
     case "plain":
-      return withAlpha(AMBER_UI, 14);
+      return withAlpha(PROPOSAL_UI, 14);
     case "need":
       return rgba(bandForDecile(decile).color, 180);
     case "gap":
@@ -116,7 +116,7 @@ function baseFill(feature: GeoJsonFeature, mode: MapMode, derived: MapDerived): 
       if (decile === 1) return withAlpha(NEED, 225);
       return withAlpha(NEUTRAL, 70);
     case "gain":
-      if (derived.coveredIds.has(id)) return withAlpha(AMBER_DATA, 215);
+      if (derived.coveredIds.has(id)) return withAlpha(PROPOSAL, 215);
       if (derived.baselineIds.has(id)) return withAlpha(TODAY, 120);
       return withAlpha(NEUTRAL, 50);
   }
@@ -214,8 +214,8 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
       getLineWidth: (feature: unknown) =>
         derived.focusIds.has(lsoaId(feature as GeoJsonFeature)) ? 2.5 : mode === "plain" ? 1.2 : 0.8,
       getLineColor: (feature: unknown): RGBA => {
-        if (derived.focusIds.has(lsoaId(feature as GeoJsonFeature))) return AMBER_UI;
-        if (mode === "plain") return withAlpha(AMBER_UI, 110);
+        if (derived.focusIds.has(lsoaId(feature as GeoJsonFeature))) return PROPOSAL_UI;
+        if (mode === "plain") return withAlpha(PROPOSAL_UI, 110);
         return is3d ? [238, 242, 248, 40] : withAlpha(RING, 170);
       },
       getFillColor: (feature: unknown) => fillColor(feature as GeoJsonFeature, mode, derived, is3d),
@@ -327,7 +327,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
           widthUnits: "pixels",
           getPath: (d: { path: number[][] }) => d.path as never,
           getWidth: is3d ? 5 : 4,
-          getColor: AMBER_UI,
+          getColor: PROPOSAL_UI,
           jointRounded: true,
           capRounded: true,
           parameters: ON_TOP
@@ -345,7 +345,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
           getPosition: (d: StopDetail) => [d.longitude, d.latitude],
           getElevation: NETWORK_ELEVATION,
           getFillColor: (d: StopDetail) =>
-            d.candidate_id === focusStopId ? AMBER_UI : withAlpha(AMBER_DATA, 235),
+            d.candidate_id === focusStopId ? PROPOSAL_UI : withAlpha(PROPOSAL, 235),
           updateTriggers: { getFillColor: [focusKey] },
           material: { ambient: 0.5, diffuse: 0.7, shininess: 24, specularColor: [255, 255, 255] }
         })
@@ -365,7 +365,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         getLineWidth: 2,
         getLineColor: RING,
         getPosition: (d: StopDetail) => [d.longitude, d.latitude, z],
-        getFillColor: AMBER_UI,
+        getFillColor: PROPOSAL_UI,
         updateTriggers: { getRadius: [focusKey], getPosition: [z] },
         parameters: ON_TOP
       }),
@@ -376,7 +376,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         getPosition: (d: StopDetail) => [d.longitude, d.latitude, z],
         getText: (d: StopDetail) => String(derived.stopNumbers.get(d.candidate_id) ?? ""),
         getSize: 13,
-        getColor: INK_ON_AMBER,
+        getColor: INK_ON_PROPOSAL,
         fontFamily: FONT_FAMILY,
         fontWeight: 800,
         getTextAnchor: "middle",
@@ -398,7 +398,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         stroked: true,
         lineWidthUnits: "pixels",
         getLineWidth: 3,
-        getLineColor: AMBER_UI,
+        getLineColor: PROPOSAL_UI,
         getFillColor: RING,
         getPosition: (d: MapMarker) => [d.longitude, d.latitude],
         parameters: ON_TOP

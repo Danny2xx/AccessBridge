@@ -1,0 +1,183 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─────────────────────────────────────────────────────────────
+   AccessBridge AI · design tokens
+
+   Neutral near-black base with three data roles:
+   coral for the proposed network, periwinkle for today's rail and
+   Metro, and a single-hue fuchsia ramp for deprivation. The data
+   colours were validated with the dataviz palette checks on these
+   surfaces: worst all-pairs colour-blind separation 12.4, and the
+   deprivation ramp passes the ordinal checks.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  --radius: 0.75rem;
+
+  --background: #0a0a0b;
+  --foreground: #fafafa;
+  --card: #131316;
+  --card-foreground: #fafafa;
+  --popover: #101013;
+  --popover-foreground: #fafafa;
+  --primary: #ff8a5c;
+  --primary-foreground: #2a0f06;
+  --secondary: #1c1c21;
+  --secondary-foreground: #fafafa;
+  --muted: #1c1c21;
+  --muted-foreground: #a8a8b3;
+  --accent: #23232a;
+  --accent-foreground: #fafafa;
+  --destructive: #f2685f;
+  --border: #26262e;
+  --input: #2d2d37;
+  --ring: #ff8a5c;
+
+  /* Data roles */
+  --proposal: #e0703f;
+  --proposal-ui: #ff8a5c;
+  --today: #6478e8;
+  --today-ui: #93a4ff;
+  --need-1: #ec91d1;
+  --need-2: #d270b7;
+  --need-3: #ae5f98;
+  --need-4: #875178;
+  --need-5: #614458;
+  --map-neutral: #3a3a46;
+  --dim: #7c7c8a;
+
+  --font-sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-proposal: var(--proposal);
+  --color-proposal-ui: var(--proposal-ui);
+  --color-today: var(--today);
+  --color-today-ui: var(--today-ui);
+  --color-dim: var(--dim);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-sans);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+
+  html {
+    background: var(--background);
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    min-width: 320px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+}
+
+@layer utilities {
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* A hairline top edge that reads as a lit surface, used on raised panels. */
+  .edge-light {
+    box-shadow:
+      inset 0 1px 0 0 rgb(255 255 255 / 0.06),
+      0 24px 60px -30px rgb(0 0 0 / 0.9);
+  }
+
+  .grain {
+    background-image: radial-gradient(rgb(255 255 255 / 0.028) 1px, transparent 1px);
+    background-size: 3px 3px;
+  }
+}
+
+/* Map libraries ship their own chrome; match it to the panel styling. */
+.maplibregl-ctrl-attrib.maplibregl-compact {
+  background: color-mix(in oklab, var(--popover) 88%, transparent) !important;
+  color: var(--dim);
+  border-radius: var(--radius-md);
+}
+
+.maplibregl-ctrl-attrib a {
+  color: var(--muted-foreground) !important;
+}
+
+.maplibregl-ctrl-attrib-button {
+  filter: invert(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

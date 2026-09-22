@@ -1,4 +1,7 @@
 import { Calculator, Database, FileText, PencilRuler, type LucideIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 export type EvidenceStatus = "measured" | "modelled" | "placeholder" | "brief";
 
@@ -29,12 +32,24 @@ export const EVIDENCE: Record<EvidenceStatus, { label: string; description: stri
   }
 };
 
-export function EvidenceTag({ status }: { status: EvidenceStatus }) {
+export function EvidenceTag({ status, className }: { status: EvidenceStatus; className?: string }) {
   const { label, description, icon: Icon } = EVIDENCE[status];
   return (
-    <span className={`evidence-tag evidence-tag--${status}`} title={description}>
-      <Icon size={13} aria-hidden="true" />
-      {label}
-    </span>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Badge
+          variant="secondary"
+          data-testid="evidence-tag"
+          className={cn(
+            "cursor-help gap-1.5 rounded-full border-border/80 bg-secondary/70 py-1 pr-2.5 pl-2 font-semibold text-muted-foreground backdrop-blur",
+            className
+          )}
+        >
+          <Icon className="size-3 text-dim" aria-hidden="true" />
+          {label}
+        </Badge>
+      </TooltipTrigger>
+      <TooltipContent className="max-w-72 text-pretty">{description}</TooltipContent>
+    </Tooltip>
   );
 }

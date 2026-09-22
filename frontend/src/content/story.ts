@@ -1,6 +1,6 @@
-import type { FigureProps } from "../components/Figure";
-import { boundsOfPoints, type Bounds, type CameraTarget } from "../lib/camera";
-import { totalsByBand, type BandTotals } from "../lib/deprivation";
+import type { FigureProps } from "@/components/Figure";
+import { boundsOfPoints, type Bounds, type CameraTarget } from "@/lib/camera";
+import { totalsByBand, type BandTotals } from "@/lib/deprivation";
 import {
   formatGBP,
   formatNumber,
@@ -8,9 +8,9 @@ import {
   formatSigned,
   listPlaces,
   shareInTen
-} from "../lib/format";
-import type { MapMarker, MapMode } from "../map/layers";
-import type { EvidenceResponse, ScenarioResponse, StopDetail } from "../types";
+} from "@/lib/format";
+import type { MapMarker, MapMode } from "@/map/layers";
+import type { EvidenceResponse, ScenarioResponse, StopDetail } from "@/types";
 import { BKQ_MARKER, NEIGHBOURS } from "./spine";
 
 export type StoryStep = {

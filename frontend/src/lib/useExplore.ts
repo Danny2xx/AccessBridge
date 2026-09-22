@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { runOptimisation } from "../api";
-import type { MapMode } from "../map/layers";
-import type { EvidenceResponse, OptimisationRequest, OptimisationResult } from "../types";
+import { runOptimisation } from "@/api";
+import type { MapMode } from "@/map/layers";
+import type { EvidenceResponse, OptimisationRequest, OptimisationResult } from "@/types";
 
 const FALLBACK_REQUEST: OptimisationRequest = {
   budget_gbp: 600_000,

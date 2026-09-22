@@ -23,14 +23,14 @@ test("story screenshots", async ({ page }) => {
 
 test("explore screenshots", async ({ page }) => {
   await page.goto("/#/explore");
-  await expect(page.locator(".stop-card")).toHaveCount(7);
+  await expect(page.getByTestId("stop-card")).toHaveCount(7);
   await page.waitForTimeout(3500);
   await shot(page, "08-explore");
-  await page.locator(".stop-card-main").nth(1).click();
+  await page.getByTestId("stop-card-main").nth(1).click();
   await page.waitForTimeout(3000);
   await shot(page, "09-explore-stop-focus");
-  await page.locator(".stop-card-main").nth(1).click();
-  await page.getByRole("radio", { name: /3D/ }).click();
+  await page.getByTestId("stop-card-main").nth(1).click();
+  await page.getByRole("radio", { name: "3D" }).click();
   await page.waitForTimeout(3000);
   await shot(page, "10-explore-3d");
 });
