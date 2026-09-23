@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="AccessBridge AI">
+  <rect width="32" height="32" rx="7" fill="#18202c"/>
+  <g fill="none" stroke="#f7f8fa" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 9v8a5 5 0 0 0 5 5h2"/>
+    <circle cx="10" cy="7" r="2.2"/>
+  </g>
+  <circle cx="22" cy="22" r="3.4" fill="#007b5a"/>
+</svg>
