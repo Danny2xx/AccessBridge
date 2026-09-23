@@ -45,3 +45,4 @@ WM UKREiiF - Next Gen Challenge Brief FINAL (1).pdf
 # Routing toolchain: a user-level JDK and a separate Python 3.12 env for r5py
 .jdk/
 .venv-routing/
+.venv-ci/

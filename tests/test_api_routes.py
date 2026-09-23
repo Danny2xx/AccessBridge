@@ -1,5 +1,7 @@
+import geopandas as gpd
 from fastapi.testclient import TestClient
 
+from app.config import get_settings
 from app.main import app
 
 client = TestClient(app)
@@ -12,8 +14,14 @@ def test_scenario_endpoint_returns_geojson_and_baseline() -> None:
     body = response.json()
     assert body["lsoa_geojson"]["type"] == "FeatureCollection"
     assert body["candidate_stops_geojson"]["type"] == "FeatureCollection"
-    assert len(body["lsoa_geojson"]["features"]) == 174
-    assert len(body["candidate_stops_geojson"]["features"]) == 828
+    # NaPTAN is a live register, so candidate counts drift between builds.
+    # Check the API against the processed files rather than pinning a number.
+    settings = get_settings()
+    lsoa_count = len(gpd.read_file(settings.study_area_lsoa_path))
+    candidate_count = len(gpd.read_file(settings.candidate_stops_path))
+    assert len(body["lsoa_geojson"]["features"]) == lsoa_count
+    assert len(body["candidate_stops_geojson"]["features"]) == candidate_count
+    assert candidate_count > 500
     # The exact baseline population belongs to whichever travel-time matrix is
     # active, so assert the invariants here and pin the proxy figures in
     # tests/test_accessibility_proxy.py. That keeps this test passing when a real

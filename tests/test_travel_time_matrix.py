@@ -1,3 +1,4 @@
+import geopandas as gpd
 import pandas as pd
 import pytest
 
@@ -9,6 +10,7 @@ from app.accessibility.travel_time import (
     validate_travel_time_matrix,
     with_reachability_columns,
 )
+from app.config import get_settings
 
 
 def toy_travel_time_matrix() -> pd.DataFrame:
@@ -108,9 +110,14 @@ def test_prepare_travel_time_matrix_supports_non_default_threshold() -> None:
 
 
 def test_stage7_real_data_matrix_matches_proxy_shape() -> None:
+    # NaPTAN is a live register, so the candidate count drifts between builds;
+    # the matrix is checked against the processed files rather than a number.
+    settings = get_settings()
+    origins = len(gpd.read_file(settings.study_area_lsoa_path))
+    candidates = len(gpd.read_file(settings.candidate_stops_path))
     matrix = load_travel_time_matrix()
 
-    assert len(matrix) == 144_072
-    assert matrix["origin_id"].nunique() == 174
-    assert matrix["candidate_id"].nunique() == 828
+    assert len(matrix) == origins * candidates
+    assert matrix["origin_id"].nunique() == origins
+    assert matrix["candidate_id"].nunique() == candidates
     assert {"travel_time_min", "routing_source", "routing_profile"}.issubset(matrix.columns)

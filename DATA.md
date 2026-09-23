@@ -58,6 +58,10 @@ data, so anyone can reproduce local artifacts from source.
 
 - IMD: updated infrequently. Use the English Indices of Deprivation 2025 / IMD 2025 release, and prefer the corrected `v2` files where GOV.UK marks them as updated.
 - Population: annual ONS estimates.
+- NaPTAN: a live register that changes weekly. A fresh download gives a
+  slightly different candidate-stop count (828 in the June 2026 build, 831 in
+  September 2026), so nothing in the tests or the site pins that number; they
+  all read it from the processed data.
 - GTFS: changes regularly; re-fetch before a fresh analysis.
 - OSM: continuously updated; pin a date for reproducibility.
 
