@@ -129,7 +129,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
               <label htmlFor="budget" className="text-sm font-medium">
                 Budget
               </label>
-              <output htmlFor="budget" className="tabular font-semibold">
+              <output htmlFor="budget" className="font-semibold">
                 {formatGBP(request.budget_gbp)}
               </output>
             </div>
@@ -154,7 +154,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
               <label htmlFor="stops" className="text-sm font-medium">
                 Most stops
               </label>
-              <output htmlFor="stops" className="tabular font-semibold">
+              <output htmlFor="stops" className="font-semibold">
                 {request.max_stops}
               </output>
             </div>
@@ -339,7 +339,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
       </aside>
 
       <div data-testid="explore-map" className="flex min-h-0 min-w-0 flex-col max-lg:h-[62dvh]">
-        <div className="flex flex-wrap items-center gap-2 border-b border-border bg-background px-4 py-2.5">
+        <div className="flex flex-wrap items-center gap-2 border-b border-border bg-background px-5 py-2.5">
           <ModeSwitch mode={explore.mode} onChange={explore.setMode} />
           <ToggleGroup
             type="single"
@@ -356,13 +356,13 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
             </ToggleGroupItem>
           </ToggleGroup>
 
-          <div className="ml-auto flex flex-wrap items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2 max-md:ml-0">
             <Toggle
               variant="outline"
               size="sm"
               pressed={explore.showRailMetro}
               onPressedChange={explore.setShowRailMetro}
-              className="text-sm font-medium data-[state=on]:border-primary/60 data-[state=on]:text-primary"
+              className="text-sm font-medium"
             >
               Rail and Metro
             </Toggle>
@@ -371,7 +371,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
               size="sm"
               pressed={explore.showCandidates}
               onPressedChange={explore.setShowCandidates}
-              className="text-sm font-medium data-[state=on]:border-primary/60 data-[state=on]:text-primary"
+              className="text-sm font-medium"
             >
               All {formatNumber(facts.candidate_stop_count)} possible locations
             </Toggle>

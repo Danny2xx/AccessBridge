@@ -90,7 +90,7 @@ export function AppSidebar({ route }: { route: RouteName }) {
     >
       <a
         href="#/story"
-        className={cn("flex items-center gap-3 px-4 py-5 no-underline", compact && "justify-center px-0")}
+        className={cn("flex items-center gap-3 px-6 py-5 no-underline", compact && "justify-center px-0")}
         aria-label="AccessBridge AI, back to the story"
       >
         <BrandMark />
@@ -109,7 +109,9 @@ export function AppSidebar({ route }: { route: RouteName }) {
       </ul>
 
       <div className={cn("mt-auto grid gap-3 px-3 pb-4", compact && "justify-items-center px-2")}>
-        <ThemeToggle />
+        <div className={cn(!compact && "pl-[3px]")}>
+          <ThemeToggle />
+        </div>
         {compact ? null : (
           <p className="px-3 text-xs leading-snug text-dim">
             A concept for the West Midlands @ UKREiiF challenge.

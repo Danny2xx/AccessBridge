@@ -106,7 +106,7 @@ export function StoryPage({ scenario, evidence, navigate }: StoryPageProps) {
           <motion.div
             key={step.id}
             {...fade}
-            className="grid min-h-0 flex-1 content-start gap-4 overflow-y-auto px-5 py-6"
+            className="grid min-h-0 flex-1 content-start gap-4 overflow-y-auto px-5 py-6 [&>*]:max-w-[42rem]"
           >
             <p className="visually-hidden" aria-live="polite">
               Step {index + 1} of {total}: {step.title}
@@ -191,7 +191,7 @@ export function StoryPage({ scenario, evidence, navigate }: StoryPageProps) {
           </motion.div>
         </AnimatePresence>
 
-        <div className="flex items-center gap-2 border-t border-border px-5 py-3.5">
+        <div className="flex items-center gap-2 border-t border-border bg-background px-5 py-3.5 max-lg:sticky max-lg:bottom-0">
           <Button
             variant="outline"
             size="icon"
