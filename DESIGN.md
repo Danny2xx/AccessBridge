@@ -54,13 +54,28 @@ tokens, so one change of theme moves everything together.
 
 ## Typography
 
-One family: **Atkinson Hyperlegible Next**, designed by the Braille Institute
-for low-vision readers. An equity project should practise what it preaches, and
-its distinctive letterforms keep the numbers unambiguous.
+One family: **Schibsted Grotesk**, a Scandinavian news grotesque. It is plain
+enough to disappear behind the data and has clear, even numerals, which matters
+on a page built from figures.
 
 Headings are semibold with tight tracking, on a restrained scale: the largest
-display size tops out near 2.6rem. Figures use `tabular` where numbers align in
-columns, and proportional figures at display sizes.
+display size tops out near 2.6rem. Tabular figures are used only where numbers
+align in columns, in tables and on chart axes. Standalone numbers use
+proportional figures, because tabular commas open a full digit-width gap and
+make "£600,000" read as "£600 , 000".
+
+## Layout
+
+The shell is a **left sidebar** and a content area, not a top bar. The sidebar
+holds the five sections, the theme toggle and a one-line note about the
+project. It shows labels at desktop width, collapses to icons with tooltips on
+tablets, and becomes a drawer behind a menu button on phones.
+
+The two map pages are **two real columns**, not cards floating over a map: a
+content column with its own scroll, and a map column beside it. The story's
+step rail sits at the top of its column and the Back and Next controls at the
+bottom, so the map is never covered. Explore docks its map controls in a
+toolbar above the map. The only element over the map is the legend.
 
 ## Components
 

@@ -38,12 +38,14 @@ export function EvidenceTag({ status, className }: { status: EvidenceStatus; cla
     <Tooltip>
       <TooltipTrigger asChild>
         <Badge
-          variant="secondary"data-testid="evidence-tag"className={cn(
+          variant="secondary"
+          data-testid="evidence-tag"
+          className={cn(
             "cursor-help gap-1.5 rounded-full border-border bg-secondary/70 py-1 pr-2.5 pl-2 font-semibold text-muted-foreground backdrop-blur",
             className
           )}
         >
-          <Icon className="size-3 text-dim"aria-hidden="true" />
+          <Icon className="size-3 text-dim" aria-hidden="true" />
           {label}
         </Badge>
       </TooltipTrigger>

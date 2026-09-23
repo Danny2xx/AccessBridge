@@ -5,7 +5,12 @@ type Resolved = "light" | "dark";
 
 const STORAGE_KEY = "accessbridge-theme";
 
-type ThemeValue = { choice: ThemeChoice; resolved: Resolved; setChoice: (choice: ThemeChoice) => void; toggle: () => void };
+type ThemeValue = {
+  choice: ThemeChoice;
+  resolved: Resolved;
+  setChoice: (choice: ThemeChoice) => void;
+  toggle: () => void;
+};
 
 const ThemeContext = createContext<ThemeValue | null>(null);
 

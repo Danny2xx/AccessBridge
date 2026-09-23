@@ -1,6 +1,6 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
-import { Slider as SliderPrimitive } from "radix-ui"
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import { Slider as SliderPrimitive } from "radix-ui";
 
 function Slider({
   className,
@@ -13,14 +13,9 @@ function Slider({
   // Radix puts role="slider" on the thumb, so the label has to go there too.
   const thumbLabel = props["aria-label"];
   const _values = React.useMemo(
-    () =>
-      Array.isArray(value)
-        ? value
-        : Array.isArray(defaultValue)
-          ? defaultValue
-          : [min, max],
+    () => (Array.isArray(value) ? value : Array.isArray(defaultValue) ? defaultValue : [min, max]),
     [value, defaultValue, min, max]
-  )
+  );
 
   return (
     <SliderPrimitive.Root
@@ -57,7 +52,7 @@ function Slider({
         />
       ))}
     </SliderPrimitive.Root>
-  )
+  );
 }
 
-export { Slider }
+export { Slider };

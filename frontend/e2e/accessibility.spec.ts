@@ -16,7 +16,7 @@ test("the first Tab on a fresh load reaches the skip link", async ({ page }) => 
 test("moving between pages puts focus on the new content", async ({ page }) => {
   await page.goto("/#/ask");
   await expect(page.locator("h1")).toHaveText("The Ask");
-  await page.locator('header a[href="#/evidence"]').click();
+  await page.locator('nav[aria-label="Sections"] a[href="#/evidence"]').first().click();
   await expect(page.locator("h1")).toHaveText("The evidence");
   await expect(page.locator("main")).toBeFocused();
 });

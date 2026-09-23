@@ -1,11 +1,5 @@
 import type { Layer } from "@deck.gl/core";
-import {
-  ColumnLayer,
-  GeoJsonLayer,
-  PathLayer,
-  ScatterplotLayer,
-  TextLayer
-} from "@deck.gl/layers";
+import { ColumnLayer, GeoJsonLayer, PathLayer, ScatterplotLayer, TextLayer } from "@deck.gl/layers";
 import { bandForDecile } from "@/lib/deprivation";
 import { rgba, type RGBA } from "@/lib/palette";
 import type { Palette } from "@/lib/usePalette";
@@ -47,7 +41,7 @@ export type MapDerived = {
 
 /** Selected stops and the route float above the tallest extrusion in 3D. */
 export const NETWORK_ELEVATION = 1700;
-const FONT_FAMILY = '"Atkinson Hyperlegible Next", system-ui, sans-serif';
+const FONT_FAMILY = '"Schibsted Grotesk", system-ui, sans-serif';
 const ON_TOP = { depthCompare: "always" as const, depthWriteEnabled: false };
 
 type Colors = {
@@ -121,6 +115,16 @@ function withAlpha(color: RGBA, alpha: number): RGBA {
   return [color[0], color[1], color[2], Math.round(alpha)];
 }
 
+/** Extrusion lighting brightens every face, so 3D fills start darker. */
+function shade(color: RGBA, factor: number): RGBA {
+  return [
+    Math.round(color[0] * factor),
+    Math.round(color[1] * factor),
+    Math.round(color[2] * factor),
+    color[3]
+  ];
+}
+
 function baseFill(feature: GeoJsonFeature, mode: MapMode, derived: MapDerived, colors: Colors): RGBA {
   const id = lsoaId(feature);
   const decile = lsoaDecile(feature);
@@ -152,7 +156,9 @@ function fillColor(
   const focused = derived.focusIds.has(lsoaId(feature));
   // Translucent extrusions blend into each other, so 3D uses opaque fills.
   if (is3d && mode !== "plain") {
-    return derived.focusIds.size > 0 && !focused ? withAlpha(colors.neutral, 255) : withAlpha(color, 255);
+    const solid =
+      derived.focusIds.size > 0 && !focused ? withAlpha(colors.neutral, 255) : withAlpha(color, 255);
+    return shade(solid, 0.72);
   }
   if (derived.focusIds.size === 0) return color;
   // Keep the catchment readable while letting the 3D buildings show through.
@@ -220,12 +226,23 @@ function revealedPath(coordinates: number[][], fractions: number[], progress: nu
 }
 
 export function buildLayers(options: MapLayerOptions, derived: MapDerived): Layer[] {
-  const { scenario, result, mode, is3d, focusStopId, showCandidates, showRailMetro, showNetwork, routeProgress } =
-    options;
+  const {
+    scenario,
+    result,
+    mode,
+    is3d,
+    focusStopId,
+    showCandidates,
+    showRailMetro,
+    showNetwork,
+    routeProgress
+  } = options;
   const colors = themeColors(options.palette);
   const layers: Layer[] = [];
   const focusKey = focusStopId ?? "";
-  const resultKey = result ? `${result.selected_stops.map((s) => s.candidate_id).join("|")}:${result.threshold_min}` : "none";
+  const resultKey = result
+    ? `${result.selected_stops.map((s) => s.candidate_id).join("|")}:${result.threshold_min}`
+    : "none";
 
   layers.push(
     new GeoJsonLayer({
@@ -252,7 +269,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         getLineColor: [mode, focusKey, is3d, options.palette],
         getLineWidth: [mode, focusKey]
       },
-      material: { ambient: 0.6, diffuse: 0.68, shininess: 14, specularColor: [238, 242, 247] }
+      material: { ambient: 0.72, diffuse: 0.45, shininess: 8, specularColor: [40, 40, 44] }
     })
   );
 
@@ -442,7 +459,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         getAlignmentBaseline: "bottom",
         getPixelOffset: [0, -18],
         background: true,
-getBackgroundColor: withAlpha(colors.ring, 235),
+        getBackgroundColor: withAlpha(colors.ring, 235),
         backgroundPadding: [8, 5],
         parameters: ON_TOP
       })

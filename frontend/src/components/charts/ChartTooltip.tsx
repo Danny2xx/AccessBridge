@@ -30,10 +30,12 @@ export function useChartTooltip() {
 
   const node = tooltip ? (
     <div
-      data-testid="chart-tooltip"aria-hidden="true"style={{ left: tooltip.x, top: tooltip.y }}
-      className="pointer-events-none absolute z-50 grid max-w-64 min-w-48 -translate-x-1/2 -translate-y-[calc(100%+0.75rem)] gap-0.5 rounded-xl border border-border bg-popover px-3 py-2.5 text-[0.8125rem] leading-snug text-muted-foreground "
+      data-testid="chart-tooltip"
+      aria-hidden="true"
+      style={{ left: tooltip.x, top: tooltip.y }}
+      className="pointer-events-none absolute z-50 grid max-w-64 min-w-48 -translate-x-1/2 -translate-y-[calc(100%+0.75rem)] gap-0.5 rounded-xl border border-border bg-popover px-3 py-2.5 text-[0.8125rem] leading-snug text-muted-foreground"
     >
-      <strong className="text-base text-foreground tabular">{tooltip.value}</strong>
+      <strong className="text-base text-foreground">{tooltip.value}</strong>
       <span>{tooltip.label}</span>
       {tooltip.lines?.map((line) => (
         <span key={line} className="text-dim">

@@ -17,7 +17,7 @@ export function ReachBar({ total, today, withStops, threshold }: ReachBarProps) 
   ];
 
   return (
-    <figure className="m-0 grid gap-2"data-testid="reach-bar">
+    <figure className="m-0 grid gap-2" data-testid="reach-bar">
       <figcaption className="text-xs text-dim">
         Most deprived residents within a {threshold}-minute walk, out of {formatNumber(total)}
       </figcaption>
@@ -32,7 +32,7 @@ export function ReachBar({ total, today, withStops, threshold }: ReachBarProps) 
               transition={{ duration: reduced ? 0 : 0.75, ease: [0.22, 1, 0.36, 1] }}
             />
           </span>
-          <span className="min-w-16 text-right font-bold tabular">
+          <span className="min-w-16 text-right font-bold">
             <AnimatedNumber value={row.value} startFrom={0} format={formatNumber} />
           </span>
         </div>

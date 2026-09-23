@@ -26,8 +26,6 @@ const BUDGET_MAX = 1_500_000;
 const BUDGET_STEP = 75_000;
 const WALK_TIMES = [5, 10, 15, 20];
 const RAIL_METRO_COST = 150_000;
-const TOGGLE_CHIP =
-  "rounded-full bg-popover/85 px-4 font-semibold  data-[state=on]:border-primary/70 data-[state=on]:bg-primary/15 data-[state=on]:text-primary";
 
 type ExplorePageProps = {
   scenario: ScenarioResponse;
@@ -92,7 +90,12 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
             pitch: explore.is3d ? 55 : 0,
             bearing: explore.is3d ? -20 : 0
           }
-        : { kind: "bounds", bounds: studyBounds, pitch: explore.is3d ? 50 : 0, bearing: explore.is3d ? -18 : 0 },
+        : {
+            kind: "bounds",
+            bounds: studyBounds,
+            pitch: explore.is3d ? 50 : 0,
+            bearing: explore.is3d ? -18 : 0
+          },
     [explore.is3d, focus, studyBounds]
   );
 
@@ -101,57 +104,65 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
     : explore.mode === "need"
       ? "Neighbourhoods coloured by deprivation, with the chosen stops numbered along a schematic route."
       : explore.mode === "gap"
-        ? "Pink areas are among the most deprived 10% and cannot walk to rail or Metro. Blue areas can."
-        : "Coral areas are within walking reach of a new stop. Blue areas can walk to rail or Metro today.";
+        ? "Red areas are among the most deprived 10% and cannot walk to rail or Metro. Blue areas can."
+        : "Magenta areas are within walking reach of a new stop. Blue areas can walk to rail or Metro today.";
 
   return (
-    <div className="grid h-full lg:grid-cols-[minmax(21rem,27.5rem)_minmax(0,1fr)] max-lg:flex max-lg:flex-col-reverse">
+    <div className="grid h-full max-lg:flex max-lg:flex-col-reverse lg:grid-cols-[27rem_minmax(0,1fr)]">
       <aside
-        aria-label="Scenario and results"className="flex min-h-0 flex-col gap-7 overflow-y-auto border-border bg-card p-6 pb-10 lg:border-r max-lg:border-t"
+        aria-label="Scenario and results"
+        className="flex min-h-0 flex-col gap-7 overflow-y-auto bg-background px-5 py-6 pb-10 lg:border-r lg:border-border"
       >
-        <header className="grid gap-2.5">
+        <header className="grid gap-2">
           <h1 className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
             Find the best places for new stops
           </h1>
-          <p className="text-muted-foreground">
-            Set a budget, a stop limit and a walking time. The optimiser picks the stops that reach the most people,
-            counting the most deprived neighbourhoods ten times as much as the least deprived.
+          <p className="text-sm text-muted-foreground">
+            Set a budget, a stop limit and a walking time. The optimiser picks the stops that reach the most
+            people, counting the most deprived neighbourhoods ten times as much as the least deprived.
           </p>
         </header>
 
-        <section aria-label="Scenario settings"className="grid gap-6">
+        <section aria-label="Scenario settings" className="grid gap-5">
           <div className="grid gap-2">
             <div className="flex items-baseline justify-between gap-3">
-              <label htmlFor="budget"className="font-bold">
+              <label htmlFor="budget" className="text-sm font-medium">
                 Budget
               </label>
-              <output htmlFor="budget"className="font-semibold text-primary tabular">
+              <output htmlFor="budget" className="tabular font-semibold">
                 {formatGBP(request.budget_gbp)}
               </output>
             </div>
             <Slider
-              id="budget"data-testid="budget-slider"aria-label="Budget"min={BUDGET_MIN}
+              id="budget"
+              data-testid="budget-slider"
+              aria-label="Budget"
+              min={BUDGET_MIN}
               max={BUDGET_MAX}
               step={BUDGET_STEP}
               value={[request.budget_gbp]}
               onValueChange={([value]) => explore.updateRequest({ budget_gbp: value })}
             />
-            <p className="text-[0.8125rem] text-dim">
-              Placeholder costs: {formatGBP(75_000)} per bus stop, {formatGBP(RAIL_METRO_COST)} per rail or Metro stop
+            <p className="text-xs text-dim">
+              Placeholder costs: {formatGBP(75_000)} per bus stop, {formatGBP(RAIL_METRO_COST)} per rail or
+              Metro stop
             </p>
           </div>
 
           <div className="grid gap-2">
             <div className="flex items-baseline justify-between gap-3">
-              <label htmlFor="stops"className="font-bold">
+              <label htmlFor="stops" className="text-sm font-medium">
                 Most stops
               </label>
-              <output htmlFor="stops"className="font-semibold text-primary tabular">
+              <output htmlFor="stops" className="tabular font-semibold">
                 {request.max_stops}
               </output>
             </div>
             <Slider
-              id="stops"data-testid="stops-slider"aria-label="Most stops"min={1}
+              id="stops"
+              data-testid="stops-slider"
+              aria-label="Most stops"
+              min={1}
               max={12}
               step={1}
               value={[request.max_stops]}
@@ -160,14 +171,17 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
           </div>
 
           <div className="grid gap-2">
-            <span className="font-bold">Walking time to a stop</span>
+            <span className="text-sm font-medium">Walking time to a stop</span>
             <ToggleGroup
-              type="single"variant="outline"value={String(request.threshold_min)}
+              type="single"
+              variant="outline"
+              value={String(request.threshold_min)}
               onValueChange={(value) => value && explore.updateRequest({ threshold_min: Number(value) })}
-              className="w-full"aria-label="Walking time to a stop"
+              className="w-full"
+              aria-label="Walking time to a stop"
             >
               {WALK_TIMES.map((minutes) => (
-                <ToggleGroupItem key={minutes} value={String(minutes)} className="flex-1 font-semibold">
+                <ToggleGroupItem key={minutes} value={String(minutes)} className="flex-1 text-sm font-medium">
                   {minutes} min
                 </ToggleGroupItem>
               ))}
@@ -181,18 +195,21 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
               aria-label="Include a rail or Metro link"
             />
             <span className="grid leading-tight">
-              <span className="flex items-center gap-1.5 font-bold">
-                <TrainFront className="size-4 text-today-ui"aria-hidden="true" />
+              <span className="flex items-center gap-1.5 text-sm font-medium">
+                <TrainFront className="size-4 text-today" aria-hidden="true" />
                 Include a rail or Metro link
               </span>
-              <small className="text-[0.8125rem] font-normal text-dim">
-                Connects the new stops to the existing network
-              </small>
+              <small className="text-xs text-dim">Connects the new stops to the existing network</small>
             </span>
           </label>
 
           {!explore.isDefault ? (
-            <Button variant="ghost"size="sm"className="-ml-2 justify-self-start gap-1.5"onClick={explore.reset}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="-ml-2 gap-1.5 justify-self-start"
+              onClick={explore.reset}
+            >
               <RotateCcw aria-hidden="true" />
               Back to the default plan
             </Button>
@@ -202,27 +219,27 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         <section
           aria-busy={updating}
           className={cn(
-            "relative grid gap-4 rounded-xl border border-border bg-card p-5 transition-opacity",
+            "relative grid gap-4 border-t border-border pt-6",
             updating && "[&>*:not([data-updating])]:opacity-55"
           )}
         >
           {updating ? (
-            <p data-updating className="absolute top-3 right-4 text-[0.8125rem] font-bold text-primary">
+            <p data-updating className="absolute -top-0.5 right-0 text-xs font-semibold text-primary">
               Updating…
             </p>
           ) : null}
           {explore.status === "error" ? (
-            <p role="alert"className="font-bold text-destructive">
+            <p role="alert" className="font-medium text-destructive">
               The optimiser did not respond. Check the backend is running, then change a setting to try again.
             </p>
           ) : null}
 
           {text ? (
-            <div aria-live="polite"className="grid gap-2">
-              <p data-testid="result-lead"className="text-xl leading-snug font-bold">
+            <div aria-live="polite" className="grid gap-2">
+              <p data-testid="result-lead" className="text-lg leading-snug font-semibold">
                 {text.lead}
               </p>
-              <p data-testid="result-detail"className="text-muted-foreground">
+              <p data-testid="result-detail" className="text-sm text-muted-foreground">
                 {text.detail}
               </p>
             </div>
@@ -236,16 +253,24 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
                 withStops={comparison.scenario.most_deprived_decile_population}
                 threshold={comparison.threshold_min}
               />
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-4 border-t border-border pt-4">
-                <Figure size="compact"value={formatGBP(result?.total_cost_gbp ?? 0)} label="total cost"status="placeholder" />
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))] gap-4 border-t border-border pt-4">
+                <Figure
+                  size="compact"
+                  value={formatGBP(result?.total_cost_gbp ?? 0)}
+                  label="total cost"
+                  status="placeholder"
+                />
                 {gain > 0 && result ? (
                   <Figure
-                    size="compact"value={formatPence(result.total_cost_gbp / gain)}
-                    label="per extra resident reached"status="placeholder"
+                    size="compact"
+                    value={formatPence(result.total_cost_gbp / gain)}
+                    label="per extra resident reached"
+                    status="placeholder"
                   />
                 ) : null}
                 <Figure
-                  size="compact"value={formatNumber(comparison.scenario.total_population)}
+                  size="compact"
+                  value={formatNumber(comparison.scenario.total_population)}
                   label={`residents of every band reached (${formatSigned(comparison.delta_total_population)} vs today)`}
                   status="modelled"
                 />
@@ -255,14 +280,16 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         </section>
 
         {comparison && bands.length > 0 ? (
-          <section aria-labelledby="bands-heading"className="grid gap-2">
+          <section aria-labelledby="bands-heading" className="grid gap-2 border-t border-border pt-6">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <h2 id="bands-heading"className="text-xl font-semibold tracking-tight">
+              <h2 id="bands-heading" className="font-semibold tracking-tight">
                 Who gains, band by band
               </h2>
               <EvidenceTag status="modelled" />
             </div>
-            <p data-testid="band-sentence"className="text-sm text-dim">{bandSentence}</p>
+            <p data-testid="band-sentence" className="text-sm text-dim">
+              {bandSentence}
+            </p>
             <div className="mt-2">
               <BandComparisonChart rows={bands} threshold={comparison.threshold_min} compact />
             </div>
@@ -270,15 +297,17 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         ) : null}
 
         {stops.length > 0 ? (
-          <section aria-labelledby="stops-heading"className="grid gap-2">
+          <section aria-labelledby="stops-heading" className="grid gap-2 border-t border-border pt-6">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <h2 id="stops-heading"className="text-xl font-semibold tracking-tight">
+              <h2 id="stops-heading" className="font-semibold tracking-tight">
                 The {stops.length} stops, in route order
               </h2>
               <EvidenceTag status="modelled" />
             </div>
-            <p className="text-sm text-dim">Select a stop to zoom to it and outline the neighbourhoods it reaches.</p>
-            <motion.ol layout={!reduced} className="mt-2 grid list-none gap-3 p-0">
+            <p className="text-sm text-dim">
+              Select a stop to zoom to it and outline the neighbourhoods it reaches.
+            </p>
+            <motion.ol layout={!reduced} className="mt-2 grid list-none gap-2.5 p-0">
               <AnimatePresence initial={false}>
                 {stops.map((stop, index) => (
                   <StopCard
@@ -297,71 +326,83 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
           </section>
         ) : null}
 
-        <div data-testid="data-note"className="grid gap-2 text-[0.8125rem] leading-relaxed text-dim">
+        <div
+          data-testid="data-note"
+          className="grid gap-2 border-t border-border pt-6 text-xs leading-relaxed text-dim"
+        >
           <p>{evidence.routing.method_caveat}</p>
           <p>
-            {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan} {scenario.attribution.osm}
+            {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan}{" "}
+            {scenario.attribution.osm}
           </p>
         </div>
       </aside>
 
-      <div data-testid="explore-map"className="relative min-h-0 min-w-0 max-lg:h-[62dvh]">
-        <MapCanvas
-          scenario={scenario}
-          result={result}
-          mode={explore.mode}
-          is3d={extrude}
-          camera={camera}
-          cameraKey={`explore:${focus?.candidate_id ?? "area"}:${explore.is3d ? "3d" : "2d"}`}
-          description={mapDescription}
-          focusStopId={explore.focusStopId}
-          onSelectStop={(id) => explore.focusStop(id)}
-          showCandidates={explore.showCandidates}
-          showRailMetro={explore.showRailMetro}
-          buildings3d={explore.is3d && !!focus}
-        >
-          <div className="absolute inset-x-4 top-4 z-10 grid max-w-[34rem] gap-2">
-            <ModeSwitch mode={explore.mode} onChange={explore.setMode} />
-            <div className="flex flex-wrap items-center gap-2">
-              <ToggleGroup
-                type="single"variant="outline"value={explore.is3d ? "3d" : "2d"}
-                onValueChange={(value) => value && explore.setIs3d(value === "3d")}
-                aria-label="Map view"className="floating"
-              >
-                <ToggleGroupItem value="2d"className="gap-1.5 px-3 font-semibold">
-                  <MapIcon aria-hidden="true" /> 2D
-                </ToggleGroupItem>
-                <ToggleGroupItem value="3d"className="gap-1.5 px-3 font-semibold">
-                  <Box aria-hidden="true" /> 3D
-                </ToggleGroupItem>
-              </ToggleGroup>
+      <div data-testid="explore-map" className="flex min-h-0 min-w-0 flex-col max-lg:h-[62dvh]">
+        <div className="flex flex-wrap items-center gap-2 border-b border-border bg-background px-4 py-2.5">
+          <ModeSwitch mode={explore.mode} onChange={explore.setMode} />
+          <ToggleGroup
+            type="single"
+            variant="outline"
+            value={explore.is3d ? "3d" : "2d"}
+            onValueChange={(value) => value && explore.setIs3d(value === "3d")}
+            aria-label="Map view"
+          >
+            <ToggleGroupItem value="2d" className="gap-1.5 px-3 text-sm font-medium">
+              <MapIcon aria-hidden="true" /> 2D
+            </ToggleGroupItem>
+            <ToggleGroupItem value="3d" className="gap-1.5 px-3 text-sm font-medium">
+              <Box aria-hidden="true" /> 3D
+            </ToggleGroupItem>
+          </ToggleGroup>
 
-              <Toggle
-                variant="outline"pressed={explore.showRailMetro}
-                onPressedChange={explore.setShowRailMetro}
-                className={TOGGLE_CHIP}
-              >
-                Rail and Metro
-              </Toggle>
-              <Toggle
-                variant="outline"pressed={explore.showCandidates}
-                onPressedChange={explore.setShowCandidates}
-                className={TOGGLE_CHIP}
-              >
-                All {formatNumber(facts.candidate_stop_count)} possible locations
-              </Toggle>
-            </div>
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            <Toggle
+              variant="outline"
+              size="sm"
+              pressed={explore.showRailMetro}
+              onPressedChange={explore.setShowRailMetro}
+              className="text-sm font-medium data-[state=on]:border-primary/60 data-[state=on]:text-primary"
+            >
+              Rail and Metro
+            </Toggle>
+            <Toggle
+              variant="outline"
+              size="sm"
+              pressed={explore.showCandidates}
+              onPressedChange={explore.setShowCandidates}
+              className="text-sm font-medium data-[state=on]:border-primary/60 data-[state=on]:text-primary"
+            >
+              All {formatNumber(facts.candidate_stop_count)} possible locations
+            </Toggle>
           </div>
+        </div>
 
-          <MapLegend
+        <div className="relative min-h-0 flex-1">
+          <MapCanvas
+            scenario={scenario}
+            result={result}
             mode={explore.mode}
-            threshold={request.threshold_min}
-            showNetwork={stops.length > 0}
-            showRailMetro={explore.showRailMetro}
+            is3d={extrude}
+            camera={camera}
+            cameraKey={`explore:${focus?.candidate_id ?? "area"}:${explore.is3d ? "3d" : "2d"}`}
+            description={mapDescription}
+            focusStopId={explore.focusStopId}
+            onSelectStop={(id) => explore.focusStop(id)}
             showCandidates={explore.showCandidates}
-            className="bottom-7 left-4 max-lg:hidden"
-          />
-        </MapCanvas>
+            showRailMetro={explore.showRailMetro}
+            buildings3d={explore.is3d && !!focus}
+          >
+            <MapLegend
+              mode={explore.mode}
+              threshold={request.threshold_min}
+              showNetwork={stops.length > 0}
+              showRailMetro={explore.showRailMetro}
+              showCandidates={explore.showCandidates}
+              className="bottom-6 left-4 max-lg:hidden"
+            />
+          </MapCanvas>
+        </div>
       </div>
     </div>
   );

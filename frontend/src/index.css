@@ -54,8 +54,10 @@
 
   --map-style: "light";
 
-  --font-sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system,
-    "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --sidebar-width: 15rem;
+  --sidebar-width-compact: 4.75rem;
 }
 
 .dark {
@@ -192,7 +194,9 @@
   .floating {
     background: color-mix(in oklab, var(--popover) 92%, transparent);
     backdrop-filter: blur(12px);
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px -16px rgb(0 0 0 / 0.25);
+    box-shadow:
+      0 1px 2px rgb(0 0 0 / 0.06),
+      0 8px 24px -16px rgb(0 0 0 / 0.25);
   }
 }
 

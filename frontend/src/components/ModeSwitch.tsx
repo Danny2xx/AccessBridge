@@ -1,39 +1,52 @@
-import { motion } from "motion/react";
-import type { MapMode } from "@/map/layers";
+import { motion, useReducedMotion } from "motion/react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import type { MapMode } from "@/map/layers";
 
 const OPTIONS: Array<{ mode: MapMode; label: string; hint: string }> = [
-  { mode: "need", label: "Need", hint: "How deprived each area is" },
+  { mode: "need", label: "Need", hint: "How deprived each neighbourhood is" },
   { mode: "gap", label: "Gap", hint: "Who can reach rail or Metro today" },
   { mode: "gain", label: "Gain", hint: "Who the new stops reach" }
 ];
 
 export function ModeSwitch({ mode, onChange }: { mode: MapMode; onChange: (mode: MapMode) => void }) {
+  const reduced = useReducedMotion();
+
   return (
     <div
-      role="radiogroup"aria-label="What the map shows"data-testid="mode-switch"className="grid grid-cols-3 gap-1.5 rounded-xl border border-border bg-popover/85 p-1.5 "
+      role="radiogroup"
+      aria-label="What the map shows"
+      data-testid="mode-switch"
+      className="flex items-center gap-0.5 rounded-md border border-border bg-card p-0.5"
     >
       {OPTIONS.map((option) => {
         const active = mode === option.mode;
         return (
-          <button
-            key={option.mode}
-            type="button"role="radio"aria-checked={active}
-            onClick={() => onChange(option.mode)}
-            className={cn(
-              "relative grid gap-0.5 rounded-lg px-3 py-2 text-left transition-colors outline-none",
-              "focus-visible:ring-[3px] focus-visible:ring-ring/50",
-              active ? "text-foreground" : "text-muted-foreground hover:bg-accent/60"
-            )}
-          >
-            {active ? (
-              <motion.span
-                layoutId="map-mode-active"className="absolute inset-0 rounded-lg border border-primary/70 bg-secondary"transition={{ type: "spring", stiffness: 420, damping: 36 }}
-              />
-            ) : null}
-            <strong className={cn("relative z-10 text-sm", active && "text-primary")}>{option.label}</strong>
-            <span className="relative z-10 text-xs leading-tight text-dim max-sm:hidden">{option.hint}</span>
-          </button>
+          <Tooltip key={option.mode}>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => onChange(option.mode)}
+                className={cn(
+                  "relative rounded-[0.3rem] px-3 py-1.5 text-sm font-medium transition-colors outline-none",
+                  "focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                  active ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {active ? (
+                  <motion.span
+                    layoutId={reduced ? undefined : "map-mode-active"}
+                    className="absolute inset-0 rounded-[0.3rem] bg-primary"
+                    transition={{ type: "spring", stiffness: 420, damping: 36 }}
+                  />
+                ) : null}
+                <span className="relative z-10">{option.label}</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">{option.hint}</TooltipContent>
+          </Tooltip>
         );
       })}
     </div>

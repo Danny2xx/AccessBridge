@@ -93,7 +93,8 @@ sensitivity checks.
 | ![One stop's catchment at street level](docs/screenshots/06-stop-close-up.jpg) | ![The Explore tool with stop cards](docs/screenshots/08-explore.jpg) |
 
 All 15 screenshots are in [`docs/screenshots/`](docs/screenshots/), including
-dark-mode views. Regenerate them with `npm run screenshots` in `frontend/`. A timed two-minute pitch script
+dark-mode views. The shell is a left sidebar with the map pages laid out as
+content and map columns. Regenerate them with `npm run screenshots` in `frontend/`. A timed two-minute pitch script
 is in [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md), and the visual system is
 described in [`DESIGN.md`](DESIGN.md).
 
@@ -224,7 +225,7 @@ accessbridge-ai/
 | Accessibility | Stage 7 travel-time matrix contract, currently proxy-derived |
 | Optimisation | `PuLP` with CBC MILP solver |
 | API | `FastAPI`, `Pydantic` |
-| Frontend | `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`, `shadcn/ui` on Radix, `motion`, `deck.gl`, `MapLibre GL JS`, `lucide-react`; light and dark themes |
+| Frontend | `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`, `shadcn/ui` on Radix, `motion`, `deck.gl`, `MapLibre GL JS`, `lucide-react`, `Schibsted Grotesk`; light and dark themes |
 | Testing/tooling | `pytest`, `ruff`, `mypy`, TypeScript build, Playwright browser tests |
 
 Planned later:

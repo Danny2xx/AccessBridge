@@ -56,10 +56,26 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
   ];
 
   const sources = [
-    { name: "English Indices of Deprivation 2025", use: "How deprived each neighbourhood is", licence: "Open Government Licence v3.0" },
-    { name: "ONS population estimates, mid-2024", use: "How many people live in each neighbourhood", licence: "Open Government Licence v3.0" },
-    { name: "ONS and Ordnance Survey LSOA 2021 boundaries", use: "Neighbourhood shapes", licence: "Open Government Licence v3.0" },
-    { name: "NaPTAN national stop register", use: "Possible stop locations and place names", licence: "Open Government Licence v3.0" },
+    {
+      name: "English Indices of Deprivation 2025",
+      use: "How deprived each neighbourhood is",
+      licence: "Open Government Licence v3.0"
+    },
+    {
+      name: "ONS population estimates, mid-2024",
+      use: "How many people live in each neighbourhood",
+      licence: "Open Government Licence v3.0"
+    },
+    {
+      name: "ONS and Ordnance Survey LSOA 2021 boundaries",
+      use: "Neighbourhood shapes",
+      licence: "Open Government Licence v3.0"
+    },
+    {
+      name: "NaPTAN national stop register",
+      use: "Possible stop locations and place names",
+      licence: "Open Government Licence v3.0"
+    },
     { name: "OpenStreetMap and CARTO basemap", use: "The background map", licence: "ODbL; © CARTO" }
   ];
 
@@ -79,13 +95,16 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
             className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-5 border-b border-border py-7 first:border-t"
           >
             <span
-              aria-hidden="true"className="grid size-11 place-items-center rounded-full border-[1.5px] border-primary text-xl font-semibold text-primary"
+              aria-hidden="true"
+              className="grid size-11 place-items-center rounded-full border-[1.5px] border-primary text-xl font-semibold text-primary"
             >
               {index + 1}
             </span>
             <div>
               <div className="mb-2 flex flex-wrap items-center gap-x-3.5 gap-y-2">
-                <h2 className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">{step.title}</h2>
+                <h2 className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
+                  {step.title}
+                </h2>
                 <EvidenceTag status={step.status} />
               </div>
               <p className="max-w-[68ch] text-[1.0625rem] text-muted-foreground">{step.body}</p>
@@ -96,8 +115,11 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
       </ol>
 
       <div className="grid gap-10 lg:grid-cols-2">
-        <section aria-labelledby="limits-heading"className="grid content-start gap-4">
-          <h2 id="limits-heading"className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
+        <section aria-labelledby="limits-heading" className="grid content-start gap-4">
+          <h2
+            id="limits-heading"
+            className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight"
+          >
             What it does not do yet
           </h2>
           <ul className="grid list-disc gap-2.5 pl-5 text-muted-foreground marker:text-dim">
@@ -107,8 +129,11 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
           </ul>
         </section>
 
-        <section aria-labelledby="sources-heading"className="grid content-start gap-4">
-          <h2 id="sources-heading"className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
+        <section aria-labelledby="sources-heading" className="grid content-start gap-4">
+          <h2
+            id="sources-heading"
+            className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight"
+          >
             Data and licences
           </h2>
           <ul className="grid list-none gap-3.5 p-0">
@@ -121,20 +146,22 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
             ))}
           </ul>
           <p className="text-sm text-dim">
-            {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan} {scenario.attribution.osm}
+            {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan}{" "}
+            {scenario.attribution.osm}
           </p>
         </section>
       </div>
 
-      <section aria-label="Next"className="grid gap-4 border-t border-border pt-8">
+      <section aria-label="Next" className="grid gap-4 border-t border-border pt-8">
         <p className="max-w-[62ch] text-muted-foreground">
-          Every chart on the evidence page can be shown as a table, and the Explore map lets you test your own budget.
+          Every chart on the evidence page can be shown as a table, and the Explore map lets you test your own
+          budget.
         </p>
         <div className="flex flex-wrap gap-3">
-          <Button className="rounded-full font-bold"onClick={() => navigate("explore")}>
+          <Button className="rounded-full font-bold" onClick={() => navigate("explore")}>
             Explore it yourself
           </Button>
-          <Button variant="outline"className="rounded-full"onClick={() => navigate("evidence")}>
+          <Button variant="outline" className="rounded-full" onClick={() => navigate("evidence")}>
             See the evidence
           </Button>
         </div>

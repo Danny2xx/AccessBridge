@@ -88,8 +88,7 @@ export function useExplore(evidence: EvidenceResponse | null) {
     setFocusStopId((current) => (current === candidateId ? null : candidateId));
   }, []);
 
-  const isDefault =
-    !!evidence && JSON.stringify(request) === JSON.stringify(evidence.default_request);
+  const isDefault = !!evidence && JSON.stringify(request) === JSON.stringify(evidence.default_request);
 
   return {
     request,

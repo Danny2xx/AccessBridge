@@ -17,12 +17,10 @@ import type { EvidenceResponse, ScenarioResponse } from "@/types";
 type StoryPageProps = {
   scenario: ScenarioResponse;
   evidence: EvidenceResponse;
-  onProgress: (progress: number) => void;
   navigate: (route: Route) => void;
 };
 
-const DESKTOP_PADDING: Padding = { top: 48, right: 520, bottom: 150, left: 48 };
-const MOBILE_PADDING: Padding = { top: 24, right: 24, bottom: 24, left: 24 };
+const MAP_PADDING: Padding = { top: 72, right: 56, bottom: 56, left: 56 };
 
 function ownsArrowKeys(target: EventTarget | null): boolean {
   const element = target as HTMLElement | null;
@@ -32,18 +30,14 @@ function ownsArrowKeys(target: EventTarget | null): boolean {
   return !!element.closest?.("[data-testid='map-canvas']");
 }
 
-export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPageProps) {
+export function StoryPage({ scenario, evidence, navigate }: StoryPageProps) {
   const steps = useMemo(() => buildStory(evidence, scenario), [evidence, scenario]);
   const [index, setIndex] = useState(0);
-  const isWide = useMediaQuery("(min-width: 960px)");
+  const isWide = useMediaQuery("(min-width: 1024px)");
   const reduced = useReducedMotion();
   const step = steps[index];
   const total = steps.length;
   const threshold = evidence.default_result.threshold_min;
-
-  useEffect(() => {
-    onProgress((index + 1) / total);
-  }, [index, onProgress, total]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -62,15 +56,167 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
   const fade = reduced
     ? {}
     : {
-        initial: { opacity: 0, y: 14 },
+        initial: { opacity: 0, y: 12 },
         animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -10 },
-        transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] as const }
+        exit: { opacity: 0, y: -8 },
+        transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const }
       };
 
   return (
-    <div className="relative h-full max-lg:flex max-lg:flex-col">
-      <div className="size-full max-lg:h-[52dvh]">
+    <div className="grid h-full max-lg:flex max-lg:flex-col-reverse lg:grid-cols-[27rem_minmax(0,1fr)]">
+      <section
+        data-testid="story-panel"
+        aria-labelledby="story-title"
+        className="flex min-h-0 flex-col bg-background lg:border-r lg:border-border"
+      >
+        <div className="flex items-center gap-1.5 border-b border-border px-5 py-3.5">
+          <ol className="flex items-center gap-1.5" aria-label="Story steps">
+            {steps.map((item, itemIndex) => {
+              const done = itemIndex < index;
+              const current = itemIndex === index;
+              return (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    data-testid="story-step-dot"
+                    aria-current={current ? "step" : undefined}
+                    aria-label={`Step ${itemIndex + 1}: ${item.title}`}
+                    onClick={() => setIndex(itemIndex)}
+                    className={cn(
+                      "grid size-7 place-items-center rounded-md text-xs font-semibold transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+                      current
+                        ? "bg-primary text-primary-foreground"
+                        : done
+                          ? "bg-secondary text-foreground"
+                          : "text-dim hover:bg-secondary hover:text-foreground"
+                    )}
+                  >
+                    {itemIndex + 1}
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+          <p className="ml-auto text-xs text-dim">
+            Step {index + 1} of {total}
+          </p>
+        </div>
+
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={step.id}
+            {...fade}
+            className="grid min-h-0 flex-1 content-start gap-4 overflow-y-auto px-5 py-6"
+          >
+            <p className="visually-hidden" aria-live="polite">
+              Step {index + 1} of {total}: {step.title}
+            </p>
+            <p className="text-xs font-semibold tracking-[0.12em] text-primary uppercase">{step.short}</p>
+            <h1
+              id="story-title"
+              className="text-[clamp(1.45rem,1.25rem+0.9vw,1.8rem)] font-semibold tracking-tight"
+            >
+              {step.title}
+            </h1>
+
+            {step.body.map((paragraph) => (
+              <p key={paragraph} className="leading-relaxed text-muted-foreground">
+                {paragraph}
+              </p>
+            ))}
+
+            {step.figures.length > 0 ? (
+              <motion.div
+                className="grid grid-cols-[repeat(auto-fit,minmax(8.5rem,1fr))] gap-x-5 gap-y-4 border-t border-border pt-4"
+                initial={reduced ? false : "hidden"}
+                animate="shown"
+                variants={{ shown: { transition: { staggerChildren: 0.07 } } }}
+              >
+                {step.figures.map((figure) => (
+                  <motion.div
+                    key={figure.label}
+                    variants={{ hidden: { opacity: 0, y: 8 }, shown: { opacity: 1, y: 0 } }}
+                    transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <Figure {...figure} />
+                  </motion.div>
+                ))}
+              </motion.div>
+            ) : null}
+
+            {step.stops ? (
+              <ol className="grid list-none gap-0 border-t border-border p-0">
+                {step.stops.map(({ number, stop }) => (
+                  <li
+                    key={stop.candidate_id}
+                    className={cn(
+                      "grid grid-cols-[1.5rem_1fr_auto] items-center gap-3 border-b border-border py-2.5",
+                      stop.candidate_id === step.map.focusStopId && "text-foreground"
+                    )}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "grid size-6 place-items-center rounded-md text-xs font-semibold",
+                        stop.candidate_id === step.map.focusStopId
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-secondary text-muted-foreground"
+                      )}
+                    >
+                      {number}
+                    </span>
+                    <span className="grid leading-tight">
+                      <span className="text-sm font-medium">{stop.name}</span>
+                      <small className="text-xs text-dim">{stop.place_name}</small>
+                    </span>
+                    <span className="text-sm font-semibold">{formatNumber(stop.people_reached)}</span>
+                  </li>
+                ))}
+              </ol>
+            ) : null}
+
+            {step.bands ? (
+              <div className="border-t border-border pt-4">
+                <BandComparisonChart rows={step.bands} threshold={threshold} compact />
+              </div>
+            ) : null}
+
+            <p className="border-t border-border pt-3 text-sm leading-snug text-dim">
+              <span className="font-semibold text-muted-foreground">On the map</span> {step.description}
+            </p>
+
+            <p data-testid="story-attribution" className="text-xs leading-snug text-dim">
+              {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="flex items-center gap-2 border-t border-border px-5 py-3.5">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setIndex((current) => Math.max(0, current - 1))}
+            disabled={index === 0}
+            aria-label="Previous step"
+          >
+            <ArrowLeft aria-hidden="true" />
+          </Button>
+          {step.finale ? (
+            <Button variant="outline" onClick={() => navigate("evidence")}>
+              See the evidence
+            </Button>
+          ) : null}
+          <Button
+            className="flex-1"
+            onClick={() => (index < total - 1 ? setIndex(index + 1) : navigate("explore"))}
+          >
+            {index < total - 1 ? `Next: ${steps[index + 1].short}` : "Try it yourself"}
+            <ArrowRight aria-hidden="true" />
+          </Button>
+        </div>
+      </section>
+
+      <div className="relative min-h-0 max-lg:h-[52dvh]">
         <MapCanvas
           scenario={scenario}
           result={evidence.default_result}
@@ -78,7 +224,7 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
           is3d={step.map.is3d}
           camera={step.map.camera}
           cameraKey={`story:${step.id}:${isWide ? "wide" : "narrow"}`}
-          padding={isWide ? DESKTOP_PADDING : MOBILE_PADDING}
+          padding={MAP_PADDING}
           description={step.description}
           showNetwork={step.map.showNetwork}
           showRailMetro={step.map.showRailMetro}
@@ -91,151 +237,10 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
             threshold={threshold}
             showNetwork={step.map.showNetwork}
             showRailMetro={step.map.showRailMetro}
-            className="top-5 left-5 max-lg:top-3 max-lg:left-3 max-lg:max-w-[calc(100%-1.5rem)]"
+            className="top-4 left-4"
           />
         </MapCanvas>
       </div>
-
-      <article
-        data-testid="story-card"aria-labelledby="story-title"className={cn(
-          "z-20 flex flex-col rounded-xl border border-border bg-card",
-          "lg:absolute lg:top-6 lg:right-6 lg:bottom-6 lg:h-fit lg:max-h-[calc(100%-3rem)] lg:w-[29rem]",
-          "max-lg:mx-3 max-lg:-mt-6"
-        )}
-      >
-        <p className="visually-hidden"aria-live="polite">
-          Step {index + 1} of {total}: {step.title}
-        </p>
-
-        <AnimatePresence mode="wait"initial={false}>
-          <motion.div key={step.id} {...fade} className="grid min-h-0 gap-4 overflow-y-auto p-6 lg:pb-4">
-            <p className="text-sm font-semibold tracking-wide text-primary tabular">
-              {index + 1} <span className="text-dim">/ {total}</span>
-            </p>
-            <h1 id="story-title"className="text-[clamp(1.45rem,1.25rem+0.9vw,1.8rem)] font-semibold tracking-tight">
-              {step.title}
-            </h1>
-
-            {step.body.map((paragraph) => (
-              <p key={paragraph} className="text-[1.0625rem] leading-relaxed text-muted-foreground">
-                {paragraph}
-              </p>
-            ))}
-
-            {step.figures.length > 0 ? (
-              <motion.div
-                className="grid grid-cols-[repeat(auto-fit,minmax(8.75rem,1fr))] gap-5"initial={reduced ? false : "hidden"}
-                animate="shown"variants={{ shown: { transition: { staggerChildren: 0.08 } } }}
-              >
-                {step.figures.map((figure) => (
-                  <motion.div
-                    key={figure.label}
-                    variants={{ hidden: { opacity: 0, y: 10 }, shown: { opacity: 1, y: 0 } }}
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    <Figure {...figure} />
-                  </motion.div>
-                ))}
-              </motion.div>
-            ) : null}
-
-            {step.stops ? (
-              <ol className="grid list-none gap-1 p-0">
-                {step.stops.map(({ number, stop }) => (
-                  <li
-                    key={stop.candidate_id}
-                    className={cn(
-                      "grid grid-cols-[1.75rem_1fr_auto] items-center gap-3 rounded-lg px-2 py-1.5",
-                      stop.candidate_id === step.map.focusStopId && "bg-secondary ring-1 ring-primary"
-                    )}
-                  >
-                    <span
-                      aria-hidden="true"className="grid size-7 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground tabular"
-                    >
-                      {number}
-                    </span>
-                    <span className="grid leading-tight font-bold">
-                      {stop.name}
-                      <small className="text-[0.8125rem] font-normal text-dim">{stop.place_name}</small>
-                    </span>
-                    <span className="grid justify-items-end leading-tight font-bold tabular">
-                      {formatNumber(stop.people_reached)}
-                      <small className="text-[0.8125rem] font-normal text-dim">people</small>
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            ) : null}
-
-            {step.bands ? <BandComparisonChart rows={step.bands} threshold={threshold} compact /> : null}
-
-            <p className="border-t border-border pt-3 text-sm leading-snug text-dim">
-              <span className="font-bold text-muted-foreground">On the map</span> {step.description}
-            </p>
-          </motion.div>
-        </AnimatePresence>
-
-        <div className="flex gap-2.5 border-t border-border p-5 max-lg:sticky max-lg:bottom-0 max-lg:rounded-b-2xl max-lg:bg-card">
-          <Button
-            variant="outline"size="icon"className="rounded-full"onClick={() => setIndex((current) => Math.max(0, current - 1))}
-            disabled={index === 0}
-            aria-label="Previous step"
-          >
-            <ArrowLeft aria-hidden="true" />
-          </Button>
-          {step.finale ? (
-            <Button variant="outline"className="rounded-full"onClick={() => navigate("evidence")}>
-              See the evidence
-            </Button>
-          ) : null}
-          <Button
-            className="flex-1 rounded-full font-bold"onClick={() => (index < total - 1 ? setIndex(index + 1) : navigate("explore"))}
-          >
-            {index < total - 1 ? `Next: ${steps[index + 1].short}` : "Try it yourself"}
-            <ArrowRight aria-hidden="true" />
-          </Button>
-        </div>
-      </article>
-
-      <nav
-        aria-label="Story steps"className={cn(
-          "z-20 grid gap-2 rounded-xl border border-border bg-card/95 p-4 ",
-          "lg:absolute lg:bottom-6 lg:left-6 lg:w-[23rem]",
-          "max-lg:mx-3 max-lg:my-4"
-        )}
-      >
-        <p className="grid leading-tight">
-          <span className="text-[0.8125rem] text-dim">The Innovation Spine · Phase 2</span>
-          <strong className="text-[1.0625rem]">{step.short}</strong>
-        </p>
-        <ol className="flex list-none gap-1 p-0">
-          {steps.map((item, itemIndex) => (
-            <li key={item.id} className="flex-1">
-              <button
-                type="button"data-testid="story-step-dot"aria-current={itemIndex === index ? "step" : undefined}
-                aria-label={`Step ${itemIndex + 1}: ${item.title}`}
-                onClick={() => setIndex(itemIndex)}
-                className="group relative block h-6 w-full outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-              >
-                <span
-                  className={cn(
-                    "absolute inset-x-0 top-2 h-1.5 rounded-full transition-colors",
-                    itemIndex === index
-                      ? "top-[7px] h-2 bg-primary"
-                      : itemIndex < index
-                        ? "bg-proposal"
-                        : "bg-input group-hover:bg-dim"
-                  )}
-                />
-              </button>
-            </li>
-          ))}
-        </ol>
-        <p className="text-[0.8125rem] text-dim max-md:hidden">Use the arrow keys to move between steps</p>
-        <p data-testid="story-attribution"className="border-t border-border pt-2 text-xs leading-snug text-dim">
-          {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan}
-        </p>
-      </nav>
     </div>
   );
 }

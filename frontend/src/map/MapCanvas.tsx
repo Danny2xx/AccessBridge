@@ -3,13 +3,7 @@ import DeckGL from "@deck.gl/react";
 import type { Map as MaplibreMap } from "maplibre-gl";
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import Map, { AttributionControl } from "react-map-gl/maplibre";
-import {
-  FALLBACK_VIEW,
-  resolveCamera,
-  type CameraTarget,
-  type MapViewState,
-  type Padding
-} from "@/lib/camera";
+import { FALLBACK_VIEW, resolveCamera, type CameraTarget, type MapViewState, type Padding } from "@/lib/camera";
 import { decileSentence } from "@/lib/deprivation";
 import { formatNumber, modeLabel } from "@/lib/format";
 import { usePalette } from "@/lib/usePalette";
@@ -60,10 +54,7 @@ function describeNeighbourhood(
   const props = feature.properties;
   const id = String(props.lsoa21cd ?? "");
   const decile = Number(props.imd_decile ?? 10);
-  const lines = [
-    decileSentence(decile),
-    `${formatNumber(Number(props.population_mid_2024 ?? 0))} residents`
-  ];
+  const lines = [decileSentence(decile), `${formatNumber(Number(props.population_mid_2024 ?? 0))} residents`];
 
   if (mode === "gap") {
     lines.push(
@@ -198,10 +189,7 @@ export function MapCanvas({
     };
   }, [routeKey, reducedMotion]);
 
-  const derived = useMemo(
-    () => deriveMapState(scenario, result, focusStopId),
-    [scenario, result, focusStopId]
-  );
+  const derived = useMemo(() => deriveMapState(scenario, result, focusStopId), [scenario, result, focusStopId]);
 
   const layers = useMemo(
     () =>
@@ -221,7 +209,20 @@ export function MapCanvas({
         },
         derived
       ),
-    [scenario, result, mode, is3d, focusStopId, showCandidates, showRailMetro, showNetwork, markers, derived, routeProgress, palette]
+    [
+      scenario,
+      result,
+      mode,
+      is3d,
+      focusStopId,
+      showCandidates,
+      showRailMetro,
+      showNetwork,
+      markers,
+      derived,
+      routeProgress,
+      palette
+    ]
   );
 
   const syncBuildings = useCallback(() => {
@@ -295,8 +296,12 @@ export function MapCanvas({
 
   return (
     <div
-      data-testid="map-canvas"className="relative size-full min-h-80 overflow-hidden bg-secondary"ref={containerRef}
-      role="region"aria-label="Map"aria-describedby={descriptionId}
+      data-testid="map-canvas"
+      className="relative size-full min-h-80 overflow-hidden bg-secondary"
+      ref={containerRef}
+      role="region"
+      aria-label="Map"
+      aria-describedby={descriptionId}
       onMouseLeave={() => setTooltip(null)}
     >
       <p id={descriptionId} className="visually-hidden">
@@ -309,9 +314,7 @@ export function MapCanvas({
         layers={layers}
         onHover={onHover}
         onClick={onClick}
-        getCursor={({ isDragging, isHovering }) =>
-          isDragging ? "grabbing" : isHovering ? "pointer" : "grab"
-        }
+        getCursor={({ isDragging, isHovering }) => (isDragging ? "grabbing" : isHovering ? "pointer" : "grab")}
       >
         <Map key={theme} mapStyle={MAP_STYLES[theme]} reuseMaps attributionControl={false} onLoad={onMapLoad}>
           <AttributionControl compact position="bottom-right" />
@@ -320,7 +323,9 @@ export function MapCanvas({
       {tooltip ? (
         <div
           style={tooltipStyle}
-          aria-hidden="true"data-testid="map-tooltip"className="pointer-events-none absolute z-50 grid max-w-72 gap-0.5 rounded-md border border-border px-3 py-2.5 text-sm leading-snug text-muted-foreground floating"
+          aria-hidden="true"
+          data-testid="map-tooltip"
+          className="floating pointer-events-none absolute z-50 grid max-w-72 gap-0.5 rounded-md border border-border px-3 py-2.5 text-sm leading-snug text-muted-foreground"
         >
           <strong className="text-base text-foreground">{tooltip.title}</strong>
           {tooltip.subtitle ? <span className="mb-1 text-xs text-dim">{tooltip.subtitle}</span> : null}

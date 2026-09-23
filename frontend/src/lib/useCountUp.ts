@@ -6,9 +6,12 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
  * A safety timer always lands on the final value, so a paused animation frame
  * (a background tab, a headless renderer) can never leave a wrong number shown.
  */
-export function useCountUp(target: number, { duration = 900, startFrom }: { duration?: number; startFrom?: number } = {}) {
+export function useCountUp(
+  target: number,
+  { duration = 900, startFrom }: { duration?: number; startFrom?: number } = {}
+) {
   const reducedMotion = useReducedMotion();
-  const initial = reducedMotion ? target : startFrom ?? target;
+  const initial = reducedMotion ? target : (startFrom ?? target);
   const [display, setDisplay] = useState(initial);
   const current = useRef(initial);
 

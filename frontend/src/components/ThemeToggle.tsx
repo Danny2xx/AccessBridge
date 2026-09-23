@@ -13,8 +13,11 @@ export function ThemeToggle() {
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
-          variant="ghost"size="icon"onClick={toggle}
-          data-testid="theme-toggle"aria-label={`Switch to ${next} mode`}
+          variant="ghost"
+          size="icon"
+          onClick={toggle}
+          data-testid="theme-toggle"
+          aria-label={`Switch to ${next} mode`}
           className="relative overflow-hidden rounded-full text-muted-foreground"
         >
           <AnimatePresence initial={false} mode="wait">

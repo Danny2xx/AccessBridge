@@ -13,7 +13,15 @@ async function shot(page: import("@playwright/test").Page, name: string, fullPag
 test("story screenshots", async ({ page }) => {
   await page.goto("/#/story");
   await expect(page.locator("#story-title")).toBeVisible();
-  const names = ["01-story-phase-2", "02-deprivation", "03-access-gap", "04-the-plan", "05-who-gains-3d", "06-stop-close-up", "07-trade-off"];
+  const names = [
+    "01-story-phase-2",
+    "02-deprivation",
+    "03-access-gap",
+    "04-the-plan",
+    "05-who-gains-3d",
+    "06-stop-close-up",
+    "07-trade-off"
+  ];
   for (let index = 0; index < names.length; index += 1) {
     await page.waitForTimeout(index === 0 ? 3500 : 3200);
     await shot(page, names[index]);

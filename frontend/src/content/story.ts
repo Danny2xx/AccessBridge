@@ -1,14 +1,7 @@
 import type { FigureProps } from "@/components/Figure";
 import { boundsOfPoints, type Bounds, type CameraTarget } from "@/lib/camera";
 import { totalsByBand, type BandTotals } from "@/lib/deprivation";
-import {
-  formatGBP,
-  formatNumber,
-  formatPence,
-  formatSigned,
-  listPlaces,
-  shareInTen
-} from "@/lib/format";
+import { formatGBP, formatNumber, formatPence, formatSigned, listPlaces, shareInTen } from "@/lib/format";
 import type { MapMarker, MapMode } from "@/map/layers";
 import type { EvidenceResponse, ScenarioResponse, StopDetail } from "@/types";
 import { BKQ_MARKER, NEIGHBOURS } from "./spine";
@@ -46,7 +39,10 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
   const studyBounds: Bounds =
     scenario.study_area_bounds.length === 4 ? (scenario.study_area_bounds as Bounds) : STUDY_FALLBACK;
   const stopBounds =
-    boundsOfPoints(stops.map((s) => [s.longitude, s.latitude]), 0.012) ?? studyBounds;
+    boundsOfPoints(
+      stops.map((s) => [s.longitude, s.latitude]),
+      0.012
+    ) ?? studyBounds;
   const reachedWithStops = comparison?.scenario.most_deprived_decile_population ?? 0;
   const gain = comparison?.delta_most_deprived_decile_population ?? 0;
   const topStop = [...stops].sort((a, b) => b.most_deprived_reached - a.most_deprived_reached)[0];
@@ -75,14 +71,21 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
       ],
       figures: [
         { value: "£1m", label: "Phase 1: make it visible", status: "brief" },
-        { value: "£10m", label: "Phase 2: make it usable", status: "brief", tone: "amber" }
+        { value: "£10m", label: "Phase 2: make it usable", status: "brief", tone: "accent" }
       ],
       description:
         "A close, tilted view of the Birmingham Knowledge Quarter, between Aston University and Millennium Point, just east of the city centre.",
       map: {
         mode: "plain",
         is3d: false,
-        camera: { kind: "point", longitude: BKQ_MARKER.longitude, latitude: BKQ_MARKER.latitude, zoom: 14.8, pitch: 58, bearing: -24 },
+        camera: {
+          kind: "point",
+          longitude: BKQ_MARKER.longitude,
+          latitude: BKQ_MARKER.latitude,
+          zoom: 14.8,
+          pitch: 58,
+          bearing: -24
+        },
         showNetwork: false,
         showRailMetro: false,
         focusStopId: null,
@@ -99,8 +102,19 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
         `${formatNumber(facts.most_deprived_population)} of them live in neighbourhoods ranked among the most deprived 10% in England. That is about ${shareInTen(facts.most_deprived_population, facts.population)} in every 10 people.`
       ],
       figures: [
-        { value: formatNumber(facts.population), count: facts.population, label: `people in ${facts.neighbourhood_count} neighbourhoods`, status: "measured" },
-        { value: formatNumber(facts.most_deprived_population), count: facts.most_deprived_population, label: "live in the most deprived 10% of neighbourhoods in England", status: "measured", tone: "amber" }
+        {
+          value: formatNumber(facts.population),
+          count: facts.population,
+          label: `people in ${facts.neighbourhood_count} neighbourhoods`,
+          status: "measured"
+        },
+        {
+          value: formatNumber(facts.most_deprived_population),
+          count: facts.most_deprived_population,
+          label: "live in the most deprived 10% of neighbourhoods in England",
+          status: "measured",
+          tone: "accent"
+        }
       ],
       description:
         "Neighbourhoods coloured by deprivation. Brighter pink means more deprived. Most of the area is in the brightest band.",
@@ -124,10 +138,21 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
         `${formatNumber(facts.most_deprived_not_reached_today)} do not. For them, the city's fastest links are out of easy reach.`
       ],
       figures: [
-        { value: formatNumber(facts.most_deprived_reached_today), count: facts.most_deprived_reached_today, label: `can walk to rail or Metro within ${threshold} minutes`, status: "modelled" },
-        { value: formatNumber(facts.most_deprived_not_reached_today), count: facts.most_deprived_not_reached_today, label: "cannot", status: "modelled", tone: "amber" }
+        {
+          value: formatNumber(facts.most_deprived_reached_today),
+          count: facts.most_deprived_reached_today,
+          label: `can walk to rail or Metro within ${threshold} minutes`,
+          status: "modelled"
+        },
+        {
+          value: formatNumber(facts.most_deprived_not_reached_today),
+          count: facts.most_deprived_not_reached_today,
+          label: "cannot",
+          status: "modelled",
+          tone: "accent"
+        }
       ],
-      description: `Pink areas are among the most deprived 10% and have no rail or Metro stop within a ${threshold}-minute walk. Blue areas can reach one. Pale blue dots are today's rail and Metro stops.`,
+      description: `Red areas are among the most deprived 10% and have no rail or Metro stop within a ${threshold}-minute walk. Blue areas can reach one, and blue dots are today's rail and Metro stops.`,
       map: {
         mode: "gap",
         is3d: false,
@@ -145,12 +170,19 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
       title: "The plan",
       body: [
         `We gave an optimiser ${formatNumber(facts.candidate_stop_count)} possible stop locations from the national stop register, a budget of ${formatGBP(evidence.default_request.budget_gbp)} and a limit of ${evidence.default_request.max_stops} stops. The plan must include one rail or Metro link.`,
-        `It counts a resident of the most deprived neighbourhoods ten times as much as one in the least deprived. It chose ${stops.length} stops, in ${listPlaces(stops.map((s) => s.place_name), 7)}.`
+        `It counts a resident of the most deprived neighbourhoods ten times as much as one in the least deprived. It chose ${stops.length} stops, in ${listPlaces(
+          stops.map((s) => s.place_name),
+          7
+        )}.`
       ],
       figures: [
-        { value: String(stops.length), label: "stops chosen", status: "modelled", tone: "amber" },
+        { value: String(stops.length), label: "stops chosen", status: "modelled", tone: "accent" },
         { value: formatGBP(result.total_cost_gbp), label: "total cost", status: "placeholder" },
-        { value: formatNumber(facts.candidate_stop_count), label: "possible locations considered", status: "measured" }
+        {
+          value: formatNumber(facts.candidate_stop_count),
+          label: "possible locations considered",
+          status: "measured"
+        }
       ],
       description:
         "The chosen stops, numbered along a schematic route. The line shows the order only. It is not a planned bus route.",
@@ -178,13 +210,31 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
         }.`
       ],
       figures: [
-        { value: formatNumber(reachedWithStops), count: reachedWithStops, label: `most deprived residents within ${threshold} minutes of a new stop`, status: "modelled", tone: "amber" },
-        { value: formatSigned(gain), count: gain, countFormat: "signed", label: "compared with rail or Metro today", status: "modelled" },
+        {
+          value: formatNumber(reachedWithStops),
+          count: reachedWithStops,
+          label: `most deprived residents within ${threshold} minutes of a new stop`,
+          status: "modelled",
+          tone: "accent"
+        },
+        {
+          value: formatSigned(gain),
+          count: gain,
+          countFormat: "signed",
+          label: "compared with rail or Metro today",
+          status: "modelled"
+        },
         ...(evidence.cost_per_most_deprived_resident_gbp
-          ? [{ value: formatPence(evidence.cost_per_most_deprived_resident_gbp), label: "per extra resident reached", status: "placeholder" as const }]
+          ? [
+              {
+                value: formatPence(evidence.cost_per_most_deprived_resident_gbp),
+                label: "per extra resident reached",
+                status: "placeholder" as const
+              }
+            ]
           : [])
       ],
-      description: `Amber areas are within a ${threshold}-minute walk of a new stop, raised higher where need is greater. Blue areas can already walk to rail or Metro.`,
+      description: `Magenta areas are within a ${threshold}-minute walk of a new stop, raised higher where need is greater. Blue areas can already walk to rail or Metro.`,
       map: {
         mode: "gain",
         is3d: true,
@@ -218,7 +268,14 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
       map: {
         mode: "gain",
         is3d: false,
-        camera: { kind: "point", longitude: topStop.longitude, latitude: topStop.latitude, zoom: 14.1, pitch: 52, bearing: -20 },
+        camera: {
+          kind: "point",
+          longitude: topStop.longitude,
+          latitude: topStop.latitude,
+          zoom: 14.1,
+          pitch: 52,
+          bearing: -20
+        },
         showNetwork: true,
         showRailMetro: false,
         focusStopId: topStop.candidate_id,
@@ -239,7 +296,7 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
     figures: [],
     bands,
     finale: true,
-    description: `Amber areas are within a ${threshold}-minute walk of a new stop. Blue areas can walk to rail or Metro today.`,
+    description: `Magenta areas are within a ${threshold}-minute walk of a new stop. Blue areas can walk to rail or Metro today.`,
     map: {
       mode: "gain",
       is3d: false,
