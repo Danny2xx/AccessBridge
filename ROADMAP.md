@@ -48,7 +48,7 @@ Goal: a working line from real data to a rendered result.
 - [ ] Time-of-day toggle (day vs evening access)
 - [ ] Cost + carbon + value-for-money panel
 - [ ] One-click report / figure export
-- [ ] Deploy (containerised backend + frontend) with a live URL (Dockerfile, static build and Pages workflow done; publishing needs a GitHub push)
+- [x] Deploy with a live URL: <https://danny2xx.github.io/AccessBridge/> (static build on GitHub Pages; Dockerfile and compose for a live API)
 - [ ] README screenshots / demo video (screenshots and a video script done; video not recorded)
 
 ## Engineering hygiene (throughout, not at the end)

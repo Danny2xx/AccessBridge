@@ -50,7 +50,8 @@ ignore = ["UP007", "UP045"]
 "scripts/write_evaluation.py" = ["E501"]
 
 [tool.mypy]
-python_version = "3.9"
+# No pinned python_version: mypy checks against the running interpreter, so a
+# dependency that uses newer syntax under Python 3.12 does not break the run.
 strict = true
 warn_unused_configs = true
 ignore_missing_imports = true

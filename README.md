@@ -2,6 +2,8 @@
 
 **An equity-first transit accessibility prototype for the Birmingham Knowledge Quarter.**
 
+Live site: <https://danny2xx.github.io/AccessBridge/>
+
 AccessBridge AI helps explore where a small feeder-stop network could improve
 access for residents in highly deprived Birmingham neighbourhoods near the
 Knowledge Quarter, Eastside, Nechells, Aston, and the wider central/east
@@ -168,9 +170,10 @@ Regenerate the evaluation and `EVALUATION.md`:
 
 ## Deploying
 
-The site runs as static files from a precomputed API snapshot, so it can be
-hosted on GitHub Pages with no server, or as one container with a live API.
-See [`docs/DEPLOY.md`](docs/DEPLOY.md).
+The site runs as static files from a precomputed API snapshot, so it is hosted
+on GitHub Pages with no server at <https://danny2xx.github.io/AccessBridge/>.
+Every push to `main` republishes it. A container with a live API is also
+provided. See [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ## API
 

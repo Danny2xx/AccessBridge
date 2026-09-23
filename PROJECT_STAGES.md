@@ -12,9 +12,11 @@ The core rule stays the same throughout the project:
 
 Phase 2 is complete: Stages 0 to 6 all meet their exit criteria. Stage 7 is
 complete for walking: the active matrix is routed with R5 on real streets, and
-a walk-plus-transit matrix is produced alongside it. Stage 11 has its
-deployment scaffolding: a static build from a precomputed API snapshot for
-GitHub Pages, a container for a live API, and CI.
+a walk-plus-transit matrix is produced alongside it. Stage 11 is
+partly done: the site is live on GitHub Pages at
+<https://danny2xx.github.io/AccessBridge/> from a precomputed API snapshot, CI
+runs on every push, and a container is provided for a live API. The
+walkthrough video is still to record.
 
 The dashboard is now a five-section site framed as Phase 2 of the Innovation
 Spine: The Story, Explore, The Evidence, How it works and The Ask. It is built

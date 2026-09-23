@@ -23,11 +23,16 @@ git remote add origin git@github.com:<your-user>/<repo>.git
 git push -u origin main
 ```
 
-Then in the repository settings, under **Pages**, set the source to
-**GitHub Actions**. The `Deploy to GitHub Pages` workflow builds the site with
-`VITE_STATIC_API=true` and the repository name as the base path, and publishes
-it to `https://<your-user>.github.io/<repo>/` on every push to `main`. The
-`CI` workflow runs the backend tests, the linters and the frontend build.
+The `Deploy to GitHub Pages` workflow builds the site with
+`VITE_STATIC_API=true` and the repository name as the base path, and pushes
+the result to a `gh-pages` branch on every push to `main`. GitHub Pages serves
+that branch at `https://<your-user>.github.io/<repo>/`. If the site does not
+appear after the first run, open the repository settings, choose **Pages**, and
+set the source to the `gh-pages` branch. The `CI` workflow runs the backend
+tests, the linters and the frontend build.
+
+The live site for this repository is
+<https://danny2xx.github.io/AccessBridge/>.
 
 The static build serves the default plan and every slider combination. It has
 the same story, evidence and explore pages as the live site.

@@ -1,8 +1,9 @@
 name: Deploy to GitHub Pages
 
-# Publishes the site as static files. The API responses come from the
-# precomputed snapshot in frontend/public/api, written by
-# scripts/export_static_api.py, so no server is needed.
+# Publishes the site as static files to the gh-pages branch, which GitHub
+# Pages serves. The API responses come from the precomputed snapshot in
+# frontend/public/api, written by scripts/export_static_api.py, so no server
+# is needed. Publishing to a branch needs no Pages settings or extra tokens.
 
 on:
   push:
@@ -10,16 +11,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -32,25 +31,14 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
-      # Creates the Pages site on first run, so no manual settings step is needed.
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Build the static site
         env:
           VITE_STATIC_API: "true"
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
         run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+      - uses: peaceiris/actions-gh-pages@v4
         with:
-          path: frontend/dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./frontend/dist
+          force_orphan: true
+          commit_message: "Publish the static site from ${{ github.sha }}"
