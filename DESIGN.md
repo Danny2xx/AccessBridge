@@ -23,9 +23,13 @@ Three data roles carry meaning. Nothing else is coloured.
 
 | Role | Light | Dark | Meaning |
 |---|---|---|---|
-| Proposal | `#b20d8f` | `#da52b5` | The new stops, the route, and the primary action |
+| Proposal | `#007b5a` | `#00a782` | The new stops, the route, and the primary action |
 | Today | `#0073cf` | `#338ddf` | The rail and Metro network that exists now |
-| Need | `#a12c20` → `#d89f95` | `#fd8c7b` → `#603d38` | Deprivation, as a single-hue ramp, most deprived first |
+| Need | `#a22d00` → `#da9f8d` | `#fc8f6e` → `#5f3e34` | Deprivation, as a single-hue terracotta ramp, most deprived first |
+
+Green is the identity: the proposed network, the primary action and the
+active state. It suits a project about transport and inclusive growth, and it
+is nothing like the Phase 1 site's palette.
 
 Neutrals are true greys. Light: `--background #fcfcfd`, `--card #ffffff`,
 `--border #e6e6eb`, text `#101114` / `#56596a` / `#7b7e8c`. Dark:
@@ -35,18 +39,21 @@ Neutrals are true greys. Light: `--background #fcfcfd`, `--card #ffffff`,
 **Every data colour is validated, not eyeballed,** using the dataviz palette
 checks in both themes:
 
-- All-pairs colour-blind separation of 11.6 in light and 8.7 in dark, so the
+- All-pairs colour-blind separation of 8.3 in light and 9.9 in dark, so the
   three map roles stay distinct for colour-blind readers.
 - Both deprivation ramps pass the ordinal checks: one hue, monotone lightness,
   visible steps, and the end nearest the surface still clears 2:1. The ramp
   flips direction per theme, so the most deprived band is darkest on white and
   brightest on black.
-- Text clears 6:1 or better on every surface in both themes.
+- Text clears 5:1 or better on every surface in both themes, and the primary
+  button's label clears 5.3:1 in light and 5.6:1 in dark.
 
-Two earlier attempts were rejected by these checks, not by taste: a mint
-primary collapsed with the pink deprivation ramp under red-green colour
-blindness, and a violet primary collapsed with the blue used for today's
-network. The surviving structure keeps one warm, one cool and one magenta.
+Green and red collapse under red-green colour blindness, so a green identity
+forced the deprivation ramp away from red. A terracotta hue was the reddest
+warm that still cleared the all-pairs floor beside this green in both themes.
+Earlier candidates were also rejected by these checks, not by taste: a mint
+primary against a pink ramp, and a violet primary against the blue used for
+today's network.
 
 The map basemap switches with the theme, CARTO positron in light and
 dark-matter in dark, and the deck.gl layers read their colours from the CSS

@@ -106,7 +106,7 @@ export function StoryPage({ scenario, evidence, navigate }: StoryPageProps) {
           <motion.div
             key={step.id}
             {...fade}
-            className="grid min-h-0 flex-1 content-start gap-4 overflow-y-auto px-5 py-6 [&>*]:max-w-[42rem]"
+            className="grid min-h-0 min-w-0 flex-1 content-start gap-4 overflow-y-auto px-5 py-6 [&>*]:max-w-[42rem] [&>*]:min-w-0"
           >
             <p className="visually-hidden" aria-live="polite">
               Step {index + 1} of {total}: {step.title}
@@ -127,7 +127,7 @@ export function StoryPage({ scenario, evidence, navigate }: StoryPageProps) {
 
             {step.figures.length > 0 ? (
               <motion.div
-                className="grid grid-cols-[repeat(auto-fit,minmax(8.5rem,1fr))] gap-x-5 gap-y-4 border-t border-border pt-4"
+                className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(8.5rem,1fr))] gap-x-5 gap-y-4 border-t border-border pt-4"
                 initial={reduced ? false : "hidden"}
                 animate="shown"
                 variants={{ shown: { transition: { staggerChildren: 0.07 } } }}

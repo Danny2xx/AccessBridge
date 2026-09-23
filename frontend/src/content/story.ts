@@ -152,7 +152,7 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
           tone: "accent"
         }
       ],
-      description: `Red areas are among the most deprived 10% and have no rail or Metro stop within a ${threshold}-minute walk. Blue areas can reach one, and blue dots are today's rail and Metro stops.`,
+      description: `Orange areas are among the most deprived 10% and have no rail or Metro stop within a ${threshold}-minute walk. Blue areas can reach one, and blue dots are today's rail and Metro stops.`,
       map: {
         mode: "gap",
         is3d: false,
@@ -234,7 +234,7 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
             ]
           : [])
       ],
-      description: `Magenta areas are within a ${threshold}-minute walk of a new stop, raised higher where need is greater. Blue areas can already walk to rail or Metro.`,
+      description: `Green areas are within a ${threshold}-minute walk of a new stop, raised higher where need is greater. Blue areas can already walk to rail or Metro.`,
       map: {
         mode: "gain",
         is3d: true,
@@ -296,7 +296,7 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
     figures: [],
     bands,
     finale: true,
-    description: `Magenta areas are within a ${threshold}-minute walk of a new stop. Blue areas can walk to rail or Metro today.`,
+    description: `Green areas are within a ${threshold}-minute walk of a new stop. Blue areas can walk to rail or Metro today.`,
     map: {
       mode: "gain",
       is3d: false,

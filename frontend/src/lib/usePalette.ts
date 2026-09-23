@@ -13,10 +13,10 @@ export type Palette = {
 };
 
 const FALLBACK: Palette = {
-  proposal: "#b20d8f",
+  proposal: "#007b5a",
   today: "#0073cf",
-  need: "#c74c3d",
-  needRamp: ["#a12c20", "#b94335", "#c76354", "#d08275", "#d89f95"],
+  need: "#c6481c",
+  needRamp: ["#a22d00", "#ba451c", "#c76445", "#d2826a", "#da9f8d"],
   mapNeutral: "#c9cad2",
   mapLine: "#ffffff",
   ink: "#101114",

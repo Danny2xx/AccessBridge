@@ -8,12 +8,12 @@
 
    Light by default, dark on request. Quiet neutrals, generous
    space, one accent. Three data roles carry all the meaning:
-   magenta for the proposed network, blue for today's rail and
+   green for the proposed network, blue for today's rail and
    Metro, and a single-hue terracotta ramp for deprivation.
 
    Every data colour is validated with the dataviz palette checks
-   in both themes: all-pairs colour-blind separation 11.6 light
-   and 8.7 dark, and both deprivation ramps pass the ordinal
+   in both themes: all-pairs colour-blind separation 8.3 light
+   and 9.9 dark, and both deprivation ramps pass the ordinal
    checks against their own map surface.
    ───────────────────────────────────────────────────────────── */
 
@@ -26,7 +26,7 @@
   --card-foreground: #101114;
   --popover: #ffffff;
   --popover-foreground: #101114;
-  --primary: #b20d8f;
+  --primary: #007b5a;
   --primary-foreground: #ffffff;
   --secondary: #f4f4f6;
   --secondary-foreground: #101114;
@@ -37,17 +37,17 @@
   --destructive: #c0392b;
   --border: #e6e6eb;
   --input: #d8d8e0;
-  --ring: #b20d8f;
+  --ring: #007b5a;
 
   /* Data roles */
-  --proposal: #b20d8f;
+  --proposal: #007b5a;
   --today: #0073cf;
-  --need: #c74c3d;
-  --need-1: #a12c20;
-  --need-2: #b94335;
-  --need-3: #c76354;
-  --need-4: #d08275;
-  --need-5: #d89f95;
+  --need: #c6481c;
+  --need-1: #a22d00;
+  --need-2: #ba451c;
+  --need-3: #c76445;
+  --need-4: #d2826a;
+  --need-5: #da9f8d;
   --map-neutral: #c9cad2;
   --map-line: #ffffff;
   --dim: #7b7e8c;
@@ -67,8 +67,8 @@
   --card-foreground: #f7f7f9;
   --popover: #141418;
   --popover-foreground: #f7f7f9;
-  --primary: #e872c6;
-  --primary-foreground: #1a0616;
+  --primary: #00a782;
+  --primary-foreground: #06201a;
   --secondary: #1b1b20;
   --secondary-foreground: #f7f7f9;
   --muted: #1b1b20;
@@ -78,16 +78,16 @@
   --destructive: #f2685f;
   --border: #26262c;
   --input: #33333c;
-  --ring: #e872c6;
+  --ring: #00a782;
 
-  --proposal: #da52b5;
+  --proposal: #00a782;
   --today: #338ddf;
-  --need: #df6a59;
-  --need-1: #fd8c7b;
-  --need-2: #e06f5e;
-  --need-3: #b65c4e;
-  --need-4: #8a4d43;
-  --need-5: #603d38;
+  --need: #e26943;
+  --need-1: #fc8f6e;
+  --need-2: #df714f;
+  --need-3: #b55e43;
+  --need-4: #894e3c;
+  --need-5: #5f3e34;
   --map-neutral: #3a3a42;
   --map-line: #0c0c0f;
   --dim: #7e8090;

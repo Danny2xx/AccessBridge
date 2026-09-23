@@ -225,7 +225,7 @@ accessbridge-ai/
 | Accessibility | Stage 7 travel-time matrix contract, currently proxy-derived |
 | Optimisation | `PuLP` with CBC MILP solver |
 | API | `FastAPI`, `Pydantic` |
-| Frontend | `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`, `shadcn/ui` on Radix, `motion`, `deck.gl`, `MapLibre GL JS`, `lucide-react`, `Schibsted Grotesk`; light and dark themes |
+| Frontend | `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`, `shadcn/ui` on Radix, `motion`, `deck.gl`, `MapLibre GL JS`, `lucide-react`, `Schibsted Grotesk`; light and dark themes, green identity with a validated colour-blind-safe map palette |
 | Testing/tooling | `pytest`, `ruff`, `mypy`, TypeScript build, Playwright browser tests |
 
 Planned later:

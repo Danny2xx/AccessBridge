@@ -90,14 +90,16 @@ export function AppSidebar({ route }: { route: RouteName }) {
     >
       <a
         href="#/story"
-        className={cn("flex items-center gap-3 px-6 py-5 no-underline", compact && "justify-center px-0")}
+        className={cn("flex items-center gap-3 py-5 pr-3 pl-6 no-underline", compact && "justify-center px-0")}
         aria-label="AccessBridge AI, back to the story"
       >
         <BrandMark />
         {compact ? null : (
           <span className="grid leading-tight">
-            <span className="text-[0.95rem] font-semibold tracking-tight text-foreground">AccessBridge AI</span>
-            <span className="text-xs text-dim">Innovation Spine · Phase 2</span>
+            <span className="text-[0.95rem] font-semibold tracking-tight whitespace-nowrap text-foreground">
+              AccessBridge AI
+            </span>
+            <span className="text-xs whitespace-nowrap text-dim">Innovation Spine · Phase 2</span>
           </span>
         )}
       </a>

@@ -104,14 +104,14 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
     : explore.mode === "need"
       ? "Neighbourhoods coloured by deprivation, with the chosen stops numbered along a schematic route."
       : explore.mode === "gap"
-        ? "Red areas are among the most deprived 10% and cannot walk to rail or Metro. Blue areas can."
-        : "Magenta areas are within walking reach of a new stop. Blue areas can walk to rail or Metro today.";
+        ? "Orange areas are among the most deprived 10% and cannot walk to rail or Metro. Blue areas can."
+        : "Green areas are within walking reach of a new stop. Blue areas can walk to rail or Metro today.";
 
   return (
     <div className="grid h-full max-lg:flex max-lg:flex-col-reverse lg:grid-cols-[27rem_minmax(0,1fr)]">
       <aside
         aria-label="Scenario and results"
-        className="flex min-h-0 flex-col gap-7 overflow-y-auto bg-background px-5 py-6 pb-10 lg:border-r lg:border-border"
+        className="flex min-h-0 min-w-0 flex-col gap-7 overflow-y-auto bg-background px-5 py-6 pb-10 lg:border-r lg:border-border"
       >
         <header className="grid gap-2">
           <h1 className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
@@ -253,7 +253,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
                 withStops={comparison.scenario.most_deprived_decile_population}
                 threshold={comparison.threshold_min}
               />
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))] gap-4 border-t border-border pt-4">
+              <div className="grid min-w-0 grid-cols-[repeat(auto-fit,minmax(7.5rem,1fr))] gap-4 border-t border-border pt-4">
                 <Figure
                   size="compact"
                   value={formatGBP(result?.total_cost_gbp ?? 0)}
