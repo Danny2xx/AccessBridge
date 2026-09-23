@@ -16,6 +16,7 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
   const facts = evidence.study_area;
   const pairs = facts.neighbourhood_count * facts.candidate_stop_count;
   const usesR5 = evidence.routing.source_mode === "r5_input";
+  const walkOnly = usesR5 && evidence.routing.routing_profile === "walk";
 
   const steps: MethodStep[] = [
     {
@@ -26,12 +27,16 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
     {
       title: "Measure walking reach",
       status: "modelled",
-      body: usesR5
-        ? `For every neighbourhood and each of the ${formatNumber(facts.candidate_stop_count)} possible stops, we use journey times from R5 routing on real timetables and streets. That is ${formatNumber(pairs)} pairs.`
-        : `For every neighbourhood and each of the ${formatNumber(facts.candidate_stop_count)} possible stops, we estimate the walk from the neighbourhood's centre in a straight line at 80 metres a minute. That is ${formatNumber(pairs)} pairs.`,
-      caveat: usesR5
-        ? undefined
-        : "Real streets make most walks longer. The next step is real journey-time routing with R5, and the tool is already built to take it."
+      body: walkOnly
+        ? `For every neighbourhood and each of the ${formatNumber(facts.candidate_stop_count)} possible stops, we route the walk from the neighbourhood's centre along real streets from OpenStreetMap with R5, at 80 metres a minute. That is ${formatNumber(pairs)} pairs.`
+        : usesR5
+          ? `For every neighbourhood and each of the ${formatNumber(facts.candidate_stop_count)} possible stops, we use journey times from R5 routing on real timetables and streets. That is ${formatNumber(pairs)} pairs.`
+          : `For every neighbourhood and each of the ${formatNumber(facts.candidate_stop_count)} possible stops, we estimate the walk from the neighbourhood's centre in a straight line at 80 metres a minute. That is ${formatNumber(pairs)} pairs.`,
+      caveat: walkOnly
+        ? "Bus and Metro legs are not included yet, so a stop counts as reached only on foot. The same pipeline can add them from the timetable feed."
+        : usesR5
+          ? undefined
+          : "Real streets make most walks longer. The next step is real journey-time routing with R5, and the tool is already built to take it."
     },
     {
       title: "Choose the stops",

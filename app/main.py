@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import router
 from app.config import Settings, get_settings
@@ -69,6 +70,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return health_payload(resolved_settings)
 
     api.include_router(router)
+
+    # A built frontend, when present, is served from the same process so one
+    # container can host the whole site. API routes are registered first.
+    dist = resolved_settings.project_root / "frontend" / "dist"
+    if dist.is_dir():
+        api.mount("/", StaticFiles(directory=dist, html=True), name="site")
 
     return api
 

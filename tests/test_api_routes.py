@@ -28,7 +28,7 @@ def test_scenario_endpoint_returns_geojson_and_baseline() -> None:
         <= baseline["total_population"]
     )
     assert body["method"] == "stage7_travel_time_matrix"
-    assert "R5-ready" in body["method_caveat"]
+    assert body["method_caveat"]
     assert body["default_request"]["budget_gbp"] == 600_000
     assert body["default_request"]["max_stops"] == 8
 

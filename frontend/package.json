@@ -10,7 +10,9 @@
     "test:e2e": "playwright test --project=chrome",
     "screenshots": "playwright test --project=screenshots",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\" \"*.{ts,json}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"e2e/**/*.ts\"",
+    "build:static": "VITE_STATIC_API=true vite build",
+    "preview:static": "VITE_STATIC_API=true vite build && vite preview --host 127.0.0.1"
   },
   "dependencies": {
     "@deck.gl/core": "^9.1.0",

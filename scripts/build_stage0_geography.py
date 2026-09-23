@@ -41,8 +41,7 @@ IMD_COLUMNS = {
     "Index of Multiple Deprivation (IMD) Score": "imd_score",
     "Index of Multiple Deprivation (IMD) Rank (where 1 is most deprived)": "imd_rank",
     (
-        "Index of Multiple Deprivation (IMD) Decile "
-        "(where 1 is most deprived 10% of LSOAs)"
+        "Index of Multiple Deprivation (IMD) Decile (where 1 is most deprived 10% of LSOAs)"
     ): "imd_decile",
     "Total population: mid 2022": "population_mid_2022_imd_denominator",
 }

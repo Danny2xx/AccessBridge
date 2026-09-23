@@ -62,11 +62,11 @@ test.describe("phone width", () => {
 test.describe("reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 
-  test("counters show their final values at once", async ({ page }) => {
+  test("counters show their final values at once", async ({ page, expected }) => {
     await page.goto("/#/story");
     await expect(page.locator("#story-title")).toHaveText("From Phase 1 to Phase 2");
     await page.keyboard.press("ArrowRight");
     await expect(page.locator("#story-title")).toHaveText("Who lives around it");
-    await expect(page.getByTestId("figure-value").first()).toContainText("349,787");
+    await expect(page.getByTestId("figure-value").first()).toContainText(expected.population);
   });
 });

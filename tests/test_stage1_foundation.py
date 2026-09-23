@@ -36,9 +36,7 @@ def test_stage7_asset_registry_uses_relative_paths() -> None:
         "stage7_routing_metadata",
     }
     assert all(not asset.path.startswith("/") for asset in assets)
-    assert all(
-        asset.required_for_stage == "stage-7-routing-matrix-contract" for asset in assets
-    )
+    assert all(asset.required_for_stage == "stage-7-routing-matrix-contract" for asset in assets)
 
 
 def test_health_payload_contract() -> None:

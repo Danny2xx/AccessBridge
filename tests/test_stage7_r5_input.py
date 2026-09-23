@@ -142,9 +142,7 @@ def test_r5_merge_rejects_duplicate_pairs(proxy_matrix_path: Path, tmp_path: Pat
         )
 
 
-def test_r5_merge_rejects_incomplete_coverage(
-    proxy_matrix_path: Path, tmp_path: Path
-) -> None:
+def test_r5_merge_rejects_incomplete_coverage(proxy_matrix_path: Path, tmp_path: Path) -> None:
     partial = full_r5_frame([4.0, 8.0, 12.0, 9.0]).iloc[:2]
     r5_path = write_r5(tmp_path, partial)
 
@@ -157,9 +155,7 @@ def test_r5_merge_rejects_incomplete_coverage(
         )
 
 
-def test_r5_merge_rejects_negative_travel_times(
-    proxy_matrix_path: Path, tmp_path: Path
-) -> None:
+def test_r5_merge_rejects_negative_travel_times(proxy_matrix_path: Path, tmp_path: Path) -> None:
     r5_path = write_r5(tmp_path, full_r5_frame([4.0, -1.0, 12.0, 9.0]))
 
     with pytest.raises(ValueError, match="non-negative"):

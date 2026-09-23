@@ -1,8 +1,12 @@
 import { expect, test as base, type Page } from "@playwright/test";
 import { createHash } from "node:crypto";
+import { loadExpected, type Expected } from "./expected";
 
 /** Every test fails if the page logs a console error or throws. */
-export const test = base.extend<{ consoleErrors: string[] }>({
+export const test = base.extend<{ consoleErrors: string[]; expected: Expected }>({
+  expected: async ({ request }, use) => {
+    await use(await loadExpected(request));
+  },
   consoleErrors: [
     async ({ page }, use) => {
       const errors: string[] = [];
@@ -24,9 +28,9 @@ export async function openStory(page: Page) {
   await expect(page.locator("#story-title")).toBeVisible();
 }
 
-export async function openExplore(page: Page) {
+export async function openExplore(page: Page, stopCount: number) {
   await page.goto("/#/explore");
-  await expect(page.getByTestId("stop-card")).toHaveCount(7);
+  await expect(page.getByTestId("stop-card")).toHaveCount(stopCount);
 }
 
 /** Hash of what the map currently shows, used to prove views differ. */

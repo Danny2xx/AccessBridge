@@ -6,12 +6,12 @@ import geopandas as gpd
 from fastapi import APIRouter
 
 from app.accessibility import (
-    TRAVEL_TIME_ACCESSIBILITY_CAVEAT,
     TRAVEL_TIME_ACCESSIBILITY_METHOD,
     compare_travel_time_accessibility,
     load_candidate_stops,
     load_travel_time_matrix,
     prepare_travel_time_matrix,
+    travel_time_caveat,
 )
 from app.config import Settings, get_settings
 from app.evidence import DEFAULT_REQUEST, get_evidence
@@ -93,7 +93,7 @@ def build_scenario_response(settings: Settings | None = None) -> ScenarioRespons
         baseline=baseline_comparison.baseline,
         attribution=Attribution(),
         method=TRAVEL_TIME_ACCESSIBILITY_METHOD,
-        method_caveat=TRAVEL_TIME_ACCESSIBILITY_CAVEAT,
+        method_caveat=travel_time_caveat(resolved_settings),
         default_request=DEFAULT_REQUEST,
         study_area_bounds=[min_lon, min_lat, max_lon, max_lat],
     )

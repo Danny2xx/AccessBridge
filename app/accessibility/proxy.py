@@ -168,9 +168,7 @@ def population_by_decile(
         return {}
 
     covered = origins.loc[origins[ORIGIN_ID_COLUMN].astype(str).isin(covered_ids)]
-    grouped = covered.groupby(ORIGIN_DECILE_COLUMN, as_index=True)[
-        ORIGIN_POPULATION_COLUMN
-    ].sum()
+    grouped = covered.groupby(ORIGIN_DECILE_COLUMN, as_index=True)[ORIGIN_POPULATION_COLUMN].sum()
     return {int(decile): int(population) for decile, population in grouped.items()}
 
 
@@ -213,12 +211,8 @@ def compare_accessibility(
     baseline = build_accessibility_metric(origins, baseline_covered, threshold_min)
     scenario = build_accessibility_metric(origins, scenario_covered, threshold_min)
 
-    baseline_deciles = {
-        row.imd_decile: row.population for row in baseline.population_by_decile
-    }
-    scenario_deciles = {
-        row.imd_decile: row.population for row in scenario.population_by_decile
-    }
+    baseline_deciles = {row.imd_decile: row.population for row in baseline.population_by_decile}
+    scenario_deciles = {row.imd_decile: row.population for row in scenario.population_by_decile}
 
     decile_breakdown = [
         DecileAccessibilityDelta(

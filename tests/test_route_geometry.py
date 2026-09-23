@@ -92,9 +92,7 @@ def candidate_stops() -> gpd.GeoDataFrame:
 def test_selected_route_geojson_returns_linestring_for_multiple_stops(
     candidate_stops: gpd.GeoDataFrame,
 ) -> None:
-    feature_collection = selected_route_geojson(
-        candidate_stops, ["cand_a", "cand_b", "cand_c"]
-    )
+    feature_collection = selected_route_geojson(candidate_stops, ["cand_a", "cand_b", "cand_c"])
     geometry = feature_collection["features"][0]["geometry"]
 
     assert geometry["type"] == "LineString"

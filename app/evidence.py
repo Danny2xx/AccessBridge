@@ -16,13 +16,13 @@ import geopandas as gpd
 import pandas as pd
 
 from app.accessibility import (
-    TRAVEL_TIME_ACCESSIBILITY_CAVEAT,
     TRAVEL_TIME_ACCESSIBILITY_METHOD,
     compare_travel_time_accessibility,
     load_candidate_stops,
     load_travel_time_matrix,
     origin_population_frame,
     prepare_travel_time_matrix,
+    travel_time_caveat,
 )
 from app.accessibility.proxy import (
     INTERCHANGE_COLUMN,
@@ -134,7 +134,7 @@ def routing_provenance(settings: Settings) -> RoutingProvenance:
         routing_profile = str(metadata.get("routing_profile", routing_profile))
     return RoutingProvenance(
         method=TRAVEL_TIME_ACCESSIBILITY_METHOD,
-        method_caveat=TRAVEL_TIME_ACCESSIBILITY_CAVEAT,
+        method_caveat=travel_time_caveat(settings),
         source_mode=source_mode,
         routing_source=routing_source,
         routing_profile=routing_profile,

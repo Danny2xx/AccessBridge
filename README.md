@@ -19,8 +19,10 @@ The implemented Phase 2 product is:
   Birmingham LSOA boundaries, and NaPTAN stops.
 - A proxy accessibility engine using LSOA centroids and candidate-stop walking
   distance.
-- A Stage 7 travel-time matrix contract that can consume a future R5/r5py
-  output and is currently populated from the Stage 0 proxy walk-time matrix.
+- A Stage 7 travel-time matrix routed with R5 on the OpenStreetMap street
+  network, built by `scripts/build_r5_matrix.py` from a pinned Geofabrik
+  extract and the Bus Open Data Service West Midlands GTFS feed. A
+  walk-plus-transit matrix from the same build is saved beside it.
 - A single-objective PuLP/CBC MILP optimiser that maximises equity-weighted
   covered population.
 - Plain place names for every neighbourhood and stop, derived from NaPTAN
@@ -47,10 +49,9 @@ The implemented Phase 2 product is:
   or a challenge-brief figure.
 - A reproducible Phase 2 evaluation script.
 
-Important limitation: the active matrix is R5-ready in shape, but the local
-artifact is still proxy-derived from Euclidean walking distance. It is useful
-for validating data joins, catchment maths, equity metrics, and the product
-flow, but it is not yet final R5 walk-plus-transit routing.
+Walking times are routed along real streets at 80 metres a minute. Bus and
+Metro legs are not part of the active matrix, so a stop counts as reached only
+on foot; the transit profile is one flag away. Stop costs are placeholders.
 
 ## Why this exists
 
@@ -77,9 +78,9 @@ Default optimiser result:
 
 - Selected stops: 7
 - Total cost: GBP 600,000
-- Most-deprived-decile residents reached: 126,330 vs 71,309 baseline
-- Most-deprived-decile resident gain: 55,021
-- Total population reached: 151,899 vs 128,755 baseline
+- Most-deprived-decile residents reached: 103,650 vs 48,360 baseline
+- Most-deprived-decile resident gain: 55,290
+- Total population reached: 121,782 vs 101,367 baseline
 
 See [`EVALUATION.md`](EVALUATION.md) for the full decile breakdown and
 sensitivity checks.
@@ -112,8 +113,19 @@ python scripts/fetch_data.py
 python scripts/build_stage0_geography.py
 python scripts/build_stage0_stops.py
 python scripts/build_stage0_accessibility.py
-python scripts/build_stage7_travel_time_matrix.py
+python scripts/build_stage7_travel_time_matrix.py     # straight-line proxy matrix
 python scripts/build_place_names.py
+
+# 2b. Optional: route real walking times with R5 (needs ~10 minutes and 250 MB)
+#     uv creates a Python 3.12 environment; a JDK 21 is unpacked into .jdk/
+uv venv .venv-routing --python 3.12 && uv pip install --python .venv-routing/bin/python r5py
+mkdir -p .jdk && curl -sL https://api.adoptium.net/v3/binary/latest/21/ga/mac/aarch64/jdk/hotspot/normal/eclipse | tar -xz -C .jdk
+curl -sL -o data/external/gtfs_west_midlands_bods.zip https://data.bus-data.dft.gov.uk/timetable/download/gtfs-file/west_midlands/
+curl -sL -o data/external/west-midlands-latest.osm.pbf https://download.geofabrik.de/europe/united-kingdom/england/west-midlands-latest.osm.pbf
+JAVA_HOME=$(ls -d .jdk/jdk-21*/Contents/Home) .venv-routing/bin/python scripts/build_r5_matrix.py
+python scripts/build_stage7_travel_time_matrix.py --r5-input data/processed/r5_walk_matrix.csv \
+  --routing-source r5 --routing-profile walk
+python scripts/write_evaluation.py
 
 # 3. Backend API
 .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
@@ -148,12 +160,17 @@ npm run screenshots   # refreshes docs/screenshots
 The browser tests use the installed Google Chrome. Without it, run
 `npx playwright install chromium` and set `PW_CHANNEL=chromium`.
 
-Regenerate the Phase 2 evaluation:
+Regenerate the evaluation and `EVALUATION.md`:
 
 ```bash
-.venv/bin/python scripts/evaluate_phase2.py
-.venv/bin/python scripts/evaluate_phase2.py --json
+.venv/bin/python scripts/write_evaluation.py
 ```
+
+## Deploying
+
+The site runs as static files from a precomputed API snapshot, so it can be
+hosted on GitHub Pages with no server, or as one container with a live API.
+See [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ## API
 
@@ -222,7 +239,7 @@ accessbridge-ai/
 | Layer | Implemented now |
 |---|---|
 | Data processing | `pandas`, `GeoPandas`, `Shapely`, `pyogrio` |
-| Accessibility | Stage 7 travel-time matrix contract, currently proxy-derived |
+| Accessibility | Stage 7 travel-time matrix, routed with R5 (r5py, JDK 21) on OpenStreetMap streets |
 | Optimisation | `PuLP` with CBC MILP solver |
 | API | `FastAPI`, `Pydantic` |
 | Frontend | `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`, `shadcn/ui` on Radix, `motion`, `deck.gl`, `MapLibre GL JS`, `lucide-react`, `Schibsted Grotesk`; light and dark themes, green identity with a validated colour-blind-safe map palette |
@@ -230,7 +247,7 @@ accessbridge-ai/
 
 Planned later:
 
-- True R5/r5py multimodal travel-time matrix populated from pinned GTFS/OSM
+- A walk-plus-transit reach view from the R5 matrix already produced
 - NSGA-II / Pareto front
 - Demand model and SHAP explanations
 - Natural-language control layer

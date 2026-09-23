@@ -20,6 +20,7 @@ from app.accessibility.travel_time import (
     compare_travel_time_accessibility,
     load_travel_time_matrix,
     prepare_travel_time_matrix,
+    travel_time_caveat,
     validate_travel_time_matrix,
     with_reachability_columns,
 )
@@ -42,6 +43,7 @@ __all__ = [
     "origin_population_frame",
     "population_by_decile",
     "prepare_travel_time_matrix",
+    "travel_time_caveat",
     "validate_travel_time_matrix",
     "with_reachability_columns",
 ]

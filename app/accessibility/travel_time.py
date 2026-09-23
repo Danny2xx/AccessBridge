@@ -7,6 +7,7 @@ row with a `travel_time_min` value and generated threshold columns.
 
 from __future__ import annotations
 
+import json
 from collections.abc import Iterable, Sequence
 from pathlib import Path
 
@@ -130,3 +131,34 @@ def load_travel_time_matrix(
     matrix_path = path or resolved_settings.travel_time_matrix_path
     matrix = pd.read_csv(matrix_path)
     return with_reachability_columns(matrix)
+
+
+def travel_time_caveat(settings: Settings | None = None) -> str:
+    """Describe the active matrix honestly: routed on real streets, or a proxy."""
+
+    resolved_settings = settings or get_settings()
+    path = resolved_settings.stage7_routing_metadata_path
+    if not path.exists():
+        return TRAVEL_TIME_ACCESSIBILITY_CAVEAT
+    metadata = json.loads(path.read_text())
+    if metadata.get("source_mode") != "r5_input":
+        return TRAVEL_TIME_ACCESSIBILITY_CAVEAT
+
+    provenance = metadata.get("routing_provenance") or {}
+    osm = provenance.get("osm_extract_name") or "OpenStreetMap"
+    osm_date = provenance.get("osm_extract_date")
+    gtfs = provenance.get("gtfs_feed_name") or "the GTFS feed"
+    gtfs_date = provenance.get("gtfs_feed_date")
+    osm_label = f"{osm} ({osm_date})" if osm_date else osm
+    gtfs_label = f"{gtfs} ({gtfs_date})" if gtfs_date else gtfs
+
+    if metadata.get("routing_profile") == "walk":
+        return (
+            f"Walking times are routed along real streets with R5, using {osm_label}. "
+            "Bus and Metro legs are not included, so a stop counts as reached only on foot. "
+            "Stop costs remain placeholders."
+        )
+    return (
+        f"Journey times are routed with R5 as walking plus bus and Metro, using {osm_label} "
+        f"and {gtfs_label}. Stop costs remain placeholders."
+    )

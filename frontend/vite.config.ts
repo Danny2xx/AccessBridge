@@ -9,6 +9,8 @@ const apiProxy = Object.fromEntries(
 );
 
 export default defineConfig({
+  // Set VITE_BASE_PATH=/repo-name/ when hosting under a sub-path such as GitHub Pages.
+  base: process.env.VITE_BASE_PATH ?? "/",
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) }

@@ -97,8 +97,7 @@ DATASETS: tuple[Dataset, ...] = (
             "boundaries-lsoa-2021-birmingham/"
         ),
         licence=(
-            "Open Government Licence v3.0; contains ONS and Ordnance Survey "
-            "intellectual property"
+            "Open Government Licence v3.0; contains ONS and Ordnance Survey intellectual property"
         ),
         size_hint_mb=1.1,
         purpose=(

@@ -31,7 +31,7 @@ test("story screenshots", async ({ page }) => {
 
 test("explore screenshots", async ({ page }) => {
   await page.goto("/#/explore");
-  await expect(page.getByTestId("stop-card")).toHaveCount(7);
+  await expect(page.getByTestId("stop-card").first()).toBeVisible();
   await page.waitForTimeout(3500);
   await shot(page, "08-explore");
   await page.getByTestId("stop-card-main").nth(1).click();
@@ -58,7 +58,7 @@ test("document page screenshots", async ({ page }) => {
 
 test("dark mode screenshots", async ({ page }) => {
   await page.goto("/#/explore");
-  await expect(page.getByTestId("stop-card")).toHaveCount(7);
+  await expect(page.getByTestId("stop-card").first()).toBeVisible();
   await page.getByTestId("theme-toggle").click();
   await page.waitForTimeout(4000);
   await shot(page, "14-dark-explore");

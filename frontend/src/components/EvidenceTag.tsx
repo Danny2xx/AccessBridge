@@ -1,6 +1,7 @@
 import { Calculator, Database, FileText, PencilRuler, type LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { isRoutedOnStreets, useRouting } from "@/lib/routing";
 import { cn } from "@/lib/utils";
 
 export type EvidenceStatus = "measured" | "modelled" | "placeholder" | "brief";
@@ -32,8 +33,14 @@ export const EVIDENCE: Record<EvidenceStatus, { label: string; description: stri
   }
 };
 
+const MODELLED_ON_STREETS =
+  "Calculated by AccessBridge from measured data. Walking times are routed along real streets with R5.";
+
 export function EvidenceTag({ status, className }: { status: EvidenceStatus; className?: string }) {
-  const { label, description, icon: Icon } = EVIDENCE[status];
+  const routing = useRouting();
+  const { label, icon: Icon } = EVIDENCE[status];
+  const description =
+    status === "modelled" && isRoutedOnStreets(routing) ? MODELLED_ON_STREETS : EVIDENCE[status].description;
   return (
     <Tooltip>
       <TooltipTrigger asChild>

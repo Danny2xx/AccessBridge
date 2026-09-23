@@ -35,9 +35,7 @@ def run_request(label: str, request: OptimisationRequest) -> dict[str, Any]:
 
     comparison = result.accessibility
     d1_delta = comparison.delta_most_deprived_decile_population
-    cost_per_d1_gain = (
-        round(result.total_cost_gbp / d1_delta, 2) if d1_delta > 0 else None
-    )
+    cost_per_d1_gain = round(result.total_cost_gbp / d1_delta, 2) if d1_delta > 0 else None
 
     return {
         "label": label,
@@ -61,14 +59,10 @@ def run_request(label: str, request: OptimisationRequest) -> dict[str, Any]:
         "method": comparison.method,
         "method_caveat": comparison.method_caveat,
         "delta_most_deprived_decile_population": d1_delta,
-        "delta_bottom_three_deciles_population": (
-            comparison.delta_bottom_three_deciles_population
-        ),
+        "delta_bottom_three_deciles_population": (comparison.delta_bottom_three_deciles_population),
         "delta_total_population": comparison.delta_total_population,
         "cost_per_d1_resident_gained_gbp": cost_per_d1_gain,
-        "decile_breakdown": [
-            row.model_dump() for row in comparison.decile_breakdown
-        ],
+        "decile_breakdown": [row.model_dump() for row in comparison.decile_breakdown],
     }
 
 
@@ -124,10 +118,7 @@ def print_markdown(payload: dict[str, Any]) -> None:
         "- Most-deprived-decile resident gain: "
         f"{default['delta_most_deprived_decile_population']:,}"
     )
-    print(
-        "- Cost per D1 resident gained: "
-        f"GBP {default['cost_per_d1_resident_gained_gbp']}"
-    )
+    print(f"- Cost per D1 resident gained: GBP {default['cost_per_d1_resident_gained_gbp']}")
     print()
     print("## Budget sensitivity")
     print()

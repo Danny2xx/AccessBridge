@@ -395,9 +395,11 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
             How sure are we?
           </h3>
           <p className="text-muted-foreground">
-            {evidence.routing.source_mode === "r5_input"
-              ? "These figures use journey times from R5 routing on real timetables and streets."
-              : "These figures use straight-line walking estimates at 80 metres a minute. Real streets make most walks longer, so treat the reach figures as upper estimates."}{" "}
+            {evidence.routing.source_mode === "r5_input" && evidence.routing.routing_profile === "walk"
+              ? "These figures use walking times routed along real streets with R5, at 80 metres a minute. Bus and Metro legs are not included."
+              : evidence.routing.source_mode === "r5_input"
+                ? "These figures use journey times from R5 routing on real timetables and streets."
+                : "These figures use straight-line walking estimates at 80 metres a minute. Real streets make most walks longer, so treat the reach figures as upper estimates."}{" "}
             Deprivation and population are official statistics. Stop costs are placeholders.
           </p>
           <Button

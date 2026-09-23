@@ -5,28 +5,31 @@ planned for the full AccessBridge AI vision.
 
 ## 1. Current Phase 2 / Stage 7 method
 
-The implemented prototype now uses a Stage 7 travel-time matrix contract. The
-local artifact is generated from the Stage 0 proxy matrix until a real R5/r5py
-matrix is supplied:
+The implemented prototype uses a Stage 7 travel-time matrix routed with R5:
 
 - Origins are study-area LSOA centroids.
 - Candidate stops are aggregated from active NaPTAN nodes inside the study area.
 - `travel_time_min` is the standard field consumed by the backend and optimiser.
-- In the current local artifact, `travel_time_min` is copied from Euclidean
-  centroid-to-candidate walking time at 80 metres per minute.
-- The same contract can ingest a future R5/r5py CSV with `origin_id`,
-  `candidate_id`, and `travel_time_min`.
+- `scripts/build_r5_matrix.py` routes every origin-candidate pair with r5py on
+  the OpenStreetMap street network (Geofabrik west-midlands-latest.osm.pbf, 22 Sep 2026 23:28:35)
+  at 80 metres a minute, departing 2026-09-29 08:00 with a 60-minute
+  window. Walks over 60 minutes are recorded as unreachable (66,158 of
+  144,072 pairs).
+- The active profile is walking only, because every figure on the site is
+  described as a walk. A walk-plus-transit matrix from the same build, using
+  the Bus Open Data Service West Midlands GTFS feed (2026-09-23), is saved
+  as `data/processed/r5_walk_transit_matrix.csv` for a public-transport view.
+- Against the Stage 0 straight-line proxy, routed walks are a median 20%
+  longer, with a 90th percentile of 36%.
 - Reachability is evaluated at 5, 10, and 15 minute thresholds.
 - Baseline access is defined as direct reachability to a rail/Metro interchange
   candidate.
 - Scenario access is defined as reachability to at least one selected feeder
   candidate stop.
 
-The current caveat is deliberately exposed in code, API responses, the UI, and
-evaluation: the matrix is R5-ready in shape but proxy-derived in content. It
-validates the product architecture and equity calculations, but it should be
-rebuilt from pinned GTFS and OpenStreetMap R5 outputs before making
-transport-planning claims.
+The remaining caveats are exposed in code, API responses, the UI and the
+evaluation: bus and Metro legs are not in the active matrix, stop costs are
+placeholders, and the routing uses one morning departure window.
 
 ## 2. Equity metric
 
@@ -107,7 +110,8 @@ response, so the words cannot drift from the numbers.
 
 ## 5. Assumptions and caveats
 
-- The current local travel-time matrix is proxy-derived, not final R5.
+- The active travel-time matrix is walking only; the walk-plus-transit matrix
+  is produced but not yet used by the site.
 - Candidate-stop costs are placeholder scenario costs, not quantity-surveyor
   estimates.
 - Route geometry is a schematic line through the selected stops, ordered by
@@ -120,13 +124,12 @@ response, so the words cannot drift from the numbers.
 
 ## 6. Planned later methodology
 
-### R5 walk-plus-transit routing
+### Walk-plus-transit reach
 
-The next methodological upgrade is to build an R5/r5py matrix from a pinned GTFS
-feed and OpenStreetMap extract, then pass that CSV into
-`scripts/build_stage7_travel_time_matrix.py --r5-input`. That will keep the
-backend and optimiser path stable while replacing proxy-derived times with
-multimodal walk-plus-transit times.
+The R5 build already writes a walk-plus-transit matrix. Passing it to
+`scripts/build_stage7_travel_time_matrix.py --r5-input` with
+`--routing-profile walk_transit` switches the site to public-transport reach;
+the copy on every page follows the active profile.
 
 ### Pareto trade-off search
 

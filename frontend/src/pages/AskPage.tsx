@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PHASE_2_BUDGET_GBP, PHASES, SPINELENS_URL } from "@/content/spine";
 import { formatGBP, formatSigned, listPlaces, percent } from "@/lib/format";
+import { isRoutedOnStreets } from "@/lib/routing";
 import type { Route } from "@/lib/useHashRoute";
 import { cn } from "@/lib/utils";
 import type { EvidenceResponse } from "@/types";
@@ -33,10 +34,15 @@ export function AskPage({ evidence, navigate }: AskPageProps) {
       title: "Use this method to place Phase 2's redesigned stops",
       body: "It shows who each stop reaches before anything is built, and it re-runs in seconds as plans change."
     },
-    {
-      title: "Replace straight-line walks with real journey times",
-      body: "Run R5 routing with West Midlands bus, rail and Metro timetables and OpenStreetMap streets. The tool already accepts the result."
-    },
+    isRoutedOnStreets(evidence.routing)
+      ? {
+          title: "Add bus and Metro journeys to the routing",
+          body: "Walking times already follow real streets. The same pipeline can route walking plus bus and Metro from the West Midlands timetable feed, for a public-transport view of reach."
+        }
+      : {
+          title: "Replace straight-line walks with real journey times",
+          body: "Run R5 routing with West Midlands bus, rail and Metro timetables and OpenStreetMap streets. The tool already accepts the result."
+        },
     {
       title: "Cost each stop properly",
       body: `The ${formatGBP(75_000)} and ${formatGBP(150_000)} stop costs are placeholders. A quantity surveyor should price each design.`

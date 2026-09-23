@@ -129,8 +129,7 @@ def candidate_coverage(
 
     candidate_id_set = {str(candidate_id) for candidate_id in candidate_ids}
     reachable_rows = matrix.loc[
-        matrix[CANDIDATE_ID_COLUMN].astype(str).isin(candidate_id_set)
-        & matrix[reachability_column]
+        matrix[CANDIDATE_ID_COLUMN].astype(str).isin(candidate_id_set) & matrix[reachability_column]
     ]
     grouped = reachable_rows.groupby(CANDIDATE_ID_COLUMN)[ORIGIN_ID_COLUMN].agg(
         lambda values: {str(value) for value in values}
@@ -234,8 +233,7 @@ def optimise_stop_selection(
         for candidate_id in candidate_ids
     }
     y = {
-        origin_id: pulp.LpVariable(f"y_{origin_id}", cat=pulp.LpBinary)
-        for origin_id in origin_ids
+        origin_id: pulp.LpVariable(f"y_{origin_id}", cat=pulp.LpBinary) for origin_id in origin_ids
     }
 
     problem += pulp.lpSum(origin_weights[origin_id] * y[origin_id] for origin_id in origin_ids)
@@ -271,14 +269,10 @@ def optimise_stop_selection(
         return infeasible_result(request, solver_status)
 
     selected_candidate_ids = [
-        candidate_id
-        for candidate_id in candidate_ids
-        if (x[candidate_id].varValue or 0.0) >= 0.5
+        candidate_id for candidate_id in candidate_ids if (x[candidate_id].varValue or 0.0) >= 0.5
     ]
     selected_origin_ids = [
-        origin_id
-        for origin_id in origin_ids
-        if (y[origin_id].varValue or 0.0) >= 0.5
+        origin_id for origin_id in origin_ids if (y[origin_id].varValue or 0.0) >= 0.5
     ]
     total_cost_gbp = sum(
         candidate_lookup[candidate_id].cost_gbp for candidate_id in selected_candidate_ids

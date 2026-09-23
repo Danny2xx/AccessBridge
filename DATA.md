@@ -10,8 +10,8 @@ AccessBridge AI is built entirely on open data. This file lists every dataset, w
 | ONS mid-year population estimates (LSOA) | Population weighting | Office for National Statistics | Open Government Licence v3.0 |
 | LSOA boundaries | Geography for choropleth + centroids | ONS Open Geography Portal; Stage 0 uses the Birmingham-only LSOA 2021 boundary extract from Birmingham City Observatory as a compact open mirror/source | Open Government Licence v3.0 |
 | NaPTAN | Public-transport access node locations | Department for Transport; Stage 0 uses NaPTAN API ATCO area `430` for West Midlands stops before filtering to Birmingham/study-area geometry | Open Government Licence v3.0 |
-| GTFS transit feed | Routes, stops, timetables for R5 | Bus Open Data Service (BODS) / operator feeds | See BODS terms (open; attribute) |
-| OpenStreetMap | Street network for walk routing (via OSMnx/R5) | OpenStreetMap contributors | **Open Database Licence (ODbL) — attribution + share-alike** |
+| GTFS transit feed | Bus and Metro timetables for R5 | Bus Open Data Service West Midlands regional GTFS, feed version 20260923_025020, sha256 `1ae310408d03916b…` | Open Government Licence v3.0 (attribute) |
+| OpenStreetMap | Street network for walk routing with R5 | Geofabrik `west-midlands-latest.osm.pbf` dated 22 Sep 2026 23:28:35, sha256 `14231e747b2caf61…` | **Open Database Licence (ODbL) — attribution + share-alike** |
 | Basemap tiles | Map background | MapLibre + tile provider | Provider-dependent; attribute |
 
 ## Attribution text to display
@@ -44,11 +44,12 @@ names each neighbourhood and candidate stop after the most common NaPTAN
 "Birmingham" locality is shown as "Birmingham City Centre", and the few
 neighbourhoods with no stop inside take the name of the nearest stop.
 
-The current active accessibility output is `data/processed/travel_time_matrix.csv`.
-It follows the Stage 7 `travel_time_min` contract and is currently built from the
-Stage 0 Euclidean walking-distance proxy. The real R5 transport-network output
-is not available yet, but the Stage 7 builder can ingest a future R5/r5py CSV via
-`--r5-input`.
+The active accessibility output is `data/processed/travel_time_matrix.csv`. It
+follows the Stage 7 `travel_time_min` contract and is built from
+`data/processed/r5_walk_matrix.csv`, routed by `scripts/build_r5_matrix.py`
+under the routing environment described in the README. The build also writes
+`r5_walk_transit_matrix.csv` and a provenance file per profile with input
+checksums, the departure window and the unreachable count.
 
 Raw and processed data are **gitignored** — the repo ships the scripts, not the
 data, so anyone can reproduce local artifacts from source.

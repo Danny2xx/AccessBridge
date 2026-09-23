@@ -15,16 +15,16 @@ test("the story has seven steps and the arrow keys move through them", async ({ 
   await expect(page.locator("#story-title")).toContainText("Phase 1");
 });
 
-test("story figures match the evidence and label their source", async ({ page }) => {
+test("story figures match the evidence and label their source", async ({ page, expected }) => {
   await openStory(page);
   await page.keyboard.press("ArrowRight");
-  await expect(page.getByTestId("figure-value").first()).toContainText("349,787");
+  await expect(page.getByTestId("figure-value").first()).toContainText(expected.population);
   await expect(page.getByTestId("story-panel").getByTestId("evidence-tag").first()).toHaveText("Measured data");
 
   for (let step = 0; step < 3; step += 1) await page.keyboard.press("ArrowRight");
   await expect(page.locator("#story-title")).toHaveText("Who gains");
-  await expect(page.getByTestId("story-panel")).toContainText("126,330");
-  await expect(page.getByTestId("story-panel")).toContainText("+55,021");
+  await expect(page.getByTestId("story-panel")).toContainText(expected.mostDeprivedReached);
+  await expect(page.getByTestId("story-panel")).toContainText(expected.mostDeprivedGain);
 });
 
 test("the story shows data attribution", async ({ page }) => {

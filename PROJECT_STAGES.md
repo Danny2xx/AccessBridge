@@ -10,9 +10,11 @@ The core rule stays the same throughout the project:
 
 ## Current status
 
-Phase 2 is complete: Stages 0 to 6 all meet their exit criteria. Stage 7 has
-started, with a travel-time matrix contract and adapter ready for future R5/r5py
-output.
+Phase 2 is complete: Stages 0 to 6 all meet their exit criteria. Stage 7 is
+complete for walking: the active matrix is routed with R5 on real streets, and
+a walk-plus-transit matrix is produced alongside it. Stage 11 has its
+deployment scaffolding: a static build from a precomputed API snapshot for
+GitHub Pages, a container for a live API, and CI.
 
 The dashboard is now a five-section site framed as Phase 2 of the Innovation
 Spine: The Story, Explore, The Evidence, How it works and The Ask. It is built
@@ -42,9 +44,9 @@ Already present:
 
 Important current limitation:
 
-- The active Stage 7 matrix is currently proxy-derived from Euclidean walking
-  distance. It is useful for validating catchment, equity maths, and the product
-  path, but it is not the final R5 walk-plus-transit routing model.
+- The active Stage 7 matrix is walking only. Bus and Metro legs are routed in
+  the companion matrix but not yet used by the site, and stop costs are
+  placeholders.
 
 ## Phase 2 goal
 
@@ -461,9 +463,10 @@ These are valuable, but they should come after the core Phase 2 demo is working.
 
 ### Stage 7 - R5 travel-time routing
 
-Status: started. The travel-time matrix contract, builder, metadata, API wiring,
-and optimiser wiring are implemented. Final R5/r5py network generation from
-pinned GTFS and OpenStreetMap inputs is still pending.
+Status: complete for walking. `scripts/build_r5_matrix.py` builds the R5
+network from a pinned Geofabrik extract and the BODS West Midlands GTFS feed,
+routes all 144,072 pairs, and writes walk and walk-plus-transit matrices with
+provenance. The walk matrix is active; the transit one is a flag away.
 
 Purpose:
 

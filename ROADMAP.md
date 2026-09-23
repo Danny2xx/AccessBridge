@@ -6,8 +6,8 @@ Build order matters: get one thing working end-to-end before adding depth, so th
 
 Goal: a working line from real data to a rendered result.
 
-- [ ] Data fetch + clean (IMD, population, NaPTAN, OSM, GTFS) — `scripts/fetch_data.py` (IMD, population, boundaries and NaPTAN done; OSM and GTFS wait for R5)
-- [ ] R5 travel-time matrix build — `scripts/build_network.py`
+- [x] Data fetch + clean (IMD, population, NaPTAN, OSM, GTFS) — `scripts/fetch_data.py`, plus the pinned OSM and GTFS inputs for `scripts/build_r5_matrix.py`
+- [x] R5 travel-time matrix build — `scripts/build_r5_matrix.py`
 - [x] Catchment + accessibility score per LSOA
 - [x] Single-objective MILP optimiser (equity-weighted coverage, budget + stop constraints)
 - [x] FastAPI endpoints: `/scenario`, `/optimise` (plus `/evidence`)
@@ -48,15 +48,15 @@ Goal: a working line from real data to a rendered result.
 - [ ] Time-of-day toggle (day vs evening access)
 - [ ] Cost + carbon + value-for-money panel
 - [ ] One-click report / figure export
-- [ ] Deploy (containerised backend + frontend) with a live URL
+- [ ] Deploy (containerised backend + frontend) with a live URL (Dockerfile, static build and Pages workflow done; publishing needs a GitHub push)
 - [ ] README screenshots / demo video (screenshots and a video script done; video not recorded)
 
 ## Engineering hygiene (throughout, not at the end)
 
 - [ ] Type hints + `mypy`, `ruff`, pre-commit (typing, `mypy` and `ruff` done; pre-commit not set up)
 - [x] `pytest` for the optimiser and accessibility maths; Vitest/Playwright for the frontend
-- [ ] GitHub Actions CI
-- [ ] Dockerfile + compose for reproducibility
+- [x] GitHub Actions CI
+- [x] Dockerfile + compose for reproducibility
 
 ## Future work (say these in interviews; don't necessarily build them)
 

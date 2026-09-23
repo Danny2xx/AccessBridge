@@ -6,6 +6,7 @@ import { MobileBar } from "@/components/MobileBar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { RoutingProvider } from "@/lib/routing";
 import { ThemeProvider } from "@/lib/theme";
 import { useExplore } from "@/lib/useExplore";
 import { useHashRoute, type Route } from "@/lib/useHashRoute";
@@ -167,18 +168,20 @@ export function App() {
               {loadError ? (
                 <LoadError message={loadError} onRetry={() => setAttempt((value) => value + 1)} />
               ) : ready ? (
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={route}
-                    className={cn(isMapRoute && "h-full")}
-                    initial={reduced ? false : { opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={reduced ? undefined : { opacity: 0 }}
-                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {page}
-                  </motion.div>
-                </AnimatePresence>
+                <RoutingProvider routing={evidence.routing}>
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={route}
+                      className={cn(isMapRoute && "h-full")}
+                      initial={reduced ? false : { opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={reduced ? undefined : { opacity: 0 }}
+                      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      {page}
+                    </motion.div>
+                  </AnimatePresence>
+                </RoutingProvider>
               ) : (
                 <Loading />
               )}

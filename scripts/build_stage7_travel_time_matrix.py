@@ -182,8 +182,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=None,
         help=(
-            "Optional CSV from R5/r5py with origin_id, candidate_id, and "
-            "travel_time_min columns."
+            "Optional CSV from R5/r5py with origin_id, candidate_id, and travel_time_min columns."
         ),
     )
     parser.add_argument("--routing-source", default="r5")

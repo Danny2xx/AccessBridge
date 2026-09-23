@@ -291,7 +291,9 @@ export function buildStory(evidence: EvidenceResponse, scenario: ScenarioRespons
     title: "The trade-off, and how sure we are",
     body: [
       `The plan aims at the most deprived first. In the other bands, the new stops reach ${formatNumber(otherNew)} people, against ${formatNumber(otherToday)} who can walk to rail or Metro today. The new stops add to today's stations. They do not replace them.`,
-      "These are early figures. Walking times are straight-line estimates, and stop costs are placeholders. Real journey times and costed designs come next."
+      evidence.routing.source_mode === "r5_input"
+        ? "Walking times follow real streets, routed with R5 from OpenStreetMap. Stop costs are still placeholders, and bus and Metro journeys are the next layer to add."
+        : "These are early figures. Walking times are straight-line estimates, and stop costs are placeholders. Real journey times and costed designs come next."
     ],
     figures: [],
     bands,

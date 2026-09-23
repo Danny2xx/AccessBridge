@@ -181,11 +181,15 @@ def build_candidate_stops(birmingham_stops: gpd.GeoDataFrame) -> gpd.GeoDataFram
         source_codes = sorted(group["ATCOCode"].astype(str).unique().tolist())
         candidate_x = float(group["candidate_x"].mean())
         candidate_y = float(group["candidate_y"].mean())
-        candidate_point = gpd.GeoSeries.from_xy(
-            [candidate_x],
-            [candidate_y],
-            crs="EPSG:27700",
-        ).to_crs("EPSG:4326").iloc[0]
+        candidate_point = (
+            gpd.GeoSeries.from_xy(
+                [candidate_x],
+                [candidate_y],
+                crs="EPSG:27700",
+            )
+            .to_crs("EPSG:4326")
+            .iloc[0]
+        )
 
         rows.append(
             {
@@ -208,9 +212,9 @@ def build_candidate_stops(birmingham_stops: gpd.GeoDataFrame) -> gpd.GeoDataFram
         )
 
     candidates = gpd.GeoDataFrame(rows, geometry="geometry", crs="EPSG:4326")
-    candidates = candidates.sort_values(
-        ["mode_hint", "name", "candidate_id"]
-    ).reset_index(drop=True)
+    candidates = candidates.sort_values(["mode_hint", "name", "candidate_id"]).reset_index(
+        drop=True
+    )
     return candidates
 
 

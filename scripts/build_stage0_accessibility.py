@@ -125,9 +125,7 @@ def build_origin_accessibility(
         row["nearest_interchange_id"] = nearest_interchange["candidate_id"]
         row["nearest_interchange_name"] = nearest_interchange["name"]
         row["nearest_interchange_mode"] = nearest_interchange["mode_hint"]
-        row["nearest_interchange_walk_time_min"] = float(
-            nearest_interchange["walk_time_min"]
-        )
+        row["nearest_interchange_walk_time_min"] = float(nearest_interchange["walk_time_min"])
 
         for threshold in THRESHOLD_MINUTES:
             row[f"covered_any_{threshold}_min"] = bool(
