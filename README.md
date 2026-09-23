@@ -41,6 +41,8 @@ The implemented Phase 2 product is:
     next steps.
 - A 2D/3D MapLibre + deck.gl map with need, gap and gain modes, numbered stops,
   a schematic route, highlighted catchments and street-level 3D buildings.
+- Light and dark themes, following the reader's system setting with a toggle in
+  the header. The basemap and every data colour change with the theme.
 - Every figure is labelled as measured data, our modelling, a placeholder cost
   or a challenge-brief figure.
 - A reproducible Phase 2 evaluation script.
@@ -90,8 +92,8 @@ sensitivity checks.
 | ![Seven chosen stops, numbered along a schematic route](docs/screenshots/04-the-plan.jpg) | ![Who the new stops reach, in 3D](docs/screenshots/05-who-gains-3d.jpg) |
 | ![One stop's catchment at street level](docs/screenshots/06-stop-close-up.jpg) | ![The Explore tool with stop cards](docs/screenshots/08-explore.jpg) |
 
-All 13 screenshots are in [`docs/screenshots/`](docs/screenshots/). Regenerate
-them with `npm run screenshots` in `frontend/`. A timed two-minute pitch script
+All 15 screenshots are in [`docs/screenshots/`](docs/screenshots/), including
+dark-mode views. Regenerate them with `npm run screenshots` in `frontend/`. A timed two-minute pitch script
 is in [`docs/WALKTHROUGH.md`](docs/WALKTHROUGH.md), and the visual system is
 described in [`DESIGN.md`](DESIGN.md).
 
@@ -138,7 +140,7 @@ PYTHONPYCACHEPREFIX=.pycache-check .venv/bin/python -m compileall -q app tests s
 
 cd frontend
 npm run build
-npm run test:e2e      # 21 browser tests; starts the API and site if needed
+npm run test:e2e      # 24 browser tests; starts the API and site if needed
 npm run screenshots   # refreshes docs/screenshots
 ```
 
@@ -222,7 +224,7 @@ accessbridge-ai/
 | Accessibility | Stage 7 travel-time matrix contract, currently proxy-derived |
 | Optimisation | `PuLP` with CBC MILP solver |
 | API | `FastAPI`, `Pydantic` |
-| Frontend | `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`, `shadcn/ui` on Radix, `motion`, `deck.gl`, `MapLibre GL JS`, `lucide-react` |
+| Frontend | `React 19`, `TypeScript`, `Vite`, `Tailwind CSS v4`, `shadcn/ui` on Radix, `motion`, `deck.gl`, `MapLibre GL JS`, `lucide-react`; light and dark themes |
 | Testing/tooling | `pytest`, `ruff`, `mypy`, TypeScript build, Playwright browser tests |
 
 Planned later:

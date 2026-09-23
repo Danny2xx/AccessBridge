@@ -97,24 +97,22 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
       </div>
 
       <article
-        data-testid="story-card"
-        aria-labelledby="story-title"
-        className={cn(
-          "z-20 flex flex-col rounded-2xl border border-border/90 bg-card/97 backdrop-blur-xl edge-light",
+        data-testid="story-card"aria-labelledby="story-title"className={cn(
+          "z-20 flex flex-col rounded-xl border border-border bg-card",
           "lg:absolute lg:top-6 lg:right-6 lg:bottom-6 lg:h-fit lg:max-h-[calc(100%-3rem)] lg:w-[29rem]",
           "max-lg:mx-3 max-lg:-mt-6"
         )}
       >
-        <p className="visually-hidden" aria-live="polite">
+        <p className="visually-hidden"aria-live="polite">
           Step {index + 1} of {total}: {step.title}
         </p>
 
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="wait"initial={false}>
           <motion.div key={step.id} {...fade} className="grid min-h-0 gap-4 overflow-y-auto p-6 lg:pb-4">
-            <p className="text-sm font-extrabold tracking-wide text-primary tabular">
+            <p className="text-sm font-semibold tracking-wide text-primary tabular">
               {index + 1} <span className="text-dim">/ {total}</span>
             </p>
-            <h1 id="story-title" className="text-[clamp(1.7rem,1.4rem+1.2vw,2.15rem)] font-extrabold tracking-tight">
+            <h1 id="story-title"className="text-[clamp(1.45rem,1.25rem+0.9vw,1.8rem)] font-semibold tracking-tight">
               {step.title}
             </h1>
 
@@ -126,10 +124,8 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
 
             {step.figures.length > 0 ? (
               <motion.div
-                className="grid grid-cols-[repeat(auto-fit,minmax(8.75rem,1fr))] gap-5"
-                initial={reduced ? false : "hidden"}
-                animate="shown"
-                variants={{ shown: { transition: { staggerChildren: 0.08 } } }}
+                className="grid grid-cols-[repeat(auto-fit,minmax(8.75rem,1fr))] gap-5"initial={reduced ? false : "hidden"}
+                animate="shown"variants={{ shown: { transition: { staggerChildren: 0.08 } } }}
               >
                 {step.figures.map((figure) => (
                   <motion.div
@@ -154,8 +150,7 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
                     )}
                   >
                     <span
-                      aria-hidden="true"
-                      className="grid size-7 place-items-center rounded-full bg-primary text-sm font-extrabold text-primary-foreground tabular"
+                      aria-hidden="true"className="grid size-7 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground tabular"
                     >
                       {number}
                     </span>
@@ -180,25 +175,21 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
           </motion.div>
         </AnimatePresence>
 
-        <div className="flex gap-2.5 border-t border-border p-5 max-lg:sticky max-lg:bottom-0 max-lg:rounded-b-2xl max-lg:bg-card/97">
+        <div className="flex gap-2.5 border-t border-border p-5 max-lg:sticky max-lg:bottom-0 max-lg:rounded-b-2xl max-lg:bg-card">
           <Button
-            variant="outline"
-            size="icon"
-            className="rounded-full"
-            onClick={() => setIndex((current) => Math.max(0, current - 1))}
+            variant="outline"size="icon"className="rounded-full"onClick={() => setIndex((current) => Math.max(0, current - 1))}
             disabled={index === 0}
             aria-label="Previous step"
           >
             <ArrowLeft aria-hidden="true" />
           </Button>
           {step.finale ? (
-            <Button variant="outline" className="rounded-full" onClick={() => navigate("evidence")}>
+            <Button variant="outline"className="rounded-full"onClick={() => navigate("evidence")}>
               See the evidence
             </Button>
           ) : null}
           <Button
-            className="flex-1 rounded-full font-bold"
-            onClick={() => (index < total - 1 ? setIndex(index + 1) : navigate("explore"))}
+            className="flex-1 rounded-full font-bold"onClick={() => (index < total - 1 ? setIndex(index + 1) : navigate("explore"))}
           >
             {index < total - 1 ? `Next: ${steps[index + 1].short}` : "Try it yourself"}
             <ArrowRight aria-hidden="true" />
@@ -207,9 +198,8 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
       </article>
 
       <nav
-        aria-label="Story steps"
-        className={cn(
-          "z-20 grid gap-2 rounded-2xl border border-border/90 bg-card/95 p-4 backdrop-blur-xl edge-light",
+        aria-label="Story steps"className={cn(
+          "z-20 grid gap-2 rounded-xl border border-border bg-card/95 p-4 ",
           "lg:absolute lg:bottom-6 lg:left-6 lg:w-[23rem]",
           "max-lg:mx-3 max-lg:my-4"
         )}
@@ -222,9 +212,7 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
           {steps.map((item, itemIndex) => (
             <li key={item.id} className="flex-1">
               <button
-                type="button"
-                data-testid="story-step-dot"
-                aria-current={itemIndex === index ? "step" : undefined}
+                type="button"data-testid="story-step-dot"aria-current={itemIndex === index ? "step" : undefined}
                 aria-label={`Step ${itemIndex + 1}: ${item.title}`}
                 onClick={() => setIndex(itemIndex)}
                 className="group relative block h-6 w-full outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
@@ -244,7 +232,7 @@ export function StoryPage({ scenario, evidence, onProgress, navigate }: StoryPag
           ))}
         </ol>
         <p className="text-[0.8125rem] text-dim max-md:hidden">Use the arrow keys to move between steps</p>
-        <p data-testid="story-attribution" className="border-t border-border pt-2 text-xs leading-snug text-dim">
+        <p data-testid="story-attribution"className="border-t border-border pt-2 text-xs leading-snug text-dim">
           {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan}
         </p>
       </nav>

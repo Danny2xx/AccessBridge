@@ -6,52 +6,91 @@
 /* ─────────────────────────────────────────────────────────────
    AccessBridge AI · design tokens
 
-   Neutral near-black base with three data roles:
-   coral for the proposed network, periwinkle for today's rail and
-   Metro, and a single-hue fuchsia ramp for deprivation. The data
-   colours were validated with the dataviz palette checks on these
-   surfaces: worst all-pairs colour-blind separation 12.4, and the
-   deprivation ramp passes the ordinal checks.
+   Light by default, dark on request. Quiet neutrals, generous
+   space, one accent. Three data roles carry all the meaning:
+   magenta for the proposed network, blue for today's rail and
+   Metro, and a single-hue terracotta ramp for deprivation.
+
+   Every data colour is validated with the dataviz palette checks
+   in both themes: all-pairs colour-blind separation 11.6 light
+   and 8.7 dark, and both deprivation ramps pass the ordinal
+   checks against their own map surface.
    ───────────────────────────────────────────────────────────── */
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
-  --background: #0a0a0b;
-  --foreground: #fafafa;
-  --card: #131316;
-  --card-foreground: #fafafa;
-  --popover: #101013;
-  --popover-foreground: #fafafa;
-  --primary: #ff8a5c;
-  --primary-foreground: #2a0f06;
-  --secondary: #1c1c21;
-  --secondary-foreground: #fafafa;
-  --muted: #1c1c21;
-  --muted-foreground: #a8a8b3;
-  --accent: #23232a;
-  --accent-foreground: #fafafa;
-  --destructive: #f2685f;
-  --border: #26262e;
-  --input: #2d2d37;
-  --ring: #ff8a5c;
+  --background: #fcfcfd;
+  --foreground: #101114;
+  --card: #ffffff;
+  --card-foreground: #101114;
+  --popover: #ffffff;
+  --popover-foreground: #101114;
+  --primary: #b20d8f;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f6;
+  --secondary-foreground: #101114;
+  --muted: #f4f4f6;
+  --muted-foreground: #56596a;
+  --accent: #f4f4f6;
+  --accent-foreground: #101114;
+  --destructive: #c0392b;
+  --border: #e6e6eb;
+  --input: #d8d8e0;
+  --ring: #b20d8f;
 
   /* Data roles */
-  --proposal: #e0703f;
-  --proposal-ui: #ff8a5c;
-  --today: #6478e8;
-  --today-ui: #93a4ff;
-  --need-1: #ec91d1;
-  --need-2: #d270b7;
-  --need-3: #ae5f98;
-  --need-4: #875178;
-  --need-5: #614458;
-  --map-neutral: #3a3a46;
-  --dim: #7c7c8a;
+  --proposal: #b20d8f;
+  --today: #0073cf;
+  --need: #c74c3d;
+  --need-1: #a12c20;
+  --need-2: #b94335;
+  --need-3: #c76354;
+  --need-4: #d08275;
+  --need-5: #d89f95;
+  --map-neutral: #c9cad2;
+  --map-line: #ffffff;
+  --dim: #7b7e8c;
+
+  --map-style: "light";
 
   --font-sans: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system,
     "Segoe UI", Roboto, sans-serif;
-  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark {
+  --background: #0c0c0f;
+  --foreground: #f7f7f9;
+  --card: #141418;
+  --card-foreground: #f7f7f9;
+  --popover: #141418;
+  --popover-foreground: #f7f7f9;
+  --primary: #e872c6;
+  --primary-foreground: #1a0616;
+  --secondary: #1b1b20;
+  --secondary-foreground: #f7f7f9;
+  --muted: #1b1b20;
+  --muted-foreground: #a6a8b5;
+  --accent: #212128;
+  --accent-foreground: #f7f7f9;
+  --destructive: #f2685f;
+  --border: #26262c;
+  --input: #33333c;
+  --ring: #e872c6;
+
+  --proposal: #da52b5;
+  --today: #338ddf;
+  --need: #df6a59;
+  --need-1: #fd8c7b;
+  --need-2: #e06f5e;
+  --need-3: #b65c4e;
+  --need-4: #8a4d43;
+  --need-5: #603d38;
+  --map-neutral: #3a3a42;
+  --map-line: #0c0c0f;
+  --dim: #7e8090;
+
+  --map-style: "dark";
 }
 
 @theme inline {
@@ -75,26 +114,32 @@
   --color-ring: var(--ring);
 
   --color-proposal: var(--proposal);
-  --color-proposal-ui: var(--proposal-ui);
   --color-today: var(--today);
-  --color-today-ui: var(--today-ui);
+  --color-need: var(--need);
   --color-dim: var(--dim);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
 
   --font-sans: var(--font-sans);
 }
 
 @layer base {
   * {
-    @apply border-border outline-ring/60;
+    @apply border-border outline-ring/50;
   }
 
   html {
     background: var(--background);
+  }
+
+  :root {
+    color-scheme: light;
+  }
+
+  .dark {
     color-scheme: dark;
   }
 
@@ -114,6 +159,7 @@
   h2,
   h3 {
     text-wrap: balance;
+    letter-spacing: -0.02em;
   }
 
   p {
@@ -121,8 +167,7 @@
   }
 
   ::selection {
-    background: var(--primary);
-    color: var(--primary-foreground);
+    background: color-mix(in oklab, var(--primary) 22%, transparent);
   }
 }
 
@@ -143,31 +188,25 @@
     border: 0;
   }
 
-  /* A hairline top edge that reads as a lit surface, used on raised panels. */
-  .edge-light {
-    box-shadow:
-      inset 0 1px 0 0 rgb(255 255 255 / 0.06),
-      0 24px 60px -30px rgb(0 0 0 / 0.9);
-  }
-
-  .grain {
-    background-image: radial-gradient(rgb(255 255 255 / 0.028) 1px, transparent 1px);
-    background-size: 3px 3px;
+  /* The only elevation in the system: map overlays sitting over the basemap. */
+  .floating {
+    background: color-mix(in oklab, var(--popover) 92%, transparent);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 8px 24px -16px rgb(0 0 0 / 0.25);
   }
 }
 
-/* Map libraries ship their own chrome; match it to the panel styling. */
 .maplibregl-ctrl-attrib.maplibregl-compact {
   background: color-mix(in oklab, var(--popover) 88%, transparent) !important;
   color: var(--dim);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .maplibregl-ctrl-attrib a {
   color: var(--muted-foreground) !important;
 }
 
-.maplibregl-ctrl-attrib-button {
+.dark .maplibregl-ctrl-attrib-button {
   filter: invert(1);
 }
 

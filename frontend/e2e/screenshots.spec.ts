@@ -47,3 +47,16 @@ test("document page screenshots", async ({ page }) => {
     await shot(page, name, true);
   }
 });
+
+test("dark mode screenshots", async ({ page }) => {
+  await page.goto("/#/explore");
+  await expect(page.getByTestId("stop-card")).toHaveCount(7);
+  await page.getByTestId("theme-toggle").click();
+  await page.waitForTimeout(4000);
+  await shot(page, "14-dark-explore");
+
+  await page.goto("/#/evidence");
+  await expect(page.locator("h1")).toBeVisible();
+  await page.waitForTimeout(1800);
+  await shot(page, "15-dark-evidence", true);
+});

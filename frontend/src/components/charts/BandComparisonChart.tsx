@@ -24,11 +24,11 @@ export function BandComparisonChart({ rows, threshold, compact = false }: BandCo
     <div data-chart-body className="relative min-w-0">
       <ul className="mb-3 flex list-none flex-wrap gap-x-5 gap-y-2 p-0 text-sm text-muted-foreground">
         <li className="inline-flex items-center gap-2">
-          <span className="size-3 rounded-[3px] bg-today" aria-hidden="true" />
+          <span className="size-3 rounded-[3px] bg-today"aria-hidden="true" />
           Rail or Metro within {threshold} min today
         </li>
         <li className="inline-flex items-center gap-2">
-          <span className="size-3 rounded-[3px] bg-proposal" aria-hidden="true" />A new stop within {threshold} min
+          <span className="size-3 rounded-[3px] bg-proposal"aria-hidden="true" />A new stop within {threshold} min
         </li>
       </ul>
 
@@ -37,8 +37,7 @@ export function BandComparisonChart({ rows, threshold, compact = false }: BandCo
           <div
             key={row.band.id}
             tabIndex={0}
-            data-testid="band-row"
-            aria-label={`${row.band.label}: ${formatNumber(row.today)} today, ${formatNumber(row.newStops)} with the new stops`}
+            data-testid="band-row"aria-label={`${row.band.label}: ${formatNumber(row.today)} today, ${formatNumber(row.newStops)} with the new stops`}
             style={{ gridTemplateColumns: `${labelColumn} minmax(0,1fr)` }}
             className="grid cursor-default items-center gap-3.5 rounded-lg px-1 py-1.5 outline-none hover:bg-accent/60 focus-visible:bg-accent/60 focus-visible:ring-[3px] focus-visible:ring-ring/50"
             {...bind({
@@ -57,8 +56,7 @@ export function BandComparisonChart({ rows, threshold, compact = false }: BandCo
               {ticks.slice(1).map((tick) => (
                 <span
                   key={tick}
-                  aria-hidden="true"
-                  style={{ left: pct(tick) }}
+                  aria-hidden="true"style={{ left: pct(tick) }}
                   className="absolute -top-1.5 -bottom-1.5 w-px bg-border"
                 />
               ))}
@@ -86,7 +84,7 @@ export function BandComparisonChart({ rows, threshold, compact = false }: BandCo
           </div>
         ))}
 
-        <div aria-hidden="true" style={{ gridTemplateColumns: `${labelColumn} minmax(0,1fr)` }} className="grid gap-3.5 px-1">
+        <div aria-hidden="true"style={{ gridTemplateColumns: `${labelColumn} minmax(0,1fr)` }} className="grid gap-3.5 px-1">
           <span />
           <span className="relative mr-16 h-5">
             {ticks.map((tick) => (

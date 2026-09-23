@@ -26,9 +26,8 @@ export function Figure({
   return (
     <div className="flex min-w-0 flex-col items-start gap-1">
       <span
-        data-testid="figure-value"
-        className={cn(
-          "font-extrabold leading-none tracking-tight tabular",
+        data-testid="figure-value"className={cn(
+          "font-semibold leading-none tracking-tight tabular",
           size === "compact" ? "text-xl" : "text-[clamp(1.6rem,1.3rem+1vw,2.1rem)]",
           tone === "amber" && "text-primary"
         )}

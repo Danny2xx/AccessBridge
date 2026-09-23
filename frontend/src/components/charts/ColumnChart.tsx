@@ -53,8 +53,8 @@ export function ColumnChart({ points, reference, annotation, height = 260 }: Col
   const baseline = MARGIN.top + plotHeight;
 
   return (
-    <div data-chart-body className="relative min-w-0" ref={ref}>
-      <svg data-testid="column-chart" width={width} height={height} role="presentation" className="block overflow-visible">
+    <div data-chart-body className="relative min-w-0"ref={ref}>
+      <svg data-testid="column-chart"width={width} height={height} role="presentation"className="block overflow-visible">
         {ticks.map((tick) => (
           <g key={tick} aria-hidden="true">
             <line
@@ -62,11 +62,10 @@ export function ColumnChart({ points, reference, annotation, height = 260 }: Col
               x2={width - MARGIN.right}
               y1={y(tick)}
               y2={y(tick)}
-              className="stroke-border"
-              strokeWidth={1}
+              className="stroke-border"strokeWidth={1}
               shapeRendering="crispEdges"
             />
-            <text x={MARGIN.left - 8} y={y(tick)} dy="0.32em" textAnchor="end" className="fill-dim text-xs tabular">
+            <text x={MARGIN.left - 8} y={y(tick)} dy="0.32em"textAnchor="end"className="fill-dim text-xs tabular">
               {tickLabel(tick)}
             </text>
           </g>
@@ -79,13 +78,12 @@ export function ColumnChart({ points, reference, annotation, height = 260 }: Col
             <g key={point.key} className="group">
               <motion.path
                 d={columnPath(cx - columnWidth / 2, top, columnWidth, baseline - top)}
-                className="fill-proposal transition-[fill] group-hover:fill-proposal-ui group-focus-within:fill-proposal-ui"
-                initial={reduced ? false : { opacity: 0, transform: "translateY(10px)" }}
+                className="fill-proposal transition-[fill] group-hover:fill-proposal-ui group-focus-within:fill-proposal-ui"initial={reduced ? false : { opacity: 0, transform: "translateY(10px)" }}
                 animate={{ opacity: 1, transform: "translateY(0px)" }}
                 transition={{ duration: reduced ? 0 : 0.45, delay: reduced ? 0 : index * 0.035 }}
               />
               {point.labelled ? (
-                <text x={cx} y={top - 8} textAnchor="middle" className="fill-foreground text-xs font-bold tabular">
+                <text x={cx} y={top - 8} textAnchor="middle"className="fill-foreground text-xs font-bold tabular">
                   {formatNumber(point.value)}
                 </text>
               ) : null}
@@ -93,9 +91,7 @@ export function ColumnChart({ points, reference, annotation, height = 260 }: Col
                 <text
                   x={cx}
                   y={height - MARGIN.bottom + 20}
-                  textAnchor="middle"
-                  aria-hidden="true"
-                  className="fill-dim text-xs tabular"
+                  textAnchor="middle"aria-hidden="true"className="fill-dim text-xs tabular"
                 >
                   {point.axisLabel}
                 </text>
@@ -106,10 +102,8 @@ export function ColumnChart({ points, reference, annotation, height = 260 }: Col
                 width={band}
                 height={plotHeight}
                 tabIndex={0}
-                role="img"
-                aria-label={point.ariaLabel}
-                data-testid="column-hit"
-                className="cursor-default fill-transparent outline-none focus-visible:stroke-ring focus-visible:stroke-2"
+                role="img"aria-label={point.ariaLabel}
+                data-testid="column-hit"className="cursor-default fill-transparent outline-none focus-visible:stroke-ring focus-visible:stroke-2"
                 {...bind(point.tooltip)}
               />
             </g>
@@ -123,14 +117,12 @@ export function ColumnChart({ points, reference, annotation, height = 260 }: Col
               x2={width - MARGIN.right}
               y1={y(reference.value)}
               y2={y(reference.value)}
-              className="stroke-today"
-              strokeWidth={2}
+              className="stroke-today"strokeWidth={2}
             />
             <text
               x={MARGIN.left + 6}
               y={y(reference.value) - 8}
-              className="fill-muted-foreground text-xs font-bold"
-              style={{ paintOrder: "stroke", stroke: "var(--card)", strokeWidth: 4 }}
+              className="fill-muted-foreground text-xs font-bold"style={{ paintOrder: "stroke", stroke: "var(--card)", strokeWidth: 4 }}
             >
               {reference.label}
             </text>
@@ -144,14 +136,12 @@ export function ColumnChart({ points, reference, annotation, height = 260 }: Col
               x2={width - MARGIN.right - 6}
               y1={14}
               y2={14}
-              className="stroke-dim"
-              strokeWidth={1}
+              className="stroke-dim"strokeWidth={1}
             />
             <text
               x={(MARGIN.left + band * annotation.fromIndex + width - MARGIN.right) / 2}
               y={8}
-              textAnchor="middle"
-              className="fill-dim text-xs"
+              textAnchor="middle"className="fill-dim text-xs"
             >
               {annotation.text}
             </text>
@@ -163,8 +153,7 @@ export function ColumnChart({ points, reference, annotation, height = 260 }: Col
           x2={width - MARGIN.right}
           y1={baseline}
           y2={baseline}
-          className="stroke-input"
-          strokeWidth={1}
+          className="stroke-input"strokeWidth={1}
           shapeRendering="crispEdges"
         />
       </svg>

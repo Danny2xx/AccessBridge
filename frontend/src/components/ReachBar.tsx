@@ -17,7 +17,7 @@ export function ReachBar({ total, today, withStops, threshold }: ReachBarProps) 
   ];
 
   return (
-    <figure className="m-0 grid gap-2" data-testid="reach-bar">
+    <figure className="m-0 grid gap-2"data-testid="reach-bar">
       <figcaption className="text-xs text-dim">
         Most deprived residents within a {threshold}-minute walk, out of {formatNumber(total)}
       </figcaption>

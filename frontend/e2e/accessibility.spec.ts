@@ -21,6 +21,20 @@ test("moving between pages puts focus on the new content", async ({ page }) => {
   await expect(page.locator("main")).toBeFocused();
 });
 
+test("the theme toggle switches between light and dark and is remembered", async ({ page }) => {
+  await page.goto("/#/evidence");
+  await expect(page.locator("h1")).toBeVisible();
+  const isDark = () => page.evaluate(() => document.documentElement.classList.contains("dark"));
+
+  const before = await isDark();
+  await page.getByTestId("theme-toggle").click();
+  expect(await isDark()).toBe(!before);
+
+  await page.reload();
+  await expect(page.locator("h1")).toBeVisible();
+  expect(await isDark()).toBe(!before);
+});
+
 test.describe("phone width", () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 

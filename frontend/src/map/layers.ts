@@ -7,7 +7,8 @@ import {
   TextLayer
 } from "@deck.gl/layers";
 import { bandForDecile } from "@/lib/deprivation";
-import { COLOR, rgba, type RGBA } from "@/lib/palette";
+import { rgba, type RGBA } from "@/lib/palette";
+import type { Palette } from "@/lib/usePalette";
 import type { GeoJsonFeature, OptimisationResult, ScenarioResponse, StopDetail } from "@/types";
 
 export type MapMode = "plain" | "need" | "gap" | "gain";
@@ -31,6 +32,8 @@ export type MapLayerOptions = {
   markers: MapMarker[];
   /** 0 to 1: how much of the route has been drawn. */
   routeProgress: number;
+  /** Data colours for the active theme. */
+  palette: Palette;
 };
 
 export type MapDerived = {
@@ -47,13 +50,29 @@ export const NETWORK_ELEVATION = 1700;
 const FONT_FAMILY = '"Atkinson Hyperlegible Next", system-ui, sans-serif';
 const ON_TOP = { depthCompare: "always" as const, depthWriteEnabled: false };
 
-const NEED = rgba(COLOR.need);
-const TODAY = rgba(COLOR.today);
-const PROPOSAL = rgba(COLOR.proposal);
-const PROPOSAL_UI = rgba(COLOR.proposalUi);
-const NEUTRAL = rgba(COLOR.mapNeutral);
-const RING = rgba(COLOR.mapLine);
-const INK_ON_PROPOSAL: RGBA = [42, 15, 6, 255];
+type Colors = {
+  need: RGBA;
+  today: RGBA;
+  proposal: RGBA;
+  neutral: RGBA;
+  ring: RGBA;
+  inkOnProposal: RGBA;
+  ramp: RGBA[];
+  label: RGBA;
+};
+
+function themeColors(palette: Palette): Colors {
+  return {
+    need: rgba(palette.need),
+    today: rgba(palette.today),
+    proposal: rgba(palette.proposal),
+    neutral: rgba(palette.mapNeutral),
+    ring: rgba(palette.mapLine),
+    inkOnProposal: rgba(palette.primaryForeground),
+    ramp: palette.needRamp.map((step) => rgba(step)),
+    label: rgba(palette.ink)
+  };
+}
 
 export function deriveMapState(
   scenario: ScenarioResponse,
@@ -102,32 +121,38 @@ function withAlpha(color: RGBA, alpha: number): RGBA {
   return [color[0], color[1], color[2], Math.round(alpha)];
 }
 
-function baseFill(feature: GeoJsonFeature, mode: MapMode, derived: MapDerived): RGBA {
+function baseFill(feature: GeoJsonFeature, mode: MapMode, derived: MapDerived, colors: Colors): RGBA {
   const id = lsoaId(feature);
   const decile = lsoaDecile(feature);
 
   switch (mode) {
     case "plain":
-      return withAlpha(PROPOSAL_UI, 14);
+      return withAlpha(colors.proposal, 16);
     case "need":
-      return rgba(bandForDecile(decile).color, 180);
+      return withAlpha(colors.ramp[bandForDecile(decile).step], 190);
     case "gap":
-      if (derived.baselineIds.has(id)) return withAlpha(TODAY, 150);
-      if (decile === 1) return withAlpha(NEED, 225);
-      return withAlpha(NEUTRAL, 70);
+      if (derived.baselineIds.has(id)) return withAlpha(colors.today, 150);
+      if (decile === 1) return withAlpha(colors.need, 225);
+      return withAlpha(colors.neutral, 90);
     case "gain":
-      if (derived.coveredIds.has(id)) return withAlpha(PROPOSAL, 215);
-      if (derived.baselineIds.has(id)) return withAlpha(TODAY, 120);
-      return withAlpha(NEUTRAL, 50);
+      if (derived.coveredIds.has(id)) return withAlpha(colors.proposal, 210);
+      if (derived.baselineIds.has(id)) return withAlpha(colors.today, 125);
+      return withAlpha(colors.neutral, 70);
   }
 }
 
-function fillColor(feature: GeoJsonFeature, mode: MapMode, derived: MapDerived, is3d: boolean): RGBA {
-  const color = baseFill(feature, mode, derived);
+function fillColor(
+  feature: GeoJsonFeature,
+  mode: MapMode,
+  derived: MapDerived,
+  is3d: boolean,
+  colors: Colors
+): RGBA {
+  const color = baseFill(feature, mode, derived, colors);
   const focused = derived.focusIds.has(lsoaId(feature));
   // Translucent extrusions blend into each other, so 3D uses opaque fills.
   if (is3d && mode !== "plain") {
-    return derived.focusIds.size > 0 && !focused ? withAlpha(NEUTRAL, 255) : withAlpha(color, 255);
+    return derived.focusIds.size > 0 && !focused ? withAlpha(colors.neutral, 255) : withAlpha(color, 255);
   }
   if (derived.focusIds.size === 0) return color;
   // Keep the catchment readable while letting the 3D buildings show through.
@@ -197,6 +222,7 @@ function revealedPath(coordinates: number[][], fractions: number[], progress: nu
 export function buildLayers(options: MapLayerOptions, derived: MapDerived): Layer[] {
   const { scenario, result, mode, is3d, focusStopId, showCandidates, showRailMetro, showNetwork, routeProgress } =
     options;
+  const colors = themeColors(options.palette);
   const layers: Layer[] = [];
   const focusKey = focusStopId ?? "";
   const resultKey = result ? `${result.selected_stops.map((s) => s.candidate_id).join("|")}:${result.threshold_min}` : "none";
@@ -212,21 +238,21 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
       wireframe: false,
       lineWidthUnits: "pixels",
       getLineWidth: (feature: unknown) =>
-        derived.focusIds.has(lsoaId(feature as GeoJsonFeature)) ? 2.5 : mode === "plain" ? 1.2 : 0.8,
+        derived.focusIds.has(lsoaId(feature as GeoJsonFeature)) ? 2.5 : mode === "plain" ? 0.8 : 0.7,
       getLineColor: (feature: unknown): RGBA => {
-        if (derived.focusIds.has(lsoaId(feature as GeoJsonFeature))) return PROPOSAL_UI;
-        if (mode === "plain") return withAlpha(PROPOSAL_UI, 110);
-        return is3d ? [238, 242, 248, 40] : withAlpha(RING, 170);
+        if (derived.focusIds.has(lsoaId(feature as GeoJsonFeature))) return colors.proposal;
+        if (mode === "plain") return withAlpha(colors.proposal, 70);
+        return is3d ? withAlpha(colors.ring, 60) : withAlpha(colors.ring, 150);
       },
-      getFillColor: (feature: unknown) => fillColor(feature as GeoJsonFeature, mode, derived, is3d),
+      getFillColor: (feature: unknown) => fillColor(feature as GeoJsonFeature, mode, derived, is3d, colors),
       getElevation: (feature: unknown) => elevation(feature as GeoJsonFeature, mode, derived),
       updateTriggers: {
-        getFillColor: [mode, resultKey, focusKey, is3d],
+        getFillColor: [mode, resultKey, focusKey, is3d, options.palette],
         getElevation: [mode, resultKey, is3d],
-        getLineColor: [mode, focusKey, is3d],
+        getLineColor: [mode, focusKey, is3d, options.palette],
         getLineWidth: [mode, focusKey]
       },
-      material: { ambient: 0.55, diffuse: 0.7, shininess: 16, specularColor: [238, 242, 247] }
+      material: { ambient: 0.6, diffuse: 0.68, shininess: 14, specularColor: [238, 242, 247] }
     })
   );
 
@@ -247,7 +273,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
             radius: 16,
             getPosition: (f: GeoJsonFeature) => f.geometry.coordinates as [number, number],
             getElevation: 260,
-            getFillColor: [205, 214, 228, 230]
+            getFillColor: withAlpha(colors.neutral, 240)
           })
         : new ScatterplotLayer({
             id: "candidate-stops",
@@ -256,7 +282,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
             radiusUnits: "pixels",
             getRadius: 2.4,
             getPosition: (f: GeoJsonFeature) => f.geometry.coordinates as [number, number],
-            getFillColor: [205, 214, 228, 150],
+            getFillColor: withAlpha(colors.neutral, 200),
             parameters: ON_TOP
           })
     );
@@ -272,7 +298,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         radius: 38,
         getPosition: (f: GeoJsonFeature) => f.geometry.coordinates as [number, number],
         getElevation: 700,
-        getFillColor: [170, 202, 240, 255],
+        getFillColor: colors.today,
         material: { ambient: 0.6, diffuse: 0.6, shininess: 20, specularColor: [255, 255, 255] }
       })
     );
@@ -289,9 +315,9 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         stroked: true,
         lineWidthUnits: "pixels",
         getLineWidth: 2,
-        getLineColor: RING,
+        getLineColor: colors.ring,
         getPosition: (f: GeoJsonFeature) => f.geometry.coordinates as [number, number],
-        getFillColor: [170, 202, 240, 255],
+        getFillColor: colors.today,
         parameters: ON_TOP
       })
     );
@@ -316,7 +342,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
           widthUnits: "pixels",
           getPath: (d: { path: number[][] }) => d.path as never,
           getWidth: is3d ? 9 : 8,
-          getColor: withAlpha(RING, 220),
+          getColor: withAlpha(colors.ring, 210),
           jointRounded: true,
           capRounded: true,
           parameters: ON_TOP
@@ -327,7 +353,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
           widthUnits: "pixels",
           getPath: (d: { path: number[][] }) => d.path as never,
           getWidth: is3d ? 5 : 4,
-          getColor: PROPOSAL_UI,
+          getColor: colors.proposal,
           jointRounded: true,
           capRounded: true,
           parameters: ON_TOP
@@ -345,7 +371,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
           getPosition: (d: StopDetail) => [d.longitude, d.latitude],
           getElevation: NETWORK_ELEVATION,
           getFillColor: (d: StopDetail) =>
-            d.candidate_id === focusStopId ? PROPOSAL_UI : withAlpha(PROPOSAL, 235),
+            d.candidate_id === focusStopId ? colors.proposal : withAlpha(colors.proposal, 235),
           updateTriggers: { getFillColor: [focusKey] },
           material: { ambient: 0.5, diffuse: 0.7, shininess: 24, specularColor: [255, 255, 255] }
         })
@@ -363,9 +389,9 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         stroked: true,
         lineWidthUnits: "pixels",
         getLineWidth: 2,
-        getLineColor: RING,
+        getLineColor: colors.ring,
         getPosition: (d: StopDetail) => [d.longitude, d.latitude, z],
-        getFillColor: PROPOSAL_UI,
+        getFillColor: colors.proposal,
         updateTriggers: { getRadius: [focusKey], getPosition: [z] },
         parameters: ON_TOP
       }),
@@ -376,7 +402,7 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         getPosition: (d: StopDetail) => [d.longitude, d.latitude, z],
         getText: (d: StopDetail) => String(derived.stopNumbers.get(d.candidate_id) ?? ""),
         getSize: 13,
-        getColor: INK_ON_PROPOSAL,
+        getColor: colors.inkOnProposal,
         fontFamily: FONT_FAMILY,
         fontWeight: 800,
         getTextAnchor: "middle",
@@ -398,8 +424,8 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         stroked: true,
         lineWidthUnits: "pixels",
         getLineWidth: 3,
-        getLineColor: PROPOSAL_UI,
-        getFillColor: RING,
+        getLineColor: colors.proposal,
+        getFillColor: colors.ring,
         getPosition: (d: MapMarker) => [d.longitude, d.latitude],
         parameters: ON_TOP
       }),
@@ -409,14 +435,14 @@ export function buildLayers(options: MapLayerOptions, derived: MapDerived): Laye
         getPosition: (d: MapMarker) => [d.longitude, d.latitude],
         getText: (d: MapMarker) => d.label,
         getSize: 15,
-        getColor: rgba(COLOR.ink),
+        getColor: colors.label,
         fontFamily: FONT_FAMILY,
         fontWeight: 700,
         getTextAnchor: "middle",
         getAlignmentBaseline: "bottom",
         getPixelOffset: [0, -18],
         background: true,
-        getBackgroundColor: [11, 16, 25, 225],
+getBackgroundColor: withAlpha(colors.ring, 235),
         backgroundPadding: [8, 5],
         parameters: ON_TOP
       })

@@ -15,15 +15,22 @@ export type Band = {
   label: string;
   short: string;
   deciles: number[];
-  color: string;
+  /** Index into the theme's deprivation ramp, most deprived first. */
+  step: 0 | 1 | 2 | 3 | 4;
 };
 
 export const BANDS: Band[] = [
-  { id: "d1", label: "Most deprived 10% in England", short: "Most deprived 10%", deciles: [1], color: "#ec91d1" },
-  { id: "d2", label: "10–20% most deprived", short: "10–20%", deciles: [2], color: "#d270b7" },
-  { id: "d3", label: "20–30% most deprived", short: "20–30%", deciles: [3], color: "#ae5f98" },
-  { id: "d4-5", label: "30–50% most deprived", short: "30–50%", deciles: [4, 5], color: "#875178" },
-  { id: "d6-10", label: "Least deprived half", short: "Least deprived half", deciles: [6, 7, 8, 9, 10], color: "#614458" }
+  { id: "d1", label: "Most deprived 10% in England", short: "Most deprived 10%", deciles: [1], step: 0 },
+  { id: "d2", label: "10–20% most deprived", short: "10–20%", deciles: [2], step: 1 },
+  { id: "d3", label: "20–30% most deprived", short: "20–30%", deciles: [3], step: 2 },
+  { id: "d4-5", label: "30–50% most deprived", short: "30–50%", deciles: [4, 5], step: 3 },
+  {
+    id: "d6-10",
+    label: "Least deprived half",
+    short: "Least deprived half",
+    deciles: [6, 7, 8, 9, 10],
+    step: 4
+  }
 ];
 
 export function bandForDecile(decile: number): Band {

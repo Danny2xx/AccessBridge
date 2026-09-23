@@ -18,7 +18,7 @@ import {
   percent,
   shareInTen
 } from "@/lib/format";
-import { COLOR } from "@/lib/palette";
+import { usePalette } from "@/lib/usePalette";
 import type { Route } from "@/lib/useHashRoute";
 import type { EvidenceResponse } from "@/types";
 
@@ -30,6 +30,7 @@ type EvidencePageProps = {
 const STATUS_ORDER: EvidenceStatus[] = ["measured", "modelled", "placeholder", "brief"];
 
 export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
+  const palette = usePalette();
   const facts = evidence.study_area;
   const result = evidence.default_result;
   const comparison = result.accessibility;
@@ -89,7 +90,7 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
   return (
     <div className="mx-auto grid max-w-[75rem] gap-12 px-[clamp(1rem,3vw,2rem)] pt-14 pb-20">
       <header className="grid gap-4">
-        <h1 className="text-[clamp(2.2rem,1.6rem+2.4vw,3.25rem)] font-extrabold tracking-tight">The evidence</h1>
+        <h1 className="text-[clamp(1.9rem,1.5rem+1.6vw,2.6rem)] font-semibold tracking-tight">The evidence</h1>
         <p className="max-w-[62ch] text-xl leading-snug text-muted-foreground">
           What the data shows, and how sure we are. Every figure carries a label that says where it comes from.
         </p>
@@ -107,8 +108,7 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
 
       <div className="grid min-w-0 gap-5 lg:grid-cols-[repeat(2,minmax(0,1fr))]">
         <ChartFrame
-          title="Who lives here"
-          tags={["measured"]}
+          title="Who lives here"tags={["measured"]}
           intro={`${formatNumber(facts.population)} people live in the ${facts.neighbourhood_count} neighbourhoods around the Knowledge Quarter.`}
           takeaway={`About ${shareInTen(facts.most_deprived_population, facts.population)} in 10 live in the most deprived 10% of neighbourhoods in England.`}
           table={{
@@ -123,16 +123,15 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
         >
           <ShareBar
             segments={[
-              { key: "d1", label: BANDS[0].label, value: facts.most_deprived_population, color: BANDS[0].color },
-              { key: "d2-3", label: "10–30% most deprived", value: middlePopulation, color: BANDS[2].color },
-              { key: "rest", label: "Less deprived", value: restPopulation, color: BANDS[4].color }
+              { key: "d1", label: BANDS[0].label, value: facts.most_deprived_population, color: palette.needRamp[BANDS[0].step] },
+              { key: "d2-3", label: "10–30% most deprived", value: middlePopulation, color: palette.needRamp[BANDS[2].step] },
+              { key: "rest", label: "Less deprived", value: restPopulation, color: palette.needRamp[BANDS[4].step] }
             ]}
           />
         </ChartFrame>
 
         <ChartFrame
-          title="Today's gap"
-          tags={["modelled"]}
+          title="Today's gap"tags={["modelled"]}
           intro={`The most deprived residents, split by whether they can walk to a rail or Metro stop within ${threshold} minutes today.`}
           takeaway={`${formatNumber(facts.most_deprived_not_reached_today)} of them cannot. That is the gap the new stops aim at.`}
           table={{
@@ -150,16 +149,15 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
         >
           <ShareBar
             segments={[
-              { key: "reached", label: `Can walk to rail or Metro within ${threshold} min`, value: today, color: COLOR.today },
-              { key: "gap", label: "Cannot", value: facts.most_deprived_not_reached_today, color: COLOR.need }
+              { key: "reached", label: `Can walk to rail or Metro within ${threshold} min`, value: today, color: palette.today },
+              { key: "gap", label: "Cannot", value: facts.most_deprived_not_reached_today, color: palette.need }
             ]}
           />
         </ChartFrame>
 
         <ChartFrame
           wide
-          title="Who gains, band by band"
-          tags={["modelled"]}
+          title="Who gains, band by band"tags={["modelled"]}
           intro={`People within a ${threshold}-minute walk: of a rail or Metro stop today, and of one of the ${result.selected_stops.length} new stops.`}
           takeaway={`In the most deprived band, reach rises from ${formatNumber(bands[0]?.today ?? 0)} to ${formatNumber(bands[0]?.newStops ?? 0)}. In the other bands the new stops reach ${formatNumber(otherNew)} people against ${formatNumber(otherToday)} for rail and Metro, because the plan aims at the most deprived first. Today's stations stay, so the new stops add to what people have now.`}
           table={{
@@ -178,8 +176,7 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
 
         <ChartFrame
           wide
-          title="What more budget buys"
-          tags={["modelled", "placeholder"]}
+          title="What more budget buys"tags={["modelled", "placeholder"]}
           intro={`Most deprived residents within a ${threshold}-minute walk of a new stop, for budgets from ${formatGBPCompact(budget[0]?.value ?? 0)} to ${formatGBPCompact(budget[budget.length - 1]?.value ?? 0)}, with at most ${maxStops} stops.`}
           takeaway={
             <>
@@ -203,11 +200,11 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
         >
           <ul className="mb-3 flex list-none flex-wrap gap-x-5 gap-y-2 p-0 text-sm text-muted-foreground">
             <li className="inline-flex items-center gap-2">
-              <span className="size-3 rounded-[3px] bg-proposal" aria-hidden="true" />
+              <span className="size-3 rounded-[3px] bg-proposal"aria-hidden="true" />
               Within {threshold} min of a new stop
             </li>
             <li className="inline-flex items-center gap-2">
-              <span className="inline-block h-0 w-4 border-t-2 border-today" aria-hidden="true" />
+              <span className="inline-block h-0 w-4 border-t-2 border-today"aria-hidden="true" />
               Rail or Metro today
             </li>
           </ul>
@@ -219,10 +216,8 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
         </ChartFrame>
 
         <ChartFrame
-          title="How walking time changes it"
-          tags={["modelled"]}
-          intro="Extra most deprived residents reached, compared with rail or Metro at the same walking time."
-          takeaway={
+          title="How walking time changes it"tags={["modelled"]}
+          intro="Extra most deprived residents reached, compared with rail or Metro at the same walking time."takeaway={
             bestWalk && defaultWalk
               ? `The gain peaks at ${bestWalk.value} minutes and is ${formatNumber(defaultWalk.most_deprived_gain)} at ${threshold} minutes, which we use as the default.`
               : undefined
@@ -242,23 +237,20 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
         </ChartFrame>
 
         <ChartFrame
-          title="Value for money"
-          tags={["placeholder"]}
-          intro="What the default plan costs for each extra resident it reaches."
-          takeaway="Stop costs are placeholders for testing the method. A quantity surveyor should price real designs."
+          title="Value for money"tags={["placeholder"]}
+          intro="What the default plan costs for each extra resident it reaches."takeaway="Stop costs are placeholders for testing the method. A quantity surveyor should price real designs."
         >
           <div className="grid gap-5">
             <div className="grid grid-cols-[repeat(auto-fit,minmax(8.75rem,1fr))] gap-5">
               {evidence.cost_per_most_deprived_resident_gbp ? (
                 <Figure
                   value={formatPence(evidence.cost_per_most_deprived_resident_gbp)}
-                  label="per extra most deprived resident reached"
-                  tone="amber"
+                  label="per extra most deprived resident reached"tone="amber"
                 />
               ) : null}
               <Figure value={formatGBP(result.total_cost_gbp)} label={`for ${result.selected_stops.length} stops`} />
             </div>
-            <ul className="grid list-none gap-0 p-0 text-sm" aria-label="How the cost adds up">
+            <ul className="grid list-none gap-0 p-0 text-sm"aria-label="How the cost adds up">
               {costLines.map((line) => (
                 <li
                   key={`${line.label}-${line.each}`}
@@ -282,8 +274,7 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
 
         <ChartFrame
           wide
-          title="Stop by stop"
-          tags={["modelled"]}
+          title="Stop by stop"tags={["modelled"]}
           intro={`The ${result.stop_details.length} stops in the default plan, in route order. Each column counts people within a ${threshold}-minute walk.`}
         >
           <div className="overflow-x-auto">
@@ -304,8 +295,7 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
                   <TableRow key={stop.candidate_id}>
                     <TableCell className="font-semibold">
                       <span
-                        aria-hidden="true"
-                        className="mr-2.5 inline-grid size-[1.375rem] place-items-center rounded-full bg-primary align-middle text-xs font-extrabold text-primary-foreground tabular"
+                        aria-hidden="true"className="mr-2.5 inline-grid size-[1.375rem] place-items-center rounded-full bg-primary align-middle text-xs font-semibold text-primary-foreground tabular"
                       >
                         {index + 1}
                       </span>
@@ -325,8 +315,7 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
         </ChartFrame>
 
         <ChartFrame
-          title="Where the stops could go"
-          tags={["measured"]}
+          title="Where the stops could go"tags={["measured"]}
           intro={`${formatNumber(facts.candidate_stop_count)} possible locations, taken from active stops in the national stop register (NaPTAN).`}
           takeaway={`${facts.rail_metro_stop_count} of them are rail or Metro stops, which count as today's network.`}
         >
@@ -341,10 +330,9 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
         </ChartFrame>
 
         <Card
-          aria-labelledby="how-sure-heading"
-          className="gap-4 rounded-2xl border-border/80 bg-card/70 p-6 backdrop-blur"
+          aria-labelledby="how-sure-heading"className="gap-4 rounded-xl border-border bg-card p-6 backdrop-blur"
         >
-          <h3 id="how-sure-heading" className="text-xl font-extrabold tracking-tight">
+          <h3 id="how-sure-heading"className="text-xl font-semibold tracking-tight">
             How sure are we?
           </h3>
           <p className="text-muted-foreground">
@@ -353,7 +341,7 @@ export function EvidencePage({ evidence, navigate }: EvidencePageProps) {
               : "These figures use straight-line walking estimates at 80 metres a minute. Real streets make most walks longer, so treat the reach figures as upper estimates."}{" "}
             Deprivation and population are official statistics. Stop costs are placeholders.
           </p>
-          <Button variant="outline" className="mt-auto self-start rounded-full" onClick={() => navigate("how-it-works")}>
+          <Button variant="outline"className="mt-auto self-start rounded-full"onClick={() => navigate("how-it-works")}>
             How it works
           </Button>
         </Card>

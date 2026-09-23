@@ -5,39 +5,52 @@ The visual system for AccessBridge AI. Strategy, users and principles live in
 
 ## Theme
 
-One committed dark theme. The site is map-first, and a near-black ground lets
-the data carry all the colour. Judges often view it on a projector straight
-after the Phase 1 site, so contrast is kept high rather than moody.
+**Light by default, dark on request.** The site follows the reader's system
+setting, and a toggle in the header overrides it. The choice is remembered.
 
-Base neutrals are true greys with no hue, in the shadcn "zinc" spirit. Colour is
-reserved for meaning.
+Judges and officers read this in daylight, on laptops and projectors, so light
+is the home state. Dark mode exists for evening work and for presenting in a
+dimmed room. Both themes are first-class: every colour below has its own step
+per theme, validated against that theme's own surfaces.
+
+The look is quiet. Flat surfaces, hairline borders, no glass, no glow, no
+gradients. The only elevation in the system is a map overlay sitting over the
+basemap. Space and type do the work, so the map and the numbers stay loudest.
 
 ## Colour
 
 Three data roles carry meaning. Nothing else is coloured.
 
-| Role | Token | Value | Meaning |
+| Role | Light | Dark | Meaning |
 |---|---|---|---|
-| Proposal | `--proposal` / `--proposal-ui` | `#e0703f` / `#ff8a5c` | The new stops, the route, and the primary action |
-| Today | `--today` / `--today-ui` | `#6478e8` / `#93a4ff` | The rail and Metro network that exists now |
-| Need | `--need-1` … `--need-5` | `#ec91d1` → `#614458` | Deprivation, as a single-hue ramp ordered by lightness |
+| Proposal | `#b20d8f` | `#da52b5` | The new stops, the route, and the primary action |
+| Today | `#0073cf` | `#338ddf` | The rail and Metro network that exists now |
+| Need | `#a12c20` → `#d89f95` | `#fd8c7b` → `#603d38` | Deprivation, as a single-hue ramp, most deprived first |
 
-Surfaces: `--background #0a0a0b`, `--card #131316`, `--secondary #1c1c21`,
-`--border #26262e`. Text: `--foreground #fafafa`, `--muted-foreground #a8a8b3`,
-`--dim #7c7c8a`.
+Neutrals are true greys. Light: `--background #fcfcfd`, `--card #ffffff`,
+`--border #e6e6eb`, text `#101114` / `#56596a` / `#7b7e8c`. Dark:
+`--background #0c0c0f`, `--card #141418`, `--border #26262c`, text `#f7f7f9` /
+`#a6a8b5` / `#7e8090`.
 
-**Every data colour is validated, not eyeballed.** Using the dataviz palette
-checks against the dark map surface:
+**Every data colour is validated, not eyeballed,** using the dataviz palette
+checks in both themes:
 
-- Coral, periwinkle and fuchsia clear the all-pairs colour-blind floor, worst
-  pair 12.4, so the three map roles stay distinct for colour-blind viewers.
-- The deprivation ramp passes the ordinal checks: one hue, monotone lightness,
-  visible steps, and the darkest step still clears 2:1 against the map.
-- Body text clears 7:1 on every surface, and the primary button's text clears
-  7.7:1.
+- All-pairs colour-blind separation of 11.6 in light and 8.7 in dark, so the
+  three map roles stay distinct for colour-blind readers.
+- Both deprivation ramps pass the ordinal checks: one hue, monotone lightness,
+  visible steps, and the end nearest the surface still clears 2:1. The ramp
+  flips direction per theme, so the most deprived band is darkest on white and
+  brightest on black.
+- Text clears 6:1 or better on every surface in both themes.
 
-A mint or green primary was tried first and rejected: green collapses with the
-pink deprivation ramp under red-green colour blindness.
+Two earlier attempts were rejected by these checks, not by taste: a mint
+primary collapsed with the pink deprivation ramp under red-green colour
+blindness, and a violet primary collapsed with the blue used for today's
+network. The surviving structure keeps one warm, one cool and one magenta.
+
+The map basemap switches with the theme, CARTO positron in light and
+dark-matter in dark, and the deck.gl layers read their colours from the CSS
+tokens, so one change of theme moves everything together.
 
 ## Typography
 
@@ -45,8 +58,9 @@ One family: **Atkinson Hyperlegible Next**, designed by the Braille Institute
 for low-vision readers. An equity project should practise what it preaches, and
 its distinctive letterforms keep the numbers unambiguous.
 
-Headings are extra-bold with tight tracking. Figures use `tabular` where numbers
-align in columns, and proportional figures at display sizes.
+Headings are semibold with tight tracking, on a restrained scale: the largest
+display size tops out near 2.6rem. Figures use `tabular` where numbers align in
+columns, and proportional figures at display sizes.
 
 ## Components
 
@@ -59,11 +73,11 @@ tooltip, collapsible, separator, table, progress, sheet, scroll area, skeleton.
 
 House rules on top of the defaults:
 
-- Pills for navigation and actions; 2xl radius for cards and panels.
-- Raised panels get `edge-light`: a hairline top highlight and a deep shadow.
+- Cards are flat: `bg-card`, one hairline border, no shadow.
+- Radius is small and consistent (`--radius: 0.5rem`); pills are reserved for
+  navigation and chips.
 - Evidence labels are badges with a tooltip, never bare text.
-- Map overlays are `bg-popover/85` with `backdrop-blur-md`, so the map stays
-  readable underneath.
+- Map overlays use the `floating` utility, the one place blur and shadow appear.
 
 ## Motion
 
@@ -71,11 +85,10 @@ Motion is from [motion](https://motion.dev). It signals change; it never
 decorates.
 
 - Story steps cross-fade and lift as the map flies to the next camera.
-- The nav indicator and the map mode indicator slide between options with a
-  shared layout animation.
+- The nav indicator and the map mode indicator slide between options.
 - The route draws itself stop by stop when a plan appears.
 - Reach bars grow from zero and resident counts count up.
-- Cards and figures stagger in on mount.
+- The theme toggle rotates between sun and moon.
 
 Two rules hold everywhere:
 
@@ -89,4 +102,6 @@ Two rules hold everywhere:
 
 WCAG 2.2 AA is the floor. The deprivation scale is ordered by lightness, colour
 is never the only cue, every chart has a table view, map views carry a written
-description, and the first Tab on any page reaches a skip link.
+description, and the first Tab on any page reaches a skip link. The browser
+tests check the skip link, focus movement between pages, phone layouts, the
+theme toggle and reduced motion.

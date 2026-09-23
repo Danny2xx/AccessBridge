@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { bandForDecile } from "@/lib/deprivation";
+import { usePalette } from "@/lib/usePalette";
 import { formatGBP, formatNumber, modeLabel, plural } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { StopDetail } from "@/types";
@@ -32,6 +33,7 @@ export function stopReason(stop: StopDetail): string {
 
 export function StopCard({ stop, number, threshold, focused, expanded, onFocus, onToggle }: StopCardProps) {
   const reduced = useReducedMotion();
+  const palette = usePalette();
   const facts = [
     { label: `People within ${threshold} min`, value: stop.people_reached },
     { label: "Most deprived 10%", value: stop.most_deprived_reached },
@@ -41,23 +43,19 @@ export function StopCard({ stop, number, threshold, focused, expanded, onFocus, 
   return (
     <motion.li
       layout={!reduced}
-      data-testid="stop-card"
-      data-focused={focused}
+      data-testid="stop-card"data-focused={focused}
       className={cn(
-        "group relative grid gap-3 rounded-xl border bg-card/80 p-4 transition-colors",
+        "group relative grid gap-3 rounded-xl border bg-card p-4 transition-colors",
         focused ? "border-primary/80 bg-card shadow-[0_0_0_1px_var(--primary)]" : "border-border hover:border-input"
       )}
     >
       <button
-        type="button"
-        onClick={onFocus}
+        type="button"onClick={onFocus}
         aria-pressed={focused}
-        data-testid="stop-card-main"
-        className="grid w-full grid-cols-[1.875rem_1fr] items-center gap-3 rounded-lg text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        data-testid="stop-card-main"className="grid w-full grid-cols-[1.875rem_1fr] items-center gap-3 rounded-lg text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         <span
-          aria-hidden="true"
-          className="grid size-7 place-items-center rounded-full bg-primary text-sm font-extrabold text-primary-foreground tabular"
+          aria-hidden="true"className="grid size-7 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground tabular"
         >
           {number}
         </span>
@@ -66,7 +64,7 @@ export function StopCard({ stop, number, threshold, focused, expanded, onFocus, 
             {stop.name ?? "New stop"}
           </strong>
           <span className="flex items-center gap-1.5 text-xs text-dim">
-            {stop.is_interchange ? <TrainFront className="size-3" aria-hidden="true" /> : null}
+            {stop.is_interchange ? <TrainFront className="size-3"aria-hidden="true" /> : null}
             {stop.place_name} · {modeLabel(stop.mode_hint)} · {formatGBP(stop.cost_gbp)}
           </span>
         </span>
@@ -76,7 +74,7 @@ export function StopCard({ stop, number, threshold, focused, expanded, onFocus, 
         {facts.map((fact) => (
           <div key={fact.label}>
             <dt className="text-xs leading-tight text-dim">{fact.label}</dt>
-            <dd className="m-0 mt-0.5 font-extrabold tabular">{formatNumber(fact.value)}</dd>
+            <dd className="m-0 mt-0.5 font-semibold tabular">{formatNumber(fact.value)}</dd>
           </div>
         ))}
       </dl>
@@ -85,7 +83,7 @@ export function StopCard({ stop, number, threshold, focused, expanded, onFocus, 
 
       <Collapsible open={expanded} onOpenChange={onToggle}>
         <CollapsibleTrigger asChild>
-          <Button variant="ghost" size="sm" data-testid="stop-toggle" className="-ml-2 h-8 gap-1.5 px-2 text-muted-foreground">
+          <Button variant="ghost"size="sm"data-testid="stop-toggle"className="-ml-2 h-8 gap-1.5 px-2 text-muted-foreground">
             {expanded ? "Hide" : "Show"} {plural(stop.neighbourhoods.length, "neighbourhood")}
             <ChevronDown className={cn("size-4 transition-transform", expanded && "rotate-180")} aria-hidden="true" />
           </Button>
@@ -104,12 +102,10 @@ export function StopCard({ stop, number, threshold, focused, expanded, onFocus, 
                   {stop.neighbourhoods.map((neighbourhood) => (
                     <li
                       key={neighbourhood.lsoa21cd}
-                      data-testid="neighbourhood-row"
-                      className="grid grid-cols-[0.75rem_1fr_auto] items-start gap-2.5 leading-tight"
+                      data-testid="neighbourhood-row"className="grid grid-cols-[0.75rem_1fr_auto] items-start gap-2.5 leading-tight"
                     >
                       <span
-                        className="mt-1 size-3 rounded-[3px]"
-                        style={{ background: bandForDecile(neighbourhood.imd_decile).color }}
+                        className="mt-1 size-3 rounded-[3px]"style={{ background: palette.needRamp[bandForDecile(neighbourhood.imd_decile).step] }}
                         aria-hidden="true"
                       />
                       <span className="grid">
@@ -135,7 +131,7 @@ export function StopCard({ stop, number, threshold, focused, expanded, onFocus, 
       </Collapsible>
 
       {stop.is_interchange ? (
-        <Badge variant="outline" className="absolute top-4 right-4 border-today/60 text-today-ui">
+        <Badge variant="outline"className="absolute top-4 right-4 border-today/60 text-today-ui">
           Rail or Metro link
         </Badge>
       ) : null}

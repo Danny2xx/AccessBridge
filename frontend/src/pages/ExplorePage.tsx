@@ -27,7 +27,7 @@ const BUDGET_STEP = 75_000;
 const WALK_TIMES = [5, 10, 15, 20];
 const RAIL_METRO_COST = 150_000;
 const TOGGLE_CHIP =
-  "rounded-full bg-popover/85 px-4 font-semibold backdrop-blur-md data-[state=on]:border-primary/70 data-[state=on]:bg-primary/15 data-[state=on]:text-primary";
+  "rounded-full bg-popover/85 px-4 font-semibold  data-[state=on]:border-primary/70 data-[state=on]:bg-primary/15 data-[state=on]:text-primary";
 
 type ExplorePageProps = {
   scenario: ScenarioResponse;
@@ -107,11 +107,10 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
   return (
     <div className="grid h-full lg:grid-cols-[minmax(21rem,27.5rem)_minmax(0,1fr)] max-lg:flex max-lg:flex-col-reverse">
       <aside
-        aria-label="Scenario and results"
-        className="flex min-h-0 flex-col gap-7 overflow-y-auto border-border bg-card/40 p-6 pb-10 lg:border-r max-lg:border-t"
+        aria-label="Scenario and results"className="flex min-h-0 flex-col gap-7 overflow-y-auto border-border bg-card p-6 pb-10 lg:border-r max-lg:border-t"
       >
         <header className="grid gap-2.5">
-          <h1 className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">
+          <h1 className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
             Find the best places for new stops
           </h1>
           <p className="text-muted-foreground">
@@ -120,21 +119,18 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
           </p>
         </header>
 
-        <section aria-label="Scenario settings" className="grid gap-6">
+        <section aria-label="Scenario settings"className="grid gap-6">
           <div className="grid gap-2">
             <div className="flex items-baseline justify-between gap-3">
-              <label htmlFor="budget" className="font-bold">
+              <label htmlFor="budget"className="font-bold">
                 Budget
               </label>
-              <output htmlFor="budget" className="font-extrabold text-primary tabular">
+              <output htmlFor="budget"className="font-semibold text-primary tabular">
                 {formatGBP(request.budget_gbp)}
               </output>
             </div>
             <Slider
-              id="budget"
-              data-testid="budget-slider"
-              aria-label="Budget"
-              min={BUDGET_MIN}
+              id="budget"data-testid="budget-slider"aria-label="Budget"min={BUDGET_MIN}
               max={BUDGET_MAX}
               step={BUDGET_STEP}
               value={[request.budget_gbp]}
@@ -147,18 +143,15 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
 
           <div className="grid gap-2">
             <div className="flex items-baseline justify-between gap-3">
-              <label htmlFor="stops" className="font-bold">
+              <label htmlFor="stops"className="font-bold">
                 Most stops
               </label>
-              <output htmlFor="stops" className="font-extrabold text-primary tabular">
+              <output htmlFor="stops"className="font-semibold text-primary tabular">
                 {request.max_stops}
               </output>
             </div>
             <Slider
-              id="stops"
-              data-testid="stops-slider"
-              aria-label="Most stops"
-              min={1}
+              id="stops"data-testid="stops-slider"aria-label="Most stops"min={1}
               max={12}
               step={1}
               value={[request.max_stops]}
@@ -169,12 +162,9 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
           <div className="grid gap-2">
             <span className="font-bold">Walking time to a stop</span>
             <ToggleGroup
-              type="single"
-              variant="outline"
-              value={String(request.threshold_min)}
+              type="single"variant="outline"value={String(request.threshold_min)}
               onValueChange={(value) => value && explore.updateRequest({ threshold_min: Number(value) })}
-              className="w-full"
-              aria-label="Walking time to a stop"
+              className="w-full"aria-label="Walking time to a stop"
             >
               {WALK_TIMES.map((minutes) => (
                 <ToggleGroupItem key={minutes} value={String(minutes)} className="flex-1 font-semibold">
@@ -192,7 +182,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
             />
             <span className="grid leading-tight">
               <span className="flex items-center gap-1.5 font-bold">
-                <TrainFront className="size-4 text-today-ui" aria-hidden="true" />
+                <TrainFront className="size-4 text-today-ui"aria-hidden="true" />
                 Include a rail or Metro link
               </span>
               <small className="text-[0.8125rem] font-normal text-dim">
@@ -202,7 +192,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
           </label>
 
           {!explore.isDefault ? (
-            <Button variant="ghost" size="sm" className="-ml-2 justify-self-start gap-1.5" onClick={explore.reset}>
+            <Button variant="ghost"size="sm"className="-ml-2 justify-self-start gap-1.5"onClick={explore.reset}>
               <RotateCcw aria-hidden="true" />
               Back to the default plan
             </Button>
@@ -212,7 +202,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         <section
           aria-busy={updating}
           className={cn(
-            "relative grid gap-4 rounded-2xl border border-border/80 bg-card/80 p-5 transition-opacity",
+            "relative grid gap-4 rounded-xl border border-border bg-card p-5 transition-opacity",
             updating && "[&>*:not([data-updating])]:opacity-55"
           )}
         >
@@ -222,17 +212,17 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
             </p>
           ) : null}
           {explore.status === "error" ? (
-            <p role="alert" className="font-bold text-destructive">
+            <p role="alert"className="font-bold text-destructive">
               The optimiser did not respond. Check the backend is running, then change a setting to try again.
             </p>
           ) : null}
 
           {text ? (
-            <div aria-live="polite" className="grid gap-2">
-              <p data-testid="result-lead" className="text-xl leading-snug font-bold">
+            <div aria-live="polite"className="grid gap-2">
+              <p data-testid="result-lead"className="text-xl leading-snug font-bold">
                 {text.lead}
               </p>
-              <p data-testid="result-detail" className="text-muted-foreground">
+              <p data-testid="result-detail"className="text-muted-foreground">
                 {text.detail}
               </p>
             </div>
@@ -247,18 +237,15 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
                 threshold={comparison.threshold_min}
               />
               <div className="grid grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-4 border-t border-border pt-4">
-                <Figure size="compact" value={formatGBP(result?.total_cost_gbp ?? 0)} label="total cost" status="placeholder" />
+                <Figure size="compact"value={formatGBP(result?.total_cost_gbp ?? 0)} label="total cost"status="placeholder" />
                 {gain > 0 && result ? (
                   <Figure
-                    size="compact"
-                    value={formatPence(result.total_cost_gbp / gain)}
-                    label="per extra resident reached"
-                    status="placeholder"
+                    size="compact"value={formatPence(result.total_cost_gbp / gain)}
+                    label="per extra resident reached"status="placeholder"
                   />
                 ) : null}
                 <Figure
-                  size="compact"
-                  value={formatNumber(comparison.scenario.total_population)}
+                  size="compact"value={formatNumber(comparison.scenario.total_population)}
                   label={`residents of every band reached (${formatSigned(comparison.delta_total_population)} vs today)`}
                   status="modelled"
                 />
@@ -268,14 +255,14 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         </section>
 
         {comparison && bands.length > 0 ? (
-          <section aria-labelledby="bands-heading" className="grid gap-2">
+          <section aria-labelledby="bands-heading"className="grid gap-2">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <h2 id="bands-heading" className="text-xl font-extrabold tracking-tight">
+              <h2 id="bands-heading"className="text-xl font-semibold tracking-tight">
                 Who gains, band by band
               </h2>
               <EvidenceTag status="modelled" />
             </div>
-            <p data-testid="band-sentence" className="text-sm text-dim">{bandSentence}</p>
+            <p data-testid="band-sentence"className="text-sm text-dim">{bandSentence}</p>
             <div className="mt-2">
               <BandComparisonChart rows={bands} threshold={comparison.threshold_min} compact />
             </div>
@@ -283,9 +270,9 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         ) : null}
 
         {stops.length > 0 ? (
-          <section aria-labelledby="stops-heading" className="grid gap-2">
+          <section aria-labelledby="stops-heading"className="grid gap-2">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <h2 id="stops-heading" className="text-xl font-extrabold tracking-tight">
+              <h2 id="stops-heading"className="text-xl font-semibold tracking-tight">
                 The {stops.length} stops, in route order
               </h2>
               <EvidenceTag status="modelled" />
@@ -310,7 +297,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
           </section>
         ) : null}
 
-        <div data-testid="data-note" className="grid gap-2 text-[0.8125rem] leading-relaxed text-dim">
+        <div data-testid="data-note"className="grid gap-2 text-[0.8125rem] leading-relaxed text-dim">
           <p>{evidence.routing.method_caveat}</p>
           <p>
             {scenario.attribution.public_sector} {scenario.attribution.imd_ons_naptan} {scenario.attribution.osm}
@@ -318,7 +305,7 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
         </div>
       </aside>
 
-      <div data-testid="explore-map" className="relative min-h-0 min-w-0 max-lg:h-[62dvh]">
+      <div data-testid="explore-map"className="relative min-h-0 min-w-0 max-lg:h-[62dvh]">
         <MapCanvas
           scenario={scenario}
           result={result}
@@ -337,32 +324,27 @@ export function ExplorePage({ scenario, evidence, explore }: ExplorePageProps) {
             <ModeSwitch mode={explore.mode} onChange={explore.setMode} />
             <div className="flex flex-wrap items-center gap-2">
               <ToggleGroup
-                type="single"
-                variant="outline"
-                value={explore.is3d ? "3d" : "2d"}
+                type="single"variant="outline"value={explore.is3d ? "3d" : "2d"}
                 onValueChange={(value) => value && explore.setIs3d(value === "3d")}
-                aria-label="Map view"
-                className="bg-popover/85 backdrop-blur-md"
+                aria-label="Map view"className="floating"
               >
-                <ToggleGroupItem value="2d" className="gap-1.5 px-3 font-semibold">
+                <ToggleGroupItem value="2d"className="gap-1.5 px-3 font-semibold">
                   <MapIcon aria-hidden="true" /> 2D
                 </ToggleGroupItem>
-                <ToggleGroupItem value="3d" className="gap-1.5 px-3 font-semibold">
+                <ToggleGroupItem value="3d"className="gap-1.5 px-3 font-semibold">
                   <Box aria-hidden="true" /> 3D
                 </ToggleGroupItem>
               </ToggleGroup>
 
               <Toggle
-                variant="outline"
-                pressed={explore.showRailMetro}
+                variant="outline"pressed={explore.showRailMetro}
                 onPressedChange={explore.setShowRailMetro}
                 className={TOGGLE_CHIP}
               >
                 Rail and Metro
               </Toggle>
               <Toggle
-                variant="outline"
-                pressed={explore.showCandidates}
+                variant="outline"pressed={explore.showCandidates}
                 onPressedChange={explore.setShowCandidates}
                 className={TOGGLE_CHIP}
               >

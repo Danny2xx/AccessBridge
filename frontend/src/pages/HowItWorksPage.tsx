@@ -66,7 +66,7 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
   return (
     <div className="mx-auto grid max-w-[75rem] gap-12 px-[clamp(1rem,3vw,2rem)] pt-14 pb-20">
       <header className="grid gap-4">
-        <h1 className="text-[clamp(2.2rem,1.6rem+2.4vw,3.25rem)] font-extrabold tracking-tight">How it works</h1>
+        <h1 className="text-[clamp(1.9rem,1.5rem+1.6vw,2.6rem)] font-semibold tracking-tight">How it works</h1>
         <p className="max-w-[62ch] text-xl leading-snug text-muted-foreground">
           Four steps turn open data into a stop plan. Each one is simple enough to check.
         </p>
@@ -79,14 +79,13 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
             className="grid grid-cols-[3.25rem_minmax(0,1fr)] gap-5 border-b border-border py-7 first:border-t"
           >
             <span
-              aria-hidden="true"
-              className="grid size-11 place-items-center rounded-full border-[1.5px] border-primary text-xl font-extrabold text-primary"
+              aria-hidden="true"className="grid size-11 place-items-center rounded-full border-[1.5px] border-primary text-xl font-semibold text-primary"
             >
               {index + 1}
             </span>
             <div>
               <div className="mb-2 flex flex-wrap items-center gap-x-3.5 gap-y-2">
-                <h2 className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">{step.title}</h2>
+                <h2 className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">{step.title}</h2>
                 <EvidenceTag status={step.status} />
               </div>
               <p className="max-w-[68ch] text-[1.0625rem] text-muted-foreground">{step.body}</p>
@@ -97,8 +96,8 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
       </ol>
 
       <div className="grid gap-10 lg:grid-cols-2">
-        <section aria-labelledby="limits-heading" className="grid content-start gap-4">
-          <h2 id="limits-heading" className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">
+        <section aria-labelledby="limits-heading"className="grid content-start gap-4">
+          <h2 id="limits-heading"className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
             What it does not do yet
           </h2>
           <ul className="grid list-disc gap-2.5 pl-5 text-muted-foreground marker:text-dim">
@@ -108,8 +107,8 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
           </ul>
         </section>
 
-        <section aria-labelledby="sources-heading" className="grid content-start gap-4">
-          <h2 id="sources-heading" className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">
+        <section aria-labelledby="sources-heading"className="grid content-start gap-4">
+          <h2 id="sources-heading"className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
             Data and licences
           </h2>
           <ul className="grid list-none gap-3.5 p-0">
@@ -127,15 +126,15 @@ export function HowItWorksPage({ scenario, evidence, navigate }: HowItWorksPageP
         </section>
       </div>
 
-      <section aria-label="Next" className="grid gap-4 border-t border-border pt-8">
+      <section aria-label="Next"className="grid gap-4 border-t border-border pt-8">
         <p className="max-w-[62ch] text-muted-foreground">
           Every chart on the evidence page can be shown as a table, and the Explore map lets you test your own budget.
         </p>
         <div className="flex flex-wrap gap-3">
-          <Button className="rounded-full font-bold" onClick={() => navigate("explore")}>
+          <Button className="rounded-full font-bold"onClick={() => navigate("explore")}>
             Explore it yourself
           </Button>
-          <Button variant="outline" className="rounded-full" onClick={() => navigate("evidence")}>
+          <Button variant="outline"className="rounded-full"onClick={() => navigate("evidence")}>
             See the evidence
           </Button>
         </div>

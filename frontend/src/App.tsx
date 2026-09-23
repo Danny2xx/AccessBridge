@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider } from "@/lib/theme";
 import { useExplore } from "@/lib/useExplore";
 import { useHashRoute, type Route } from "@/lib/useHashRoute";
 import { cn } from "@/lib/utils";
@@ -27,15 +28,15 @@ const TITLES: Record<Route, string> = {
 
 function Loading() {
   return (
-    <div role="status" className="mx-auto grid max-w-[34rem] gap-4 px-[clamp(1rem,3vw,2rem)] py-[14vh]">
-      <p className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">
+    <div role="status"className="mx-auto grid max-w-[34rem] gap-4 px-[clamp(1rem,3vw,2rem)] py-[14vh]">
+      <p className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">
         Loading the Knowledge Quarter
       </p>
       <p className="text-muted-foreground">Fetching neighbourhoods, stops and the default plan.</p>
       <div className="grid gap-2.5 pt-2">
         <Skeleton className="h-3 w-full" />
         <Skeleton className="h-3 w-4/5" />
-        <Skeleton className="h-40 w-full rounded-2xl" />
+        <Skeleton className="h-40 w-full rounded-xl" />
       </div>
     </div>
   );
@@ -43,8 +44,8 @@ function Loading() {
 
 function LoadError({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
-    <div role="alert" className="mx-auto grid max-w-[34rem] gap-4 px-[clamp(1rem,3vw,2rem)] py-[14vh]">
-      <p className="text-[clamp(1.4rem,1.25rem+0.6vw,1.6rem)] font-extrabold tracking-tight">The data did not load</p>
+    <div role="alert"className="mx-auto grid max-w-[34rem] gap-4 px-[clamp(1rem,3vw,2rem)] py-[14vh]">
+      <p className="text-[clamp(1.2rem,1.1rem+0.4vw,1.35rem)] font-semibold tracking-tight">The data did not load</p>
       <p className="text-muted-foreground">
         The AccessBridge API did not respond. Start it with the command below, then try again.
       </p>
@@ -52,7 +53,7 @@ function LoadError({ message, onRetry }: { message: string; onRetry: () => void 
         .venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
       </pre>
       <p className="text-sm break-words text-dim">{message}</p>
-      <Button className="justify-self-start rounded-full font-bold" onClick={onRetry}>
+      <Button className="justify-self-start rounded-full font-bold"onClick={onRetry}>
         Try again
       </Button>
     </div>
@@ -68,7 +69,7 @@ function SiteFooter({ attribution }: { attribution?: Attribution }) {
         built.
       </p>
       {attribution ? (
-        <p data-testid="footer-attribution" className="mx-auto mt-2.5 max-w-[80ch] text-center">
+        <p data-testid="footer-attribution"className="mx-auto mt-2.5 max-w-[80ch] text-center">
           {attribution.public_sector} {attribution.imd_ons_naptan} {attribution.osm}
         </p>
       ) : null}
@@ -135,20 +136,20 @@ export function App() {
   }
 
   return (
-    <TooltipProvider delayDuration={200}>
-      <div className={cn("grain", isMapRoute && "flex h-dvh flex-col overflow-hidden max-lg:h-auto max-lg:overflow-visible")}>
+    <ThemeProvider>
+      <TooltipProvider delayDuration={200}>
+      <div className={cn(isMapRoute && "flex h-dvh flex-col overflow-hidden max-lg:h-auto max-lg:overflow-visible")}>
         <SiteHeader route={route} progress={route === "story" && ready ? storyProgress : null} />
 
         <main
-          id="main"
-          ref={mainRef}
+          id="main"ref={mainRef}
           tabIndex={-1}
           className={cn("outline-none", isMapRoute && "min-h-0 flex-1")}
         >
           {loadError ? (
             <LoadError message={loadError} onRetry={() => setAttempt((value) => value + 1)} />
           ) : ready ? (
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence mode="wait"initial={false}>
               <motion.div
                 key={route}
                 className={cn(isMapRoute && "h-full")}
@@ -167,6 +168,7 @@ export function App() {
 
         {!isMapRoute ? <SiteFooter attribution={scenario?.attribution} /> : null}
       </div>
-    </TooltipProvider>
+      </TooltipProvider>
+    </ThemeProvider>
   );
 }

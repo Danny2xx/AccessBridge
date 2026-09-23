@@ -12,11 +12,16 @@ import {
 } from "@/lib/camera";
 import { decileSentence } from "@/lib/deprivation";
 import { formatNumber, modeLabel } from "@/lib/format";
+import { usePalette } from "@/lib/usePalette";
 import { useReducedMotion } from "@/lib/useReducedMotion";
+import { useTheme } from "@/lib/theme";
 import type { GeoJsonFeature, OptimisationResult, ScenarioResponse, StopDetail } from "@/types";
 import { buildLayers, deriveMapState, type MapDerived, type MapMarker, type MapMode } from "./layers";
 
-const MAP_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+const MAP_STYLES = {
+  light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
+} as const;
 const BUILDINGS_LAYER_ID = "accessbridge-buildings-3d";
 const NO_PADDING: Padding = { top: 24, right: 24, bottom: 24, left: 24 };
 const NO_MARKERS: MapMarker[] = [];
@@ -128,6 +133,8 @@ export function MapCanvas({
   const mapRef = useRef<MaplibreMap | null>(null);
   const appliedKey = useRef<string | null>(null);
   const reducedMotion = useReducedMotion();
+  const palette = usePalette();
+  const { resolved: theme } = useTheme();
   const descriptionId = useId();
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);
   const [viewState, setViewState] = useState<ViewState>(FALLBACK_VIEW);
@@ -209,11 +216,12 @@ export function MapCanvas({
           showRailMetro,
           showNetwork,
           markers,
-          routeProgress
+          routeProgress,
+          palette
         },
         derived
       ),
-    [scenario, result, mode, is3d, focusStopId, showCandidates, showRailMetro, showNetwork, markers, derived, routeProgress]
+    [scenario, result, mode, is3d, focusStopId, showCandidates, showRailMetro, showNetwork, markers, derived, routeProgress, palette]
   );
 
   const syncBuildings = useCallback(() => {
@@ -237,7 +245,7 @@ export function MapCanvas({
           minzoom: 13.5,
           layout: { visibility: buildings3d ? "visible" : "none" },
           paint: {
-            "fill-extrusion-color": "#2b3446",
+            "fill-extrusion-color": theme === "dark" ? "#2b3446" : "#d7d9e0",
             "fill-extrusion-height": ["coalesce", ["get", "render_height"], 9],
             "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
             "fill-extrusion-opacity": 0.9
@@ -246,7 +254,7 @@ export function MapCanvas({
       }
       syncBuildings();
     },
-    [buildings3d, syncBuildings]
+    [buildings3d, syncBuildings, theme]
   );
 
   const onHover = useCallback(
@@ -287,12 +295,8 @@ export function MapCanvas({
 
   return (
     <div
-      data-testid="map-canvas"
-      className="relative size-full min-h-80 overflow-hidden bg-[#0a0a0b]"
-      ref={containerRef}
-      role="region"
-      aria-label="Map"
-      aria-describedby={descriptionId}
+      data-testid="map-canvas"className="relative size-full min-h-80 overflow-hidden bg-secondary"ref={containerRef}
+      role="region"aria-label="Map"aria-describedby={descriptionId}
       onMouseLeave={() => setTooltip(null)}
     >
       <p id={descriptionId} className="visually-hidden">
@@ -309,16 +313,14 @@ export function MapCanvas({
           isDragging ? "grabbing" : isHovering ? "pointer" : "grab"
         }
       >
-        <Map mapStyle={MAP_STYLE} reuseMaps attributionControl={false} onLoad={onMapLoad}>
+        <Map key={theme} mapStyle={MAP_STYLES[theme]} reuseMaps attributionControl={false} onLoad={onMapLoad}>
           <AttributionControl compact position="bottom-right" />
         </Map>
       </DeckGL>
       {tooltip ? (
         <div
           style={tooltipStyle}
-          aria-hidden="true"
-          data-testid="map-tooltip"
-          className="pointer-events-none absolute z-50 grid max-w-72 gap-0.5 rounded-xl border border-border bg-popover/97 px-3 py-2.5 text-sm leading-snug text-muted-foreground shadow-2xl backdrop-blur"
+          aria-hidden="true"data-testid="map-tooltip"className="pointer-events-none absolute z-50 grid max-w-72 gap-0.5 rounded-md border border-border px-3 py-2.5 text-sm leading-snug text-muted-foreground floating"
         >
           <strong className="text-base text-foreground">{tooltip.title}</strong>
           {tooltip.subtitle ? <span className="mb-1 text-xs text-dim">{tooltip.subtitle}</span> : null}

@@ -28,15 +28,14 @@ export function ChartFrame({ title, tags, intro, table, takeaway, wide = false, 
 
   return (
     <Card
-      data-testid="chart-card"
-      aria-labelledby={headingId}
+      data-testid="chart-card"aria-labelledby={headingId}
       className={cn(
-        "min-w-0 gap-4 rounded-2xl border-border/80 bg-card/70 p-6 backdrop-blur transition-colors hover:border-input",
+        "min-w-0 gap-4 rounded-xl border-border bg-card p-6 backdrop-blur transition-colors hover:border-input",
         wide && "lg:col-span-2"
       )}
     >
       <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <h3 id={headingId} className="text-xl font-extrabold tracking-tight">
+        <h3 id={headingId} className="text-xl font-semibold tracking-tight">
           {title}
         </h3>
         <div className="flex flex-wrap gap-1.5">
@@ -90,10 +89,7 @@ export function ChartFrame({ title, tags, intro, table, takeaway, wide = false, 
           )}
           {table ? (
             <Button
-              variant="outline"
-              size="sm"
-              className="rounded-full"
-              aria-pressed={showTable}
+              variant="outline"size="sm"className="rounded-full"aria-pressed={showTable}
               onClick={() => setShowTable((value) => !value)}
             >
               {showTable ? <BarChart3 aria-hidden="true" /> : <Table2 aria-hidden="true" />}
